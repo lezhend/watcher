@@ -1,5 +1,6 @@
 package com.fortinet.fcasb.watcher.monitor.init;
 
+import com.fortinet.fcasb.watcher.monitor.dao.StatisticsDao;
 import com.fortinet.fcasb.watcher.monitor.enums.TablesEnum;
 import com.fortinet.fcasb.watcher.monitor.utils.StringUtil;
 import org.slf4j.Logger;
@@ -27,12 +28,11 @@ public class InitDatabase {
     private String dbPath;
 
     private final String CREATE_TABLE_STATISTICS_SQL = "" +
-            "CREATE TABLE IF NOT EXISTS "+
-             TablesEnum.STATISTICS.getTablename()+"-{date}"+
-            "(type           Varchar(32)    NOT NULL, " +
-            " metrics        Varchar(32)    NOT NULL, " +
-            " time           Varchar(32)  DEFAULT CURRENT_TIME, " +
-            " value          Varchar(255) );";
+            "CREATE TABLE IF NOT EXISTS %s "+
+            " ( type TEXT  NOT NULL, " +
+            " metrics TEXT NOT NULL, " +
+            " time TEXT  DEFAULT CURRENT_TIME, " +
+            " value TEXT );";
 
 
     private static Connection connect = null;
@@ -56,6 +56,7 @@ public class InitDatabase {
                 Class.forName("org.sqlite.JDBC");
                 connect = DriverManager.getConnection("jdbc:sqlite:" + dbPath + "/monitor.db");
             }catch (Exception ex){
+                ex.printStackTrace();
                 LOGGER.error(ex.toString());
             }
         }
@@ -71,15 +72,14 @@ public class InitDatabase {
 
     public void createStatisticsTables(Date date){
         String dateStr = StringUtil.getTableDate(date);
-        CREATE_TABLE_STATISTICS_SQL.replace("{date}", dateStr);
         if(connect!=null){
             Statement stmt = null;
             try {
                 stmt = connect.createStatement();
-                stmt.executeUpdate(CREATE_TABLE_STATISTICS_SQL);
+                stmt.executeUpdate(String.format(CREATE_TABLE_STATISTICS_SQL, StatisticsDao.transStatisticsTableName(date)));
             } catch (SQLException e) {
                 e.printStackTrace();
-                LOGGER.error("create ?-? failed ?",TablesEnum.STATISTICS.getTablename(),dateStr,e.toString());
+                LOGGER.error("create {}{} failed {}",TablesEnum.STATISTICS.getTablename(),dateStr,e.toString());
 
             } finally {
                 if(stmt!=null){
@@ -88,7 +88,7 @@ public class InitDatabase {
                     } catch (SQLException e) {
                         e.printStackTrace();
                         LOGGER.error(e.toString());
-                        LOGGER.error("create ?-? failed ?",TablesEnum.STATISTICS.getTablename(),dateStr,e.toString());
+                        LOGGER.error("create {}{} failed {}",TablesEnum.STATISTICS.getTablename(),dateStr,e.toString());
                     }
                 }
             }

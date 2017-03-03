@@ -9,7 +9,6 @@ import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 
 /**
  * Created by zliu on 17/3/3.
@@ -20,16 +19,16 @@ import java.util.List;
 @Component
 public class TaskService {
     @Value("${monitor.system.metrics}")
-    private List<String> systemMetrics;
+    private String[] systemMetrics;
 
     @Value("${monitor.period}")
     private Integer monitorPeriod;
 
     @Value("${monitor.user.progress.filters}")
-    private List<String> userDefaultFilters;
+    private String[] userDefaultFilters;
 
     @Value("${monitor.user.progress.metrics}")
-    private List<String> userProgressType;
+    private String[] userProgressType;
 
 
     @Autowired
@@ -39,14 +38,20 @@ public class TaskService {
     @PostConstruct
     private void startTask() {
         int min = monitorPeriod/60;
+
+        taskScheduler.schedule(new ManageTask(),new CronTrigger("0 0 1 * * ? "));
+
         for(String metrics : systemMetrics) {
             taskScheduler.schedule(new SystemTask(Statistics.Metrics.SYSTEM.valueOf(metrics)), new CronTrigger("0 0/" + min + " * * * ? "));
+
         }
         for(String metrics : userProgressType) {
             for(String filter:userDefaultFilters) {
-                taskScheduler.schedule(new ProgressTask(Statistics.Metrics.SYSTEM.valueOf(metrics),filter), new CronTrigger("0 0/" + min + " * * * ? "));
+                taskScheduler.schedule(new ProgressTask(Statistics.Metrics.PROGRESS.valueOf(metrics),filter), new CronTrigger("0 0/" + min + " * * * ? "));
             }
         }
+
+
     }
 
 

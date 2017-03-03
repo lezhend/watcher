@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class StringUtil {
 
-    private final static SimpleDateFormat STATISTIC_TABLE_FORTMAT_DATE = new SimpleDateFormat("yyyy-MM-dd");
+    private final static SimpleDateFormat STATISTIC_TABLE_FORTMAT_DATE = new SimpleDateFormat("yyyyMMdd");
     private final static SimpleDateFormat STATISTIC_TABLE_FORTMAT_TIME = new SimpleDateFormat("HH:mm");
 
     public static String getTableDate(Date date){

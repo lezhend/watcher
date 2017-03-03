@@ -7,5 +7,5 @@ import com.fortinet.fcasb.watcher.monitor.domain.Statistics;
  */
 public interface ITask {
     Statistics getInfo();
-    public void save(Statistics statistics);
+    public void execute(Statistics statistics);
 }

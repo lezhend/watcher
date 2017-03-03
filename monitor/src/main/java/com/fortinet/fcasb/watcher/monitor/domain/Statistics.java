@@ -58,17 +58,21 @@ public class Statistics implements Serializable{
 
 
     public enum Type{
-        System,
-        Progress;
+        System(),
+        Progress();
     }
 
     public interface Metrics {
         public enum SYSTEM{
-            CPUUtilization,MEMCPUUtilization,Runtime;
+            CPUUtilization(),
+            MEMCPUUtilization(),
+            Runtime();
 
         }
         public enum PROGRESS{
-            CPUUtilization,MEMCPUUtilization,Runtime;
+            CPUUtilization(),
+            MEMCPUUtilization(),
+            Runtime();
         }
     }
 }

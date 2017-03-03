@@ -24,16 +24,16 @@ public class SystemTask implements Runnable,ITask {
     @Override
     public void run() {
         Statistics statistics = getInfo();
-        save(statistics);
+        execute(statistics);
     }
 
     @Override
-    public void save(Statistics statistics){
+    public void execute(Statistics statistics){
         if(statistics!=null) {
-            LOGGER.info(statistics.toString());
+            LOGGER.info("[statistic] {}",statistics.toString());
             statisticsDao.insert(statistics);
         }else{
-            LOGGER.error("system task get ? info failed ",this.metrics.toString());
+            LOGGER.error("[statistic] system  {} value='0' ",this.metrics.toString());
         }
     }
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,9 +20,9 @@ import java.util.List;
 @Component
 public class StatisticsDao {
     public void insert(Statistics statistics){
-        String sql = "INSERT INTO ? (type,metrics,time,value)";
+        String sql = "INSERT INTO {0} (type,metrics,time,value) VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\")";
         Date date = new Date();
-        sql = String.format(sql,statistics.getType(),statistics.getMetrics(),StringUtil.getStatisticsTime(date),statistics.getValue(), transStatisticsTableName(date));
+        sql = MessageFormat.format(sql, statistics.getType(), statistics.getMetrics(), StringUtil.getStatisticsTime(date), statistics.getValue(), transStatisticsTableName(date));
         Statement statement = null;
         try {
             statement = InitDatabase.getConnect().createStatement();
@@ -41,8 +42,8 @@ public class StatisticsDao {
     }
 
     public List<Statistics> find(Date date,String startTime,String endTime){
-        String sql = "SELECT * FROM ? WHERE time >= ? AND time <= ?";
-        sql = String.format(sql, transStatisticsTableName(date), startTime, endTime);
+        String sql = "SELECT * FROM {0} WHERE time >= \"{1}\" AND time <= \"{2}\"";
+        sql = MessageFormat.format(sql, transStatisticsTableName(date), startTime, endTime);
         Statement statement = null;
         ResultSet rs = null;
         List<Statistics> statisticses = new ArrayList<>();
@@ -98,7 +99,7 @@ public class StatisticsDao {
     }
 
     public static String transStatisticsTableName(Date date){
-        return TablesEnum.STATISTICS.getTablename()+"-"+ StringUtil.getTableDate(date);
+        return TablesEnum.STATISTICS.getTablename()+ StringUtil.getTableDate(date);
     }
 
 }

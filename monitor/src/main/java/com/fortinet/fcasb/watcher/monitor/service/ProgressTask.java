@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ProgressTask implements ITask, Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProgressTask.class);
 
-    private Statistics.Metrics.SYSTEM metrics;
+    private Statistics.Metrics.PROGRESS metrics;
     private String processFilter;
 
     @Autowired
     private StatisticsDao statisticsDao;
 
-    public ProgressTask(Statistics.Metrics.SYSTEM metrics,String processFilter){
+    public ProgressTask(Statistics.Metrics.PROGRESS metrics,String processFilter){
         this.metrics = metrics;
         this.processFilter = processFilter;
     }
@@ -26,16 +26,16 @@ public class ProgressTask implements ITask, Runnable {
     @Override
     public void run() {
         Statistics statistics = getInfo();
-        save(statistics);
+        execute(statistics);
     }
 
     @Override
-    public void save(Statistics statistics){
+    public void execute(Statistics statistics){
         if(statistics!=null) {
-            LOGGER.info(statistics.toString());
+            LOGGER.info("[statistic] {}",statistics.toString());
             statisticsDao.insert(statistics);
         }else{
-            LOGGER.error("system task get ? info failed ",this.metrics.toString());
+            LOGGER.error("[statistic] progress  {} value='0' ",this.metrics.toString());
         }
     }
 
