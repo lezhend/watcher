@@ -2,6 +2,7 @@ package com.fortinet.fcasb.watcher.monitor.service;
 
 import com.fortinet.fcasb.watcher.monitor.dao.StatisticsDao;
 import com.fortinet.fcasb.watcher.monitor.domain.Statistics;
+import com.fortinet.fcasb.watcher.monitor.init.InitDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class ManageTask implements ITask, Runnable {
     @Autowired
     private StatisticsDao statisticsDao;
 
+    @Autowired
+    private InitDatabase initDatabase;
+
     @Override
     public void run() {
         Statistics statistics = getInfo();
@@ -28,7 +32,8 @@ public class ManageTask implements ITask, Runnable {
 
     @Override
     public void execute(Statistics statistics){
-        statisticsDao.dropTable(new Date(new Date().getTime()-2*24*60*60*1000));
+        statisticsDao.dropTable(new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000));
+        initDatabase.createDayTables();
     }
 
     @Override

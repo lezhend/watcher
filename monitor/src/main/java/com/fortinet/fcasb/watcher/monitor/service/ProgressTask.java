@@ -2,13 +2,20 @@ package com.fortinet.fcasb.watcher.monitor.service;
 
 import com.fortinet.fcasb.watcher.monitor.dao.StatisticsDao;
 import com.fortinet.fcasb.watcher.monitor.domain.Statistics;
+import com.fortinet.fcasb.watcher.monitor.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 /**
  * Created by zliu on 17/3/3.
  */
+@Component
+@Scope("prototype")
 public class ProgressTask implements ITask, Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProgressTask.class);
 
@@ -18,11 +25,16 @@ public class ProgressTask implements ITask, Runnable {
     @Autowired
     private StatisticsDao statisticsDao;
 
-    public ProgressTask(Statistics.Metrics.PROGRESS metrics,String processFilter){
+    @Autowired
+    private SystemService systemService;
+
+    public void setMetrics(Statistics.Metrics.PROGRESS metrics){
         this.metrics = metrics;
-        this.processFilter = processFilter;
     }
 
+    public void setProcessFilter(String processFilter){
+        this.processFilter = processFilter;
+    }
     @Override
     public void run() {
         Statistics statistics = getInfo();
@@ -41,16 +53,39 @@ public class ProgressTask implements ITask, Runnable {
 
     @Override
     public Statistics getInfo(){
-        Statistics statistics = null;
-
+        Statistics statistics = new Statistics();
+        statistics.setType(Statistics.Type.Progress.toString());
+        statistics.setMetrics(this.metrics.toString());
+        statistics.setTime(StringUtil.getStatisticsTime(new Date()));
+        statistics.setFilter(this.processFilter);
         if (this.metrics.equals(Statistics.Metrics.PROGRESS.CPUUtilization)) {
-            //todo
-        }
+            String value = systemService.getProgressUseCPU(this.processFilter);
+            if(value!=null){
+                statistics.setValue(value);
+            } else{
+                statistics.setValue("0");
+            }
+        } else
         if (this.metrics.equals(Statistics.Metrics.PROGRESS.MEMCPUUtilization)) {
-            //todo
-        }
+            String value = systemService.getProgressUseMEM(this.processFilter);
+            if(value!=null){
+                statistics.setValue(value);
+            } else{
+                statistics.setValue("0");
+            }
+        } else
         if (this.metrics.equals(Statistics.Metrics.PROGRESS.Runtime)) {
-            //todo
+            String value = systemService.getProgressRuntime(this.processFilter);
+            if(value!=null){
+                statistics.setValue(value);
+            }else{
+                statistics.setValue("0");
+            }
+        } else if(this.metrics.equals(Statistics.Metrics.PROGRESS.IS_RUNNING)){
+            Boolean value = systemService.progressIsRun(this.processFilter);
+            statistics.setValue(value.toString());
+        } else{
+            statistics = null;
         }
         return statistics;
     }

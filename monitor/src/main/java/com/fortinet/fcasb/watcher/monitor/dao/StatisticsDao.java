@@ -20,9 +20,9 @@ import java.util.List;
 @Component
 public class StatisticsDao {
     public void insert(Statistics statistics){
-        String sql = "INSERT INTO {0} (type,metrics,time,value) VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\")";
+        String sql = "INSERT INTO {0} (type,metrics,time,filter,value) VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\")";
         Date date = new Date();
-        sql = MessageFormat.format(sql, statistics.getType(), statistics.getMetrics(), StringUtil.getStatisticsTime(date), statistics.getValue(), transStatisticsTableName(date));
+        sql = MessageFormat.format(sql,transStatisticsTableName(date), statistics.getType(), statistics.getMetrics(), statistics.getTime(), statistics.getFilter(),statistics.getValue(), transStatisticsTableName(date));
         Statement statement = null;
         try {
             statement = InitDatabase.getConnect().createStatement();
@@ -56,6 +56,7 @@ public class StatisticsDao {
                 statistics.setTime(rs.getString("time"));
                 statistics.setType(rs.getString("type"));
                 statistics.setValue(rs.getString("value"));
+                statistics.setFilter(rs.getString("filter"));
                 statisticses.add(statistics);
             }
         } catch (Exception e) {

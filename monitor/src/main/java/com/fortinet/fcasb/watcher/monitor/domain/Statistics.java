@@ -10,19 +10,27 @@ public class Statistics implements Serializable{
     private static final long serialVersionUID = -2047728067852756058L;
     private String type;
     private String metrics;
+    private String filter;
     private String time;
     private String value;
 
     @Override
     public String toString() {
-        return "Statistics{" +
+        return "" +
                 " time='" + time + '\'' +
                 ", type='" + type + '\'' +
                 ", metrics='" + metrics + '\'' +
-                ", value='" + value + '\'' +
-                '}';
+                ", filter='" + filter + '\'' +
+                ", value='" + value + '\'';
     }
 
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
 
     public String getType() {
         return type;
@@ -70,6 +78,7 @@ public class Statistics implements Serializable{
 
         }
         public enum PROGRESS{
+            IS_RUNNING(),
             CPUUtilization(),
             MEMCPUUtilization(),
             Runtime();

@@ -29,10 +29,11 @@ public class InitDatabase {
 
     private final String CREATE_TABLE_STATISTICS_SQL = "" +
             "CREATE TABLE IF NOT EXISTS %s "+
-            " ( type TEXT  NOT NULL, " +
+            " (type TEXT  NOT NULL, " +
             " metrics TEXT NOT NULL, " +
             " time TEXT  DEFAULT CURRENT_TIME, " +
-            " value TEXT );";
+            " filter TEXT NOT NULL, " +
+            " value TEXT);";
 
 
     private static Connection connect = null;
@@ -70,6 +71,11 @@ public class InitDatabase {
         return connect;
     }
 
+    public void createDayTables(){
+        createStatisticsTables(new Date());
+        createStatisticsTables(new Date(new Date().getTime()+24*60*60*1000));
+        createStatisticsTables(new Date(new Date().getTime()+2*24*60*60*1000));
+    }
     public void createStatisticsTables(Date date){
         String dateStr = StringUtil.getTableDate(date);
         if(connect!=null){
