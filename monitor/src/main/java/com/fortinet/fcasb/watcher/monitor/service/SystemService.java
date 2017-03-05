@@ -7,6 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by zliu on 17/3/4.
  */
@@ -19,15 +24,13 @@ public class SystemService {
 
     public String getUseCPUInfo(){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)){
-            SystemUtil.linuxCmd("sh","-c","cat /pro/cpuinfo","|","grep use");
-
+           return SystemUtil.linuxCmd("sh","-c","mpstat|grep all|awk '{print $4}'");
         } else if(OSTypeEnum.WINDOWS.toString().equalsIgnoreCase(osType)) {
             //todo
             LOGGER.error("don't support this os {}",osType);
 
         }else if((OSTypeEnum.MAC_OS.toString().equalsIgnoreCase(osType))) {
-            return SystemUtil.linuxCmd("cat","/pro/cpuinfo","|","grep use");
-
+            LOGGER.error("don't support this os {}",osType);
         } else {
             //todo
             LOGGER.error("don't support this os {}",osType);
@@ -37,6 +40,10 @@ public class SystemService {
     public String getUseMEMInfo(){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)){
             String result = SystemUtil.linuxCmd("sh", "-c", "free|grep Mem|awk '{pring $2\" \"$3}'");
+            String[] results = result.split(" ");
+            DecimalFormat decimalFormat=new DecimalFormat(".00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+            Double value = Double.valueOf(results[0])/Double.valueOf(results[1]);
+            return decimalFormat.format(value);
 
         } else if(OSTypeEnum.WINDOWS.toString().equalsIgnoreCase(osType)) {
             //todo
@@ -50,16 +57,25 @@ public class SystemService {
         }
         return null;
     }
-    public String getRuntime(){
+    public Long getRuntime(){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)){
-
+            String result = SystemUtil.linuxCmd("sh", "-c", "who -b|awk '{pring $3\" \"$4}'");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            try {
+               Date bootDate = simpleDateFormat.parse(result);
+                Date date = new Date();
+                Long min = (date.getTime()-bootDate.getTime())/(60*1000);
+                return min;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
         } else if(OSTypeEnum.WINDOWS.toString().equalsIgnoreCase(osType)) {
             //todo
             LOGGER.error("don't support this os {}",osType);
 
         }else if((OSTypeEnum.MAC_OS.toString().equalsIgnoreCase(osType))) {
-
+            LOGGER.error("don't support this os {}",osType);
         } else {
             //todo
             LOGGER.error("don't support this os {}",osType);
