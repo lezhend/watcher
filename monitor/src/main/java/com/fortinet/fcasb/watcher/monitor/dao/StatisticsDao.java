@@ -20,9 +20,11 @@ import java.util.List;
 @Component
 public class StatisticsDao {
     public void insert(Statistics statistics){
-        String sql = "INSERT INTO {0} (type,metrics,time,filter,value) VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\")";
+        String sql = "INSERT INTO {0} (timestamp,name,hostname,type,metrics,time,filter,value) VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\")";
         Date date = new Date();
-        sql = MessageFormat.format(sql,transStatisticsTableName(date), statistics.getType(), statistics.getMetrics(), statistics.getTime(), statistics.getFilter(),statistics.getValue(), transStatisticsTableName(date));
+        sql = MessageFormat.format(sql,transStatisticsTableName(date),
+                statistics.getTimestamp(),statistics.getName(),statistics.getHostname(),
+                statistics.getType(), statistics.getMetrics(), statistics.getTime(), statistics.getFilter(),statistics.getValue());
         Statement statement = null;
         try {
             statement = InitDatabase.getConnect().createStatement();
@@ -52,6 +54,9 @@ public class StatisticsDao {
             rs = statement.executeQuery(sql);
             while ( rs.next() ) {
                 Statistics statistics = new Statistics();
+                statistics.setTimestamp(rs.getString("timestamp"));
+                statistics.setHostname(rs.getString("hostname"));
+                statistics.setName(rs.getString("name"));
                 statistics.setMetrics(rs.getString("metrics"));
                 statistics.setTime(rs.getString("time"));
                 statistics.setType(rs.getString("type"));

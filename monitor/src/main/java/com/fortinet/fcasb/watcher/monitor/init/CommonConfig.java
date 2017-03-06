@@ -18,7 +18,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
         "com.fortinet.fcasb.watcher.monitor"
 })
 @PropertySource(value = {
-        "classpath:./monitor.properties"
+//        "classpath:./monitor.properties",
+        "file:/opt/monitor/monitor.properties"
 }, ignoreResourceNotFound = true)
 @Configuration
 public class CommonConfig {

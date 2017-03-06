@@ -24,7 +24,9 @@ public class SystemService {
 
     public String getUseCPUInfo(){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)){
-           return SystemUtil.linuxCmd("sh","-c","mpstat|grep all|awk '{print $4}'");
+           String result =  SystemUtil.linuxCmd("sh","-c","mpstat|grep all|awk '{print $4}'");
+            LOGGER.debug("getUseCPUInfo = {}",result);
+           return result;
         } else if(OSTypeEnum.WINDOWS.toString().equalsIgnoreCase(osType)) {
             //todo
             LOGGER.error("don't support this os {}",osType);
@@ -39,7 +41,9 @@ public class SystemService {
     }
     public String getUseMEMInfo(){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)){
-            String result = SystemUtil.linuxCmd("sh", "-c", "free|grep Mem|awk '{pring $2\" \"$3}'");
+            String result = SystemUtil.linuxCmd("sh", "-c", "free|grep Mem|awk '{print $2\" \"$3}'");
+            LOGGER.debug("getUseMEMInfo = {}",result);
+
             String[] results = result.split(" ");
             DecimalFormat decimalFormat=new DecimalFormat(".00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
             Double value = Double.valueOf(results[0])/Double.valueOf(results[1]);
@@ -59,10 +63,11 @@ public class SystemService {
     }
     public Long getRuntime(){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)){
-            String result = SystemUtil.linuxCmd("sh", "-c", "who -b|awk '{pring $3\" \"$4}'");
+            String result = SystemUtil.linuxCmd("sh", "-c", "who -r|awk '{print $3\" \"$4}'");
+            LOGGER.debug("getRuntime = {}",result);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
             try {
-               Date bootDate = simpleDateFormat.parse(result);
+               Date bootDate = simpleDateFormat.parse(result.trim());
                 Date date = new Date();
                 Long min = (date.getTime()-bootDate.getTime())/(60*1000);
                 return min;
@@ -169,6 +174,7 @@ public class SystemService {
         progress = progress.replaceFirst(firstChar, "[" +firstChar+"]");
         String cmd = "ps aux|grep "+progress+"|awk '{print $3 \" \" $4 \" \" $10}'";
         String result = SystemUtil.linuxCmd("sh","-c",cmd);
+        LOGGER.debug("getLinuxProgressInfo {} {}",progress,result);
         if(result==null){
             return null;
         }

@@ -1,5 +1,7 @@
 package com.fortinet.fcasb.watcher.monitor.domain;
 
+import com.fortinet.fcasb.watcher.monitor.utils.StringUtil;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,39 @@ public class Statistics implements Serializable{
     private String filter;
     private String time;
     private String value;
+
+    //system info
+    private String timestamp;
+    private String hostname;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setTimestamp(){
+        this.timestamp = StringUtil.getLogTimestamp();
+    }
 
     @Override
     public String toString() {

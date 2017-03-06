@@ -24,15 +24,21 @@ import java.util.Date;
 public class InitDatabase {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitDatabase.class);
 
+
+
     @Value("${config.data.path}")
     private String dbPath;
 
     private final String CREATE_TABLE_STATISTICS_SQL = "" +
             "CREATE TABLE IF NOT EXISTS %s "+
-            " (type TEXT  NOT NULL, " +
+            " (" +
+            " timestamp TEXT  NOT NULL, " +
+            " name TEXT , " +
+            " hostname TEXT  NOT NULL, " +
+            " type TEXT  NOT NULL, " +
             " metrics TEXT NOT NULL, " +
             " time TEXT  DEFAULT CURRENT_TIME, " +
-            " filter TEXT NOT NULL, " +
+            " filter TEXT , " +
             " value TEXT);";
 
 

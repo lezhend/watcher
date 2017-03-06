@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false">
+<configuration debug="false" scan="true" >
 
 	<!-- console output -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -10,10 +10,10 @@
 	</appender>
 	<!--INFO logs：-->
 	<appender name="INFO_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/data/forticasb/logs/aws/info-web.log</file>
+        <file>/opt/monitor/logs/info-web.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!--logfile name -->
-            <fileNamePattern>/data/forticasb/logs/aws/info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/opt/monitor/logs/info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			<!--log file execute days-->
 			<MaxHistory>30</MaxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -25,12 +25,14 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
 	</appender>
-	<!--ERROR logs：-->
-	<appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/data/forticasb/logs/aws/error.log</file>
+
+
+    <!--STATISTICS logs：-->
+    <appender name="STATISTIC_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/opt/monitor/logs/statistics.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>/data/forticasb/logs/aws//error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/opt/monitor/logs/statistics-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>60</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!--log file max size-->
@@ -38,28 +40,39 @@
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %logger{50} %msg%n</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- only print error logs -->
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
+            <level>INFO</level>
+            <onMatch>monitor_statistic</onMatch>
         </filter>
-	</appender>
+    </appender>
 
-	<!--myibatis log configure-->
-    <logger name="com.apache.ibatis" level="TRACE"/>
-    <logger name="java.sql.Connection" level="DEBUG"/>
-    <logger name="java.sql.Statement" level="DEBUG"/>
-    <logger name="java.sql.PreparedStatement" level="DEBUG"/>
-    <logger name="com.fortinet.fcasb.watcher.monitor" level="DEBUG" />
+    <!--STATISTICS logs：-->
+    <appender name="STATISTIC_TO_KAFKA" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+        <encoder class="com.github.danielwegener.logback.kafka.encoding.LayoutKafkaMessageEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%msg%n</pattern>
+            </layout>
+        </encoder>
+        <topic>monitor_statistic</topic>
+        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.RoundRobinKeyingStrategy" />
+        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
+        <producerConfig>bootstrap.servers=54.146.234.240:9092,54.146.234.240:9092,52.90.52.18:9092,107.22.28.126:9092</producerConfig>
+    </appender>
+    <appender name="ASYNC_STATISTIC_TO_KAFKA" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STATISTIC_TO_KAFKA" />
+    </appender>
 
 	<!-- Log output level -->
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="INFO_FILE" />
-		<appender-ref ref="ERROR_FILE" />
 	</root>
 	<!--项目内代码日志级别(尽量设置为debug，可以打印dao层sql的详细日志)-->
-	<logger name="com.fortinet.fcasb.watcher.monitor" level="DEBUG"/>
+	<logger name="com.fortinet.fcasb.watcher.monitor" level="INFO"/>
+    <logger name="monitor_statistic" level="INFO" >
+        <appender-ref ref="STATISTIC_FILE"/>
+        <appender-ref ref="ASYNC_STATISTIC_TO_KAFKA"/>
+    </logger>
 </configuration>

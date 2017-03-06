@@ -27,11 +27,11 @@ public class ManageTask implements ITask, Runnable {
     @Override
     public void run() {
         Statistics statistics = getInfo();
-        execute(statistics);
+        execute();
     }
 
     @Override
-    public void execute(Statistics statistics){
+    public void execute(){
         statisticsDao.dropTable(new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000));
         initDatabase.createDayTables();
     }
