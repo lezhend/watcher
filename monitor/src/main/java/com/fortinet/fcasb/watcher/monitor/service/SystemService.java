@@ -24,7 +24,7 @@ public class SystemService {
 
     public String getUseCPUInfo(){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)){
-           String result =  SystemUtil.linuxCmd("sh","-c","mpstat|grep all|awk '{print $4}'");
+           String result =  SystemUtil.linuxCmd("sh","-c","mpstat|grep all|awk '{print $3}'");
             LOGGER.debug("getUseCPUInfo = {}",result);
            return result;
         } else if(OSTypeEnum.WINDOWS.toString().equalsIgnoreCase(osType)) {
@@ -149,14 +149,14 @@ public class SystemService {
         }
         return null;
     }
-    public Boolean progressIsRun(String progress){
+    public String progressIsRun(String progress){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)
                 || OSTypeEnum.MAC_OS.toString().equalsIgnoreCase(osType)){
             String[] results = getLinuxProgressInfo(progress);
             if(results==null){
-                return false;
+                return "0";
             }
-            return true;
+            return "1";
 
         } else if(OSTypeEnum.WINDOWS.toString().equalsIgnoreCase(osType)) {
             //todo
@@ -166,7 +166,7 @@ public class SystemService {
             //todo
             LOGGER.error("don't support this os {}",osType);
         }
-        return false;
+        return "0";
     }
 
     private String[] getLinuxProgressInfo(String progress){

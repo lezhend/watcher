@@ -80,8 +80,7 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
                 statistics.setValue("0");
             }
         } else if(this.metrics.equals(Statistics.Metrics.PROGRESS.IS_RUNNING)){
-            Boolean value = systemService.progressIsRun(this.processFilter);
-            statistics.setValue(value.toString());
+            statistics.setValue(systemService.progressIsRun(this.processFilter));
         } else{
             statistics = null;
         }
