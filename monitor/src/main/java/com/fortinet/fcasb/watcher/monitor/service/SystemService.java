@@ -137,7 +137,19 @@ public class SystemService {
             if(results==null){
                 return null;
             }
-            return results[2];
+            //11-08:44:57
+            String etime=results[2];
+            int day = 0;
+            int mins=0;
+            if(etime.contains("-")){
+                String[] etimes=etime.split("-");
+                day = Integer.valueOf(etimes[0]);
+                etime = etimes[1];
+            }
+            String[] etimes=etime.split(":");
+            mins=day*24*60+Integer.valueOf(etimes[0])*60+Integer.valueOf(etimes[1]);
+
+            return String.valueOf(mins);
 
         } else if(OSTypeEnum.WINDOWS.toString().equalsIgnoreCase(osType)) {
             //todo
@@ -172,7 +184,7 @@ public class SystemService {
     private String[] getLinuxProgressInfo(String progress){
         String firstChar = progress.substring(0, 1);
         progress = progress.replaceFirst(firstChar, "[" +firstChar+"]");
-        String cmd = "ps aux|grep "+progress+"|awk '{print $3 \" \" $4 \" \" $10}'";
+        String cmd ="ps -eo pcpu,pmem,etime,args|grep "+progress+"|awk '{print $1,$2,$3}'";
         String result = SystemUtil.linuxCmd("sh","-c",cmd);
         LOGGER.debug("getLinuxProgressInfo {} {}",progress,result);
         if(result==null){
