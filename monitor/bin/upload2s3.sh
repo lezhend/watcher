@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "=============="$WORKSPACE"=============="
-aws s3 cp $1/monitor/target/monitor-1.0.jar s3://fcasb-data/devops/monitor/package/$BUILD_TAG/
+echo "$1=$WORKSPACE $2=BUILD_TAG"
+aws s3 cp $1/monitor/target/monitor-1.0.jar s3://fcasb-data/devops/monitor/package/$2/
 aws s3 cp $1/monitor/target/monitor-1.0.jar s3://fcasb-data/devops/monitor/package/
 aws s3 cp $1/monitor/bin/server.sh s3://fcasb-data/devops/monitor/bin/server.sh
 aws s3 cp $1/monitor/bin/install.sh s3://fcasb-data/devops/monitor/install.sh
