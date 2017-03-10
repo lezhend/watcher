@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "=============="$WORKSPACE"=============="
-echo "$1=$WORKSPACE $2=BUILD_TAG"
+echo "==============Build module [Monitor]=============="
+mvn clean package -f $1/monitor/pom.xml
 aws s3 cp $1/monitor/target/monitor-1.0.jar s3://fcasb-data/devops/monitor/package/$2/
 aws s3 cp $1/monitor/target/monitor-1.0.jar s3://fcasb-data/devops/monitor/package/
 aws s3 cp $1/monitor/bin/server.sh s3://fcasb-data/devops/monitor/bin/server.sh
