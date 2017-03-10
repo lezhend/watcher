@@ -1,5 +1,5 @@
 #!/bin/bash
-PRO_NAME="monitor"
+PRO_NAME="alert"
 VER_NAME="1.0"
 echo "Build module ["$PRO_NAME $VER_NAME"]=============="
 

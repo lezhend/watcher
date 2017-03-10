@@ -10,6 +10,7 @@
 
 	<modules>
         <module>monitor</module>
+        <module>alert</module>
     </modules>
 
 

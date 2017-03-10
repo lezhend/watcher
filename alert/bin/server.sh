@@ -1,7 +1,7 @@
 #!/bin/bash
-PRO_NAME="monitor"
+PRO_NAME="alert"
 VER_NAME="1.0"
-PS_NAME="[m]onitor"
+PS_NAME="[a]lert"
 
 stop(){
   echo "Stop $PRO_NAME ..."
