@@ -24,14 +24,23 @@ upgrade(){
 	start
 }
 
-if [ "$1" == "start" ]; then
-   start
-elif [ "$1" == "stop" ]; then
-   stop
-elif [ "$1" == "restart" ]; then
-   restart
-elif [ "$1" == "upgrade" ]; then
-   upgrade
-else
-   echo "e.g. $0 start|stop|restart|upgrade"
-fi
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    restart
+    ;;
+  upgrade)
+    upgrade
+    RETVAL=$?
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart|upgrade}"
+    RETVAL=1
+esac
+exit $RETVAL
