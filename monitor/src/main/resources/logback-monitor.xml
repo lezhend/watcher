@@ -10,7 +10,7 @@
 	</appender>
 	<!--INFO logs：-->
 	<appender name="INFO_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/opt/monitor/logs/info-web.log</file>
+        <file>/opt/monitor/logs/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!--logfile name -->
             <fileNamePattern>/opt/monitor/logs/info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>

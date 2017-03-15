@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" >
+
+	<!-- console output -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--Format：%d datetime，%thread threadname，%-5level：level display weight from left  %msg：log context，%n -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<!--INFO logs：-->
+	<appender name="INFO_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/opt/alert/logs/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!--logfile name -->
+            <fileNamePattern>/opt/alert/logs/info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<!--log file execute days-->
+			<MaxHistory>30</MaxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!--log file max size-->
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+	</appender>
+
+	<!-- Log output level -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="INFO_FILE" />
+	</root>
+	<!--项目内代码日志级别(尽量设置为debug，可以打印dao层sql的详细日志)-->
+	<logger name="com.fortinet.fcasb.watcher.alert" level="INFO"/>
+
+</configuration>
