@@ -2,6 +2,10 @@ package com.fortinet.fcasb.watcher.alert.init;
 
 
 import ch.qos.logback.ext.spring.LogbackConfigurer;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +18,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 /**
@@ -47,6 +53,11 @@ public class CommonConfig {
     private @Value("${mail.smtp.auth}") String auth;
     private @Value("${mail.smtp.timeout}") int timeout;
 
+
+    private @Value("${es.transport.client.host}") String esHost;
+    private @Value("${es.transport.client.port}") int esPort;
+    private @Value("${es.cluster.name}") int esClusterName;
+
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
         return new ThreadPoolTaskScheduler();
@@ -61,6 +72,18 @@ public class CommonConfig {
         }
         return LOGGER;
     }
+
+    @Bean
+    public TransportClient esClient() throws UnknownHostException {
+        Settings settings =Settings.builder()
+                .put("cluster.name",esClusterName)
+                .build()
+                ;
+        TransportClient client = new PreBuiltTransportClient(settings)
+                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(esHost), esPort));
+        return client;
+    }
+
 
     @Bean
     public JavaMailSender javaMailSender() {

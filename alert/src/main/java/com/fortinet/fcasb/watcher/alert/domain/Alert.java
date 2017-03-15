@@ -147,10 +147,10 @@ public class Alert implements Serializable{
     }
 
     enum ALERT_CONDITION{
-        LT("lt"),
-        EQ("eq"),
-        GT("gt"),
-        CONTAINS("contains");
+        LT("<"),
+        EQ(">"),
+        GT("="),
+        CONTAINS("in");
         private String value;
 
         ALERT_CONDITION(String value){

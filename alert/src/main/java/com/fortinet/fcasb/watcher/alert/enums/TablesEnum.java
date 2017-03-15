@@ -5,6 +5,7 @@ package com.fortinet.fcasb.watcher.alert.enums;
  */
 public enum  TablesEnum {
     ALERT("alert"),
+    ALERT_LOG("alert_log"),
     STATISTICS("statistics");
 
     private String tableName;

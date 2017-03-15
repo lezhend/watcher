@@ -42,7 +42,7 @@ public class InitDatabase {
      private String createtime;
      private String notifications; //通知
      */
-    private final String CREATE_TABLE_STATISTICS_SQL = "" +
+    private final String CREATE_TABLE_ALERT_SQL = "" +
             "CREATE TABLE IF NOT EXISTS  "+ TablesEnum.ALERT.getTablename()+
             " (" +
             " index TEXT  NOT NULL, " +
@@ -61,6 +61,14 @@ public class InitDatabase {
             " updatetime TEXT , " +
             " notifications TEXT);";
 
+    private final String CREATE_TABLE_ALERT_LOG_SQL = "" +
+            "CREATE TABLE IF NOT EXISTS  "+ TablesEnum.ALERT_LOG.getTablename()+
+            " (" +
+            " name TEXT NOT NULL, " +
+            " content TEXT , " +
+            " createtime TEXT , " +
+            " notifications TEXT);";
+
 
     private static Connection connect = null;
 
@@ -72,14 +80,15 @@ public class InitDatabase {
             throw new RuntimeException("init database resource error!!!");
         }
 
-        createStatisticsTables();
+        createAlertTables();
+        createAlertLogTables();
     }
 
     private void initConnect() {
         if(connect==null) {
             try {
                 Class.forName("org.sqlite.JDBC");
-                connect = DriverManager.getConnection("jdbc:sqlite:" + dbPath + "/monitor.db");
+                connect = DriverManager.getConnection("jdbc:sqlite:" + dbPath + "/alert.db");
             }catch (Exception ex){
                 ex.printStackTrace();
                 LOGGER.error(ex.toString());
@@ -95,12 +104,37 @@ public class InitDatabase {
         return connect;
     }
 
-    public void createStatisticsTables(){
+    public void createAlertTables(){
         if(connect!=null){
             Statement stmt = null;
             try {
                 stmt = connect.createStatement();
-                stmt.executeUpdate(CREATE_TABLE_STATISTICS_SQL);
+                stmt.executeUpdate(CREATE_TABLE_ALERT_SQL);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                LOGGER.error("create {} failed {}", TablesEnum.ALERT.getTablename(),e.toString());
+
+            } finally {
+                if(stmt!=null){
+                    try {
+                        stmt.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        LOGGER.error(e.toString());
+                        LOGGER.error("create {} failed {}",TablesEnum.ALERT.getTablename(),e.toString());
+                    }
+                }
+            }
+
+        }
+
+    }
+    public void createAlertLogTables(){
+        if(connect!=null){
+            Statement stmt = null;
+            try {
+                stmt = connect.createStatement();
+                stmt.executeUpdate(CREATE_TABLE_ALERT_LOG_SQL);
             } catch (SQLException e) {
                 e.printStackTrace();
                 LOGGER.error("create {} failed {}", TablesEnum.ALERT.getTablename(),e.toString());

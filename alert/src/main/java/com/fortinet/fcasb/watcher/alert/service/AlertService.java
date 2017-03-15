@@ -1,7 +1,9 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
 import com.fortinet.fcasb.watcher.alert.dao.AlertDao;
+import com.fortinet.fcasb.watcher.alert.dao.AlertLogDao;
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
+import com.fortinet.fcasb.watcher.alert.domain.AlertLog;
 import com.fortinet.fcasb.watcher.alert.domain.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,11 @@ public class AlertService {
 
     @Autowired
     private AlertDao alertDao;
+    @Autowired
+    private AlertLogDao alertLogDao;
+
+    @Autowired
+    private ESService esService;
 
     @PostConstruct
     public void init(){
@@ -33,7 +40,19 @@ public class AlertService {
 
     public boolean isTarget(Alert alert){
         //todo
+        Object response =  esService.search(alert);
+        //判断数量是否匹配，如果匹配进行value比对
 
+        //value比对成功或者value为空表示命中否则返回false
+
+        //命中后alertLog 写入
+        if(false) {
+            AlertLog alertLog = new AlertLog();
+            alertLog.setName(alert.getName());
+            alertLog.setContent(response.toString());
+            alertLog.setNotifications(alert.getNotifications());
+            alertLogDao.insert(alertLog);
+        }
         return false;
     }
 
@@ -51,6 +70,23 @@ public class AlertService {
     public Result<List<Alert>> find(){
         List<Alert> alertList = alertDao.find();
         Result<List<Alert>> result = new Result<>();
+        result.setCode(0);
+        result.setMsg("ok");
+        result.setData(alertList);
+        return result;
+    }
+
+    public Result<List<AlertLog>> findLogs(){
+        List<AlertLog> alertList = alertLogDao.find();
+        Result<List<AlertLog>> result = new Result<>();
+        result.setCode(0);
+        result.setMsg("ok");
+        result.setData(alertList);
+        return result;
+    }
+    public Result<List<AlertLog>> findLogsByName(String name){
+        List<AlertLog> alertList = alertLogDao.get(name);
+        Result<List<AlertLog>> result = new Result<>();
         result.setCode(0);
         result.setMsg("ok");
         result.setData(alertList);
