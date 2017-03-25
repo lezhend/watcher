@@ -30,7 +30,7 @@ import java.util.Properties;
 })
 @PropertySource(value = {
 //        "classpath:/alert.properties",
-        "file:/Users/zliu/fortinet/sources/watcher/alert/src/main/resources/alert.properties"
+        "file:/opt/alert/alert.properties"
 }, ignoreResourceNotFound = true)
 @Configuration
 public class CommonConfig {
