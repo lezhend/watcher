@@ -52,7 +52,7 @@ public class AlertService {
             resultTarget.setCount(response.getTotalHits());
             resultTarget.setAlert(alert);
             if(StringUtils.isNumeric(alert.getConditioncount())){
-                 if(response.getTotalHits()>Integer.valueOf(alert.getConditioncount())){
+                 if(response.getTotalHits()>=Integer.valueOf(alert.getConditioncount())){
                      isTarg = true;
                  }
             } else {
@@ -64,14 +64,14 @@ public class AlertService {
                             if (StringUtils.isNotBlank(alert.getField())) {
                                 if (key.equalsIgnoreCase(alert.getField())) {
                                     if (values.get(key) != null && StringUtils.isNumeric(values.get(key).toString()) && StringUtils.isNumeric(alert.getConditionvalue())) {
-                                        if (Long.valueOf(values.get(key).toString()) > Long.valueOf(alert.getConditionvalue())) {
+                                        if (Long.valueOf(values.get(key).toString()) >= Long.valueOf(alert.getConditionvalue())) {
                                             isTarg = true;
                                             value = values.get(key).toString();
                                             break;
                                         }
                                     } else {
                                         if (values.get(key) != null) {
-                                            if (alert.getConditionvalue().compareToIgnoreCase(values.get(key).toString()) < 0) {
+                                            if (alert.getConditionvalue().compareToIgnoreCase(values.get(key).toString()) <= 0) {
                                                 isTarg = true;
                                                 value = values.get(key).toString();
                                                 break;
