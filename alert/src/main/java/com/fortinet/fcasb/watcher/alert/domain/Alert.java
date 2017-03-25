@@ -2,6 +2,7 @@ package com.fortinet.fcasb.watcher.alert.domain;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by zliu on 17/3/3.
@@ -12,7 +13,7 @@ public class Alert implements Serializable{
 
     private String index;         //index name
     private String name;          //alertName
-    private HashMap<String,String> filter;        //search condition   field,key
+    private Map<String,String> filter;        //search condition   field,key
     private String searchkey;        //search condition
     private String field;         //get field value
 
@@ -55,7 +56,7 @@ public class Alert implements Serializable{
         this.index = index;
     }
 
-    public HashMap<String, String> getFilter() {
+    public Map<String, String> getFilter() {
         return filter;
     }
 

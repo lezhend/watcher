@@ -9,11 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by zliu on 17/3/3.
@@ -41,12 +46,21 @@ public class AlertDao {
         alert.setUpdatetime(alert.getCreatetime());
         String sql = "INSERT INTO {0} (indexName,name,searchkey,filter,field,conditioncount,conditionvalue,createtime,updatetime,notifications)" +
                 " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\")";
-        Date date = new Date();
+        String strFilter="";
+        if(alert.getFilter()!=null){
+            strFilter = URLEncoder.encode(JSON.toJSONString(alert.getFilter()));
+        }
         sql = MessageFormat.format(sql,TablesEnum.ALERT.getTablename(),
-                alert.getIndex(),alert.getName(),alert.getSearchkey(),JSON.toJSONString(alert.getFilter()),
-                alert.getField(),alert.getConditioncount(),alert.getConditionvalue(),
-                alert.getCreatetime(),
-                alert.getUpdatetime(),alert.getNotifications());
+                alert.getIndex(),
+                alert.getName(),
+                alert.getSearchkey()==null?"":alert.getSearchkey(),
+                strFilter,
+                alert.getField()==null?"":alert.getField(),
+                alert.getConditioncount()==null?"":alert.getConditioncount(),
+                alert.getConditionvalue()==null?"":alert.getConditionvalue(),
+                alert.getCreatetime()==null?"":alert.getCreatetime(),
+                alert.getUpdatetime()==null?"":alert.getUpdatetime(),
+                alert.getNotifications()==null?"":alert.getNotifications());
         Statement statement = null;
         try {
             statement = initDatabase.getConnect().createStatement();
@@ -70,11 +84,20 @@ public class AlertDao {
         String sql = "UPDATE \"{0}\" SET indexName=\"{1}\",searchkey=\"{2}\",filter=\"{3}\",field=\"{4}\"," +
                 "conditioncount=\"{5}\",conditionvalue=\"{6}\",updatetime=\"{7}\",notifications=\"{8}\" " +
                 "WHERE name=\"{9}\"";
-        Date date = new Date();
+        String strFilter="";
+        if(alert.getFilter()!=null){
+            strFilter = URLEncoder.encode(JSON.toJSONString(alert.getFilter()));
+        }
         sql = MessageFormat.format(sql,TablesEnum.ALERT.getTablename(),
-                alert.getIndex(),alert.getSearchkey(),JSON.toJSON(alert.getFilter()),
-                alert.getField(),alert.getConditioncount(),alert.getConditionvalue(),
-                alert.getUpdatetime(),alert.getNotifications(),alert.getName());
+                alert.getIndex(),
+                alert.getSearchkey()==null?"":alert.getSearchkey(),
+                strFilter,
+                alert.getField()==null?"":alert.getField(),
+                alert.getConditioncount()==null?"":alert.getConditioncount(),
+                alert.getConditionvalue()==null?"":alert.getConditionvalue(),
+                alert.getUpdatetime()==null?"":alert.getUpdatetime(),
+                alert.getNotifications()==null?"":alert.getNotifications(),
+                alert.getName());
         Statement statement = null;
         try {
             statement = initDatabase.getConnect().createStatement();
@@ -102,21 +125,7 @@ public class AlertDao {
             statement = initDatabase.getConnect().createStatement();
             rs = statement.executeQuery(sql);
             while ( rs.next() ) {
-                Alert alert = new Alert();
-                alert.setIndex(rs.getString("indexName"));
-                alert.setName(rs.getString("name"));
-                alert.setSearchkey(rs.getString("searchkey"));
-                String filter = rs.getString("filter");
-                if(!StringUtils.isEmpty(filter)){
-                    alert.setFilter(JSON.parseObject(filter, HashMap.class));
-                }
-                alert.setField(rs.getString("field"));
-                alert.setConditioncount(rs.getString("conditioncount"));
-                alert.setConditionvalue(rs.getString("conditionvalue"));
-                alert.setCreatetime(rs.getString("createtime"));
-                alert.setUpdatetime(rs.getString("updatetime"));
-                alert.setNotifications(rs.getString("notifications"));
-                return alert;
+                return trans(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,21 +157,7 @@ public class AlertDao {
             statement = initDatabase.getConnect().createStatement();
             rs = statement.executeQuery(sql);
             while ( rs.next() ) {
-                Alert alert = new Alert();
-                alert.setIndex(rs.getString("indexName"));
-                alert.setName(rs.getString("name"));
-                alert.setSearchkey(rs.getString("searchkey"));
-                String filter = rs.getString("filter");
-                if(!StringUtils.isEmpty(filter)){
-                    alert.setFilter(JSON.parseObject(filter, HashMap.class));
-                }
-                alert.setField(rs.getString("field"));
-                alert.setConditioncount(rs.getString("conditioncount"));
-                alert.setConditionvalue(rs.getString("conditionvalue"));
-                alert.setCreatetime(rs.getString("createtime"));
-                alert.setUpdatetime(rs.getString("updatetime"));
-                alert.setNotifications(rs.getString("notifications"));
-                alertList.add(alert);
+                alertList.add(trans(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -246,6 +241,24 @@ public class AlertDao {
         return false;
     }
 
+
+    private Alert trans(ResultSet rs) throws SQLException {
+        Alert alert = new Alert();
+        alert.setIndex(rs.getString("indexName")==null?"":rs.getString("indexName"));
+        alert.setName(rs.getString("name")==null?"":rs.getString("name"));
+        alert.setSearchkey(rs.getString("searchkey")==null?"":rs.getString("searchkey"));
+        String filter = rs.getString("filter")==null?"":rs.getString("filter");
+        if(!StringUtils.isEmpty(filter)){
+            alert.setFilter(JSON.parseObject(URLDecoder.decode(filter), HashMap.class));
+        }
+        alert.setField(rs.getString("field")==null?"":rs.getString("field"));
+        alert.setConditioncount(rs.getString("conditioncount")==null?"":rs.getString("conditioncount"));
+        alert.setConditionvalue(rs.getString("conditionvalue")==null?"":rs.getString("conditionvalue"));
+        alert.setCreatetime(rs.getString("createtime")==null?"":rs.getString("createtime"));
+        alert.setUpdatetime(rs.getString("updatetime")==null?"":rs.getString("updatetime"));
+        alert.setNotifications(rs.getString("notifications")==null?"":rs.getString("notifications"));
+        return alert;
+    }
 
 
 }
