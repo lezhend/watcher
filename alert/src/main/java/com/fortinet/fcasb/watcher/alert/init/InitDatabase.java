@@ -45,18 +45,13 @@ public class InitDatabase {
     private final String CREATE_TABLE_ALERT_SQL = "" +
             "CREATE TABLE IF NOT EXISTS  "+ TablesEnum.ALERT.getTablename()+
             " (" +
-            " index TEXT  NOT NULL, " +
+            " indexName TEXT  NOT NULL, " +
             " name TEXT NOT NULL, " +
+            " searchkey TEXT , " +
             " filter TEXT , " +
             " field TEXT , " +
-            " fvalue TEXT , " +
-            " regex TEXT , " +
-            " value TEXT  " +
-            " count TEXT , " +
             " conditioncount TEXT , " +
             " conditionvalue TEXT , " +
-            " thresholdcount TEXT , " +
-            " thresholdvalue TEXT , " +
             " createtime TEXT , " +
             " updatetime TEXT , " +
             " notifications TEXT);";
@@ -97,7 +92,7 @@ public class InitDatabase {
     }
 
 
-    public static Connection getConnect(){
+    public Connection getConnect(){
         if(connect==null){
             throw new RuntimeException("connnect is null");
         }

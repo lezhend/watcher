@@ -29,8 +29,8 @@ import java.util.Properties;
         "com.fortinet.fcasb.watcher.alert"
 })
 @PropertySource(value = {
-//        "classpath:./monitor.properties",
-        "file:/opt/alert/alert.properties"
+//        "classpath:/alert.properties",
+        "file:/Users/zliu/fortinet/sources/watcher/alert/src/main/resources/alert.properties"
 }, ignoreResourceNotFound = true)
 @Configuration
 public class CommonConfig {
@@ -56,7 +56,7 @@ public class CommonConfig {
 
     private @Value("${es.transport.client.host}") String esHost;
     private @Value("${es.transport.client.port}") int esPort;
-    private @Value("${es.cluster.name}") int esClusterName;
+    private @Value("${es.cluster.name}") String esClusterName;
 
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
@@ -77,6 +77,7 @@ public class CommonConfig {
     public TransportClient esClient() throws UnknownHostException {
         Settings settings =Settings.builder()
                 .put("cluster.name",esClusterName)
+//                .put("client.transport.sniff",true)
                 .build()
                 ;
         TransportClient client = new PreBuiltTransportClient(settings)

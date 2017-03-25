@@ -4,6 +4,7 @@ import com.fortinet.fcasb.watcher.alert.domain.AlertLog;
 import com.fortinet.fcasb.watcher.alert.enums.TablesEnum;
 import com.fortinet.fcasb.watcher.alert.init.InitDatabase;
 import com.fortinet.fcasb.watcher.alert.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
@@ -33,6 +34,8 @@ import java.util.List;
  */
 @Component
 public class AlertLogDao {
+    @Autowired
+    private InitDatabase initDatabase;
     public void insert(AlertLog alertLog){
         alertLog.setCreatetime(StringUtil.getTableDate(new Date()));
         String sql = "INSERT INTO {0} (name,content,createtime,notifications)" +
@@ -42,7 +45,7 @@ public class AlertLogDao {
                 alertLog.getName(),alertLog.getContent(),alertLog.getCreatetime(),alertLog.getNotifications());
         Statement statement = null;
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             statement.execute(sql);
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +70,7 @@ public class AlertLogDao {
         ResultSet rs = null;
         List<AlertLog> alertLogList = new ArrayList<>();
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             rs = statement.executeQuery(sql);
             while ( rs.next() ) {
                 AlertLog alert = new AlertLog();
@@ -105,7 +108,7 @@ public class AlertLogDao {
         ResultSet rs = null;
         List<AlertLog> alertLogList = new ArrayList<>();
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             rs = statement.executeQuery(sql);
             while ( rs.next() ) {
                 AlertLog alert = new AlertLog();
@@ -142,7 +145,7 @@ public class AlertLogDao {
         Statement statement = null;
         ResultSet rs = null;
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             return statement.execute(sql);
 
         } catch (Exception e) {

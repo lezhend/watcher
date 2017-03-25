@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by zliu on 17/3/3.
  */
@@ -21,9 +23,14 @@ public class AlertTask  implements Runnable {
     private EmailService emailService;
 
     public void execute(){
-        for (Alert alert:alertService.getAlertList()){
-            if(alertService.isTarget(alert)){
-                emailService.sendAlert(alert);
+        List<Alert> alertList =alertService.getAlertList();
+        LOGGER.info("alert running {}",alertList.size());
+        for (Alert alert:alertList){
+            LOGGER.info("alert {}",alert.getName());
+            AlertService.ResultTarget resultTarget = alertService.isTarget(alert);
+            if(resultTarget.isTarget()){
+                LOGGER.warn("alert target {}",resultTarget.isTarget());
+                emailService.sendAlert(resultTarget.getAlert(),resultTarget.getValue(),resultTarget.getCount());
             }
         }
     }

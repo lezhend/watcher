@@ -6,8 +6,6 @@ import com.fortinet.fcasb.watcher.alert.service.AlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
-
 /**
  * Created by zliu on 17/3/3.
  */
@@ -17,22 +15,26 @@ public class AlertController {
     @Autowired
     private AlertService alertService;
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public String getName(@RequestParam("name") String name){
+    @RequestMapping(value = "/get/{name}", method = RequestMethod.GET)
+    public String getName(@PathVariable("name") String name){
         return JSONObject.toJSONString(alertService.get(name));
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.PUT)
-    public String save(@PathParam("name") String name,@RequestBody Alert alert){
+    public String save(@PathVariable("name") String name,@RequestBody Alert alert){
         return JSONObject.toJSONString(alertService.save(alert));
     }
     @RequestMapping(value = "/{name}", method = RequestMethod.POST)
-    public String update(@PathParam("name") String name,@RequestBody Alert alert){
+    public String update(@PathVariable("name") String name,@RequestBody Alert alert){
         return JSONObject.toJSONString(alertService.update(alert));
+    }
+    @RequestMapping(value = "/refresh", method = RequestMethod.POST)
+    public String update(){
+        return JSONObject.toJSONString(alertService.refreshAlertList());
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
-    public String update(@PathParam("name") String name){
+    public String update(@PathVariable("name") String name){
         return JSONObject.toJSONString(alertService.delete(name));
     }
 
@@ -46,7 +48,7 @@ public class AlertController {
     }
 
     @RequestMapping(value = "/list/logs/{name}", method = RequestMethod.GET)
-    public String listLogs(@PathParam("name")String name){
+    public String listLogs(@PathVariable("name")String name){
         return JSONObject.toJSONString(alertService.findLogsByName(name));
     }
 }

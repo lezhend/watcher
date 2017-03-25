@@ -1,18 +1,19 @@
 package com.fortinet.fcasb.watcher.alert.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
 import com.fortinet.fcasb.watcher.alert.enums.TablesEnum;
 import com.fortinet.fcasb.watcher.alert.init.InitDatabase;
 import com.fortinet.fcasb.watcher.alert.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by zliu on 17/3/3.
@@ -33,21 +34,22 @@ import java.util.List;
  */
 @Component
 public class AlertDao {
+    @Autowired
+    private InitDatabase initDatabase;
     public void insert(Alert alert){
         alert.setCreatetime(StringUtil.getTableDate(new Date()));
         alert.setUpdatetime(alert.getCreatetime());
-        String sql = "INSERT INTO {0} (index,name,filter,field,fvalue,regex,value,count,conditioncount,conditionvalue,thresholdcount,thresholdvalue,createtime,updatetime,notifications)" +
-                " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\")";
+        String sql = "INSERT INTO {0} (indexName,name,searchkey,filter,field,conditioncount,conditionvalue,createtime,updatetime,notifications)" +
+                " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\")";
         Date date = new Date();
         sql = MessageFormat.format(sql,TablesEnum.ALERT.getTablename(),
-                alert.getIndex(),alert.getName(),alert.getFilter(),
-                alert.getField(),alert.getFvalue(),alert.getRegex(),
-                alert.getValue(),alert.getCount(),alert.getConditioncount(),alert.getConditionvalue(),
-                alert.getThresholdcount(),alert.getThresholdvalue(),alert.getCreatetime(),
+                alert.getIndex(),alert.getName(),alert.getSearchkey(),JSON.toJSONString(alert.getFilter()),
+                alert.getField(),alert.getConditioncount(),alert.getConditionvalue(),
+                alert.getCreatetime(),
                 alert.getUpdatetime(),alert.getNotifications());
         Statement statement = null;
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             statement.execute(sql);
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,19 +67,17 @@ public class AlertDao {
 
     public void update(Alert alert){
         alert.setUpdatetime(StringUtil.getTableDate(new Date()));
-        String sql = "UPDATE {0} SET index={1},filter={2},field={3},fvalue={4},regex={5},value={6},count={7}," +
-                "conditioncount={8},conditionvalue={9},thresholdcount={10},thresholdvalue={11},updatetime={12},notifications={13} " +
-                "WHERE name={14}";
+        String sql = "UPDATE \"{0}\" SET indexName=\"{1}\",searchkey=\"{2}\",filter=\"{3}\",field=\"{4}\"," +
+                "conditioncount=\"{5}\",conditionvalue=\"{6}\",updatetime=\"{7}\",notifications=\"{8}\" " +
+                "WHERE name=\"{9}\"";
         Date date = new Date();
         sql = MessageFormat.format(sql,TablesEnum.ALERT.getTablename(),
-                alert.getIndex(),alert.getFilter(),
-                alert.getField(),alert.getFvalue(),alert.getRegex(),
-                alert.getValue(),alert.getCount(),alert.getConditioncount(),alert.getConditionvalue(),
-                alert.getThresholdcount(),alert.getThresholdvalue(),
+                alert.getIndex(),alert.getSearchkey(),JSON.toJSON(alert.getFilter()),
+                alert.getField(),alert.getConditioncount(),alert.getConditionvalue(),
                 alert.getUpdatetime(),alert.getNotifications(),alert.getName());
         Statement statement = null;
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             statement.execute(sql);
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,22 +99,20 @@ public class AlertDao {
         Statement statement = null;
         ResultSet rs = null;
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             rs = statement.executeQuery(sql);
             while ( rs.next() ) {
                 Alert alert = new Alert();
-                alert.setIndex(rs.getString("index"));
+                alert.setIndex(rs.getString("indexName"));
                 alert.setName(rs.getString("name"));
-                alert.setFilter(rs.getString("filter"));
+                alert.setSearchkey(rs.getString("searchkey"));
+                String filter = rs.getString("filter");
+                if(!StringUtils.isEmpty(filter)){
+                    alert.setFilter(JSON.parseObject(filter, HashMap.class));
+                }
                 alert.setField(rs.getString("field"));
-                alert.setFvalue(rs.getString("fvalue"));
-                alert.setRegex(rs.getString("regex"));
-                alert.setValue(rs.getString("value"));
-                alert.setCount(rs.getString("count"));
                 alert.setConditioncount(rs.getString("conditioncount"));
                 alert.setConditionvalue(rs.getString("conditionvalue"));
-                alert.setThresholdcount(rs.getString("thresholdcount"));
-                alert.setThresholdvalue(rs.getString("thresholdvalue"));
                 alert.setCreatetime(rs.getString("createtime"));
                 alert.setUpdatetime(rs.getString("updatetime"));
                 alert.setNotifications(rs.getString("notifications"));
@@ -147,22 +145,20 @@ public class AlertDao {
         ResultSet rs = null;
         List<Alert> alertList = new ArrayList<>();
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             rs = statement.executeQuery(sql);
             while ( rs.next() ) {
                 Alert alert = new Alert();
-                alert.setIndex(rs.getString("index"));
+                alert.setIndex(rs.getString("indexName"));
                 alert.setName(rs.getString("name"));
-                alert.setFilter(rs.getString("filter"));
+                alert.setSearchkey(rs.getString("searchkey"));
+                String filter = rs.getString("filter");
+                if(!StringUtils.isEmpty(filter)){
+                    alert.setFilter(JSON.parseObject(filter, HashMap.class));
+                }
                 alert.setField(rs.getString("field"));
-                alert.setFvalue(rs.getString("fvalue"));
-                alert.setRegex(rs.getString("regex"));
-                alert.setValue(rs.getString("value"));
-                alert.setCount(rs.getString("count"));
                 alert.setConditioncount(rs.getString("conditioncount"));
                 alert.setConditionvalue(rs.getString("conditionvalue"));
-                alert.setThresholdcount(rs.getString("thresholdcount"));
-                alert.setThresholdvalue(rs.getString("thresholdvalue"));
                 alert.setCreatetime(rs.getString("createtime"));
                 alert.setUpdatetime(rs.getString("updatetime"));
                 alert.setNotifications(rs.getString("notifications"));
@@ -194,7 +190,7 @@ public class AlertDao {
         Statement statement = null;
         ResultSet rs = null;
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             rs = statement.executeQuery(sql);
             while ( rs.next() ) {
                 return rs.getInt("nums");
@@ -226,7 +222,7 @@ public class AlertDao {
         Statement statement = null;
         ResultSet rs = null;
         try {
-            statement = InitDatabase.getConnect().createStatement();
+            statement = initDatabase.getConnect().createStatement();
             return statement.execute(sql);
 
         } catch (Exception e) {

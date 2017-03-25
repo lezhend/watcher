@@ -69,7 +69,6 @@
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="INFO_FILE" />
 	</root>
-	<!--项目内代码日志级别(尽量设置为debug，可以打印dao层sql的详细日志)-->
 	<logger name="com.fortinet.fcasb.watcher.monitor" level="INFO"/>
     <logger name="monitor_statistic" level="INFO" >
         <appender-ref ref="STATISTIC_FILE"/>

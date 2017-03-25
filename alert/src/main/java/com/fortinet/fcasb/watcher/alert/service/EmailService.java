@@ -26,10 +26,10 @@ public class EmailService {
     private String notemmail;
 
 
-    public void sendAlert(Alert alert){
+    public void sendAlert(Alert alert,String value,long count){
         String title = alert.getName()+" "+alert.getIndex()+" Alert!!!";
-        String content = MessageFormat.format("Value {1} {2}, Count {3} {4}",alert.getConditionvalue(),alert.getThresholdvalue(),
-                alert.getConditioncount(),alert.getThresholdcount());
+        String content = MessageFormat.format("Value {1} > {2}, Count {3} > {4}",value,alert.getConditionvalue(),count,
+                alert.getConditioncount());
         String to = alert.getNotifications()+","+notemmail;
         LOGGER.info("title= {}",title);
         LOGGER.info("content= {}",content);
@@ -52,7 +52,9 @@ public class EmailService {
             messageHelper.setFrom(simpleMailMessage.getFrom());
             messageHelper.setSubject(title);
             messageHelper.setText(content,true);
-            messageHelper.setTo(to);
+            String[] mails = to.split(",");
+            messageHelper.setTo(mails);
+
             LOGGER.debug("ready to send a mail to [{}]", to);
             taskExecutor.execute(new Runnable() {
                 @Override

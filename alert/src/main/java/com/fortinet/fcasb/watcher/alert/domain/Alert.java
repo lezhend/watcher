@@ -1,6 +1,7 @@
 package com.fortinet.fcasb.watcher.alert.domain;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * Created by zliu on 17/3/3.
@@ -11,20 +12,24 @@ public class Alert implements Serializable{
 
     private String index;         //index name
     private String name;          //alertName
-    private String filter;        //search condition
-    private String field;         //get field
-    private String fvalue;        //field_value
-    private String regex;         //如果有值，直接匹配获取，根据正则提取一个值
-    private String value;         //after regex match to value
-    private String count;         //search count
+    private HashMap<String,String> filter;        //search condition   field,key
+    private String searchkey;        //search condition
+    private String field;         //get field value
+
     private String conditionvalue;      //alert condition >value
     private String conditioncount;      //alert condition >count
-    private String thresholdvalue;//
-    private String thresholdcount;//
 
     private String createtime;
     private String updatetime;
     private String notifications; //通知
+
+    public String getSearchkey() {
+        return searchkey;
+    }
+
+    public void setSearchkey(String searchkey) {
+        this.searchkey = searchkey;
+    }
 
     public String getUpdatetime() {
         return updatetime;
@@ -50,11 +55,11 @@ public class Alert implements Serializable{
         this.index = index;
     }
 
-    public String getFilter() {
+    public HashMap<String, String> getFilter() {
         return filter;
     }
 
-    public void setFilter(String filter) {
+    public void setFilter(HashMap<String, String> filter) {
         this.filter = filter;
     }
 
@@ -66,37 +71,7 @@ public class Alert implements Serializable{
         this.field = field;
     }
 
-    public String getFvalue() {
-        return fvalue;
-    }
 
-    public void setFvalue(String fvalue) {
-        this.fvalue = fvalue;
-    }
-
-    public String getRegex() {
-        return regex;
-    }
-
-    public void setRegex(String regex) {
-        this.regex = regex;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String getCount() {
-        return count;
-    }
-
-    public void setCount(String count) {
-        this.count = count;
-    }
 
     public String getConditionvalue() {
         return conditionvalue;
@@ -114,21 +89,6 @@ public class Alert implements Serializable{
         this.conditioncount = conditioncount;
     }
 
-    public String getThresholdvalue() {
-        return thresholdvalue;
-    }
-
-    public void setThresholdvalue(String thresholdvalue) {
-        this.thresholdvalue = thresholdvalue;
-    }
-
-    public String getThresholdcount() {
-        return thresholdcount;
-    }
-
-    public void setThresholdcount(String thresholdcount) {
-        this.thresholdcount = thresholdcount;
-    }
 
     public String getCreatetime() {
         return createtime;
