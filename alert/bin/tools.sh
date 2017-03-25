@@ -35,9 +35,9 @@ install(){
     aws s3 cp s3://fcasb-data/devops/alert/package/$PRO_NAME-$VER_NAME.jar /opt/$PRO_NAME/
 
     echo "Downloading alert config from S3...."
-    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/$PRO_NAM.properties /opt/$PRO_NAME/
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/$PRO_NAME.properties /opt/$PRO_NAME/
     aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/logback.xml /opt/$PRO_NAME/
-    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/bin/server.sh /opt/$PRO_NAME/
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/bin/tools.sh /opt/$PRO_NAME/
     chmod a+x /opt/$PRO_NAME/*.sh
     echo "Alert install complete!"
 
