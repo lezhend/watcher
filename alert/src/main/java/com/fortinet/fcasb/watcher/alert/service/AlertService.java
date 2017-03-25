@@ -1,6 +1,5 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
-import com.alibaba.fastjson.JSON;
 import com.fortinet.fcasb.watcher.alert.dao.AlertDao;
 import com.fortinet.fcasb.watcher.alert.dao.AlertLogDao;
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
@@ -95,7 +94,7 @@ public class AlertService {
         if(isTarg) {
             AlertLog alertLog = new AlertLog();
             alertLog.setName(alert.getName());
-            alertLog.setContent(JSON.toJSONString(response));
+            alertLog.setContent("");
             alertLog.setNotifications(alert.getNotifications());
             alertLogDao.insert(alertLog);
         }
