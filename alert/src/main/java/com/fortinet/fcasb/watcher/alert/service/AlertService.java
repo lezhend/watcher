@@ -57,6 +57,7 @@ public class AlertService {
                  }
             } else {
                 if (StringUtils.isNotBlank(alert.getField()) && StringUtils.isNotBlank(alert.getConditionvalue())) {
+                    String value = "";
                     for (SearchHit searchHitFields : response.getHits()) {
                         Map<String, Object> values = searchHitFields.getSource();
                         for (String key : values.keySet()) {
@@ -65,22 +66,24 @@ public class AlertService {
                                     if (values.get(key) != null && StringUtils.isNumeric(values.get(key).toString()) && StringUtils.isNumeric(alert.getConditionvalue())) {
                                         if (Long.valueOf(values.get(key).toString()) > Long.valueOf(alert.getConditionvalue())) {
                                             isTarg = true;
+                                            value = values.get(key).toString();
                                             break;
                                         }
                                     } else {
                                         if (values.get(key) != null) {
                                             if (alert.getConditionvalue().compareToIgnoreCase(values.get(key).toString()) < 0) {
                                                 isTarg = true;
+                                                value = values.get(key).toString();
                                                 break;
                                             }
                                         }
                                     }
-                                    resultTarget.setValue(String.valueOf(values.get(key)));
                                     break;
                                 }
                             }
                         }
                         if(isTarg){
+                            resultTarget.setValue(value);
                             break;
                         }
                     }

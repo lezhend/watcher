@@ -28,15 +28,17 @@ install(){
     echo "Alert start install"
     echo "mkdir alert home path ..."
     mkdir -p /opt/alert/logs
+    mkdir -p /opt/alert/config
+    mkdir -p /opt/alert/
 
     echo "Downloading alert from S3...."
-    aws s3 cp s3://fcasb-data/devops/alert/package/alert-1.0.jar /opt/alert/
+    aws s3 cp s3://fcasb-data/devops/alert/package/$PRO_NAME-$VER_NAME.jar /opt/$PRO_NAME/
 
     echo "Downloading alert config from S3...."
-    aws s3 cp s3://fcasb-data/devops/alert/config/monitor.properties /opt/alert/
-    aws s3 cp s3://fcasb-data/devops/alert/config/logback-monitor.xml /opt/alert/
-    aws s3 cp s3://fcasb-data/devops/alert/bin/server.sh /opt/alert/
-    chmod a+x /opt/alert/*.sh
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/$PRO_NAM.properties /opt/$PRO_NAME/
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/logback.xml /opt/$PRO_NAME/
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/bin/server.sh /opt/$PRO_NAME/
+    chmod a+x /opt/$PRO_NAME/*.sh
     echo "Alert install complete!"
 
 }
@@ -59,7 +61,7 @@ case "$1" in
     RETVAL=$?
     ;;
   *)
-    echo $"Usage: $0 {start|stop|restart|upgrade}"
+    echo $"Usage: $0 {install|start|stop|restart|upgrade}"
     RETVAL=1
 esac
 exit $RETVAL
