@@ -96,6 +96,9 @@ public class CommonConfig {
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", auth);
         prop.put("mail.smtp.timeout", timeout);
+        prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        prop.put("mail.smtp.socketFactory.fallback", "false");
+        prop.put("mail.smtp.socketFactory.port", smtpPort);
         mailSender.setJavaMailProperties(prop);
         return mailSender;
     }
