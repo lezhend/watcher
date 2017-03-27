@@ -1,33 +1,7 @@
 *.[od]
 *.iml
 target/
-out/
-META-INF/
+*.db
+.idea
+.DS_Store
 
-#ignore compiling producing files
-fcasb-local-aws/taskProducers/src/main/resources/conf/sqsConnect.properties
-fcasb-aws/taskProducers/src/main/resources/conf/sqsConnect.properties
-fcasb-aws/taskProducers/src/main/resources/conf/dbInstall.properties
-fcasb-java/src/main/webapp/public/app.js
-fcasb-java/src/main/resources/global.properties
-*.css
-
-
-
-#ignore hidden files but .gitignore and fcasb-platform/platform/src/.config
-.*
-
-fcasb-platform/platform/src/.config
-!/.gitignore
-!/.gitkeep
-!/.config
-
-#ignore binary 
-DLP_daemon
-DLP_CLIENT
-hello
-
-#ignore the directory
-openssh-6.6p1/
-tinylogin-1.2/
-sysinit/
