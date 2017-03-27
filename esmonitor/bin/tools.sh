@@ -1,7 +1,7 @@
 #!/bin/bash
-PRO_NAME="alert"
+PRO_NAME="esmonitor"
 VER_NAME="1.0"
-PS_NAME="[a]lert"
+PS_NAME="[e]smonitor"
 
 stop(){
   echo "Stop $PRO_NAME ..."
@@ -24,7 +24,6 @@ upgrade(){
 	start
 }
 install(){
-   #aws s3 cp s3://fcasb-data/devops/alert/install.sh /opt/tools.sh
     echo "$PRO_NAME start install"
     echo "mkdir $PRO_NAME home path ..."
     mkdir -p /opt/$PRO_NAME/logs

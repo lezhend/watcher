@@ -3,6 +3,7 @@ PRO_NAME="monitor"
 VER_NAME="1.0"
 PS_NAME="[m]onitor"
 
+
 stop(){
   echo "Stop $PRO_NAME ..."
   ps aux|grep $PS_NAME |awk '{system("kill -9 "$2)}'
@@ -23,23 +24,26 @@ upgrade(){
 	    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/package/$PRO_NAME-$VER_NAME.jar /opt/$PRO_NAME/
 	start
 }
-
 install(){
-    #aws s3 cp s3://fcasb-data/devops/monitor/install.sh /opt/install_monitor.sh
-    echo "Monitor start install"
-    echo "mkdir monitor home path ..."
-    mkdir -p /opt/monitor/logs
+   #aws s3 cp s3://fcasb-data/devops/alert/install.sh /opt/tools.sh
+    echo "$PRO_NAME start install"
+    echo "mkdir $PRO_NAME home path ..."
+    mkdir -p /opt/$PRO_NAME/logs
+    mkdir -p /opt/$PRO_NAME/config
+    mkdir -p /opt/$PRO_NAME/
 
-    echo "Downloading monitor from S3...."
-    aws s3 cp s3://fcasb-data/devops/monitor/package/monitor-1.0.jar /opt/monitor/
+    echo "Downloading $PRO_NAME from S3...."
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/package/$PRO_NAME-$VER_NAME.jar /opt/$PRO_NAME/
 
-    echo "Downloading monitor config from S3...."
-    aws s3 cp s3://fcasb-data/devops/monitor/config/monitor.properties /opt/monitor/
-    aws s3 cp s3://fcasb-data/devops/monitor/config/logback-monitor.xml /opt/monitor/
-    aws s3 cp s3://fcasb-data/devops/monitor/bin/server.sh /opt/monitor/
-    chmod a+x /opt/monitor/*.sh
-    echo "Monitor install complete!"
+    echo "Downloading $PRO_NAME config from S3...."
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/$PRO_NAME.properties /opt/$PRO_NAME/
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/logback-monitor.xml /opt/$PRO_NAME/
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/bin/tools.sh /opt/$PRO_NAME/
+    chmod a+x /opt/$PRO_NAME/*.sh
+    echo "$PRO_NAME install complete!"
+
 }
+
 case "$1" in
   install)
     install
