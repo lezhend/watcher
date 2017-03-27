@@ -44,8 +44,8 @@ public class AlertDao {
     public void insert(Alert alert){
         alert.setCreatetime(StringUtil.getTableDate(new Date()));
         alert.setUpdatetime(alert.getCreatetime());
-        String sql = "INSERT INTO {0} (indexName,name,searchkey,filter,field,conditioncount,conditionvalue,createtime,updatetime,notifications)" +
-                " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\")";
+        String sql = "INSERT INTO {0} (indexName,name,searchkey,filter,field,ccount,conditioncount,cvalue,conditionvalue,createtime,updatetime,emailtitle,emailtemplate,notifications)" +
+                " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\")";
         String strFilter="";
         if(alert.getFilter()!=null){
             strFilter = URLEncoder.encode(JSON.toJSONString(alert.getFilter()));
@@ -56,10 +56,14 @@ public class AlertDao {
                 alert.getSearchkey()==null?"":alert.getSearchkey(),
                 strFilter,
                 alert.getField()==null?"":alert.getField(),
+                alert.getCcount()==null? "":alert.getCcount(),
                 alert.getConditioncount()==null?"":alert.getConditioncount(),
+                alert.getCvalue()==null? "":alert.getCvalue(),
                 alert.getConditionvalue()==null?"":alert.getConditionvalue(),
                 alert.getCreatetime()==null?"":alert.getCreatetime(),
                 alert.getUpdatetime()==null?"":alert.getUpdatetime(),
+                alert.getEmailtitle()==null?"":alert.getEmailtitle(),
+                alert.getEmailtemplate()==null?"":alert.getEmailtemplate(),
                 alert.getNotifications()==null?"":alert.getNotifications());
         Statement statement = null;
         try {
@@ -82,8 +86,10 @@ public class AlertDao {
     public void update(Alert alert){
         alert.setUpdatetime(StringUtil.getTableDate(new Date()));
         String sql = "UPDATE \"{0}\" SET indexName=\"{1}\",searchkey=\"{2}\",filter=\"{3}\",field=\"{4}\"," +
-                "conditioncount=\"{5}\",conditionvalue=\"{6}\",updatetime=\"{7}\",notifications=\"{8}\" " +
-                "WHERE name=\"{9}\"";
+                "conditioncount=\"{5}\",conditionvalue=\"{6}\",updatetime=\"{7}\",notifications=\"{8}\"," +
+                "ccount=\"{9}\",cvalue=\"{10}\", " +
+                "emailtitle=\"{11}\",emailtemplate=\"{12}\" " +
+                "WHERE name=\"{13}\"";
         String strFilter="";
         if(alert.getFilter()!=null){
             strFilter = URLEncoder.encode(JSON.toJSONString(alert.getFilter()));
@@ -97,6 +103,10 @@ public class AlertDao {
                 alert.getConditionvalue()==null?"":alert.getConditionvalue(),
                 alert.getUpdatetime()==null?"":alert.getUpdatetime(),
                 alert.getNotifications()==null?"":alert.getNotifications(),
+                alert.getCcount()==null? "":alert.getCcount(),
+                alert.getCvalue()==null? "":alert.getCvalue(),
+                alert.getEmailtitle()==null? "":alert.getEmailtitle(),
+                alert.getEmailtemplate()==null? "":alert.getEmailtemplate(),
                 alert.getName());
         Statement statement = null;
         try {
@@ -252,10 +262,14 @@ public class AlertDao {
             alert.setFilter(JSON.parseObject(URLDecoder.decode(filter), HashMap.class));
         }
         alert.setField(rs.getString("field")==null?"":rs.getString("field"));
-        alert.setConditioncount(rs.getString("conditioncount")==null?"":rs.getString("conditioncount"));
-        alert.setConditionvalue(rs.getString("conditionvalue")==null?"":rs.getString("conditionvalue"));
-        alert.setCreatetime(rs.getString("createtime")==null?"":rs.getString("createtime"));
-        alert.setUpdatetime(rs.getString("updatetime")==null?"":rs.getString("updatetime"));
+        alert.setCcount(rs.getString("ccount") == null ? "" : rs.getString("ccount"));
+        alert.setConditioncount(rs.getString("conditioncount") == null ? "" : rs.getString("conditioncount"));
+        alert.setCvalue(rs.getString("cvalue") == null ? "" : rs.getString("cvalue"));
+        alert.setConditionvalue(rs.getString("conditionvalue") == null ? "" : rs.getString("conditionvalue"));
+        alert.setCreatetime(rs.getString("createtime") == null ? "" : rs.getString("createtime"));
+        alert.setUpdatetime(rs.getString("updatetime") == null ? "" : rs.getString("updatetime"));
+        alert.setEmailtitle(rs.getString("emailtitle") == null ? "" : rs.getString("emailtitle"));
+        alert.setEmailtemplate(rs.getString("emailtemplate") == null ? "" : rs.getString("emailtemplate"));
         alert.setNotifications(rs.getString("notifications")==null?"":rs.getString("notifications"));
         return alert;
     }

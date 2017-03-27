@@ -1,5 +1,6 @@
 package com.fortinet.fcasb.watcher.alert.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
 import com.fortinet.fcasb.watcher.alert.service.AlertService;
@@ -21,12 +22,12 @@ public class AlertController {
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.PUT)
-    public String save(@PathVariable("name") String name,@RequestBody Alert alert){
-        return JSONObject.toJSONString(alertService.save(alert));
+    public String save(@PathVariable("name") String name,@RequestBody String alert){
+        return JSONObject.toJSONString(alertService.save(JSON.parseObject(alert,Alert.class)));
     }
     @RequestMapping(value = "/{name}", method = RequestMethod.POST)
-    public String update(@PathVariable("name") String name,@RequestBody Alert alert){
-        return JSONObject.toJSONString(alertService.update(alert));
+    public String update(@PathVariable("name") String name,@RequestBody String alert){
+        return JSONObject.toJSONString(alertService.update(JSON.parseObject(alert,Alert.class)));
     }
     @RequestMapping(value = "/refresh", method = RequestMethod.POST)
     public String update(){

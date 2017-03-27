@@ -21,22 +21,6 @@ import java.text.MessageFormat;
 public class EmailService {
     public static final Logger LOGGER = LoggerFactory.getLogger(AlertService.class);
 
-
-    @Value("${send.mail.list}")
-    private String notemmail;
-
-
-    public void sendAlert(Alert alert,String value,long count){
-        String title = alert.getName()+" "+alert.getIndex()+" Alert!!!";
-        String content = MessageFormat.format("Value {1} > {2}, Count {3} > {4}",value,alert.getConditionvalue(),count,
-                alert.getConditioncount());
-        String to = alert.getNotifications()+","+notemmail;
-        LOGGER.info("title= {}",title);
-        LOGGER.info("content= {}",content);
-        LOGGER.info("to= {}",to);
-        sendMail(title, content, to);
-    }
-
     private @Autowired
     JavaMailSender javaMailSender;
     private @Autowired

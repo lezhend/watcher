@@ -8,21 +8,59 @@ import java.util.Map;
  * Created by zliu on 17/3/3.
  */
 public class Alert implements Serializable{
-
-    private static final long serialVersionUID = -5173880754763933700L;
-
+    private static final long serialVersionUID = -4879308807404260222L;
     private String index;         //index name
     private String name;          //alertName
     private Map<String,String> filter;        //search condition   field,key
     private String searchkey;        //search condition
     private String field;         //get field value
 
+    private String cvalue;      //alert gt lt le ge eq
     private String conditionvalue;      //alert condition >value
+    private String ccount;      //gt lt le ge eq
     private String conditioncount;      //alert condition >count
 
     private String createtime;
     private String updatetime;
     private String notifications; //通知
+    private String emailtitle; //
+    private String emailtemplate; //
+
+    public String getEmailtemplate() {
+        return emailtemplate;
+    }
+
+    public void setEmailtemplate(String emailtemplate) {
+        this.emailtemplate = emailtemplate;
+    }
+
+    public String getEmailtitle() {
+        return emailtitle;
+    }
+
+    public void setEmailtitle(String emailtitle) {
+        this.emailtitle = emailtitle;
+    }
+
+    public void setFilter(Map<String, String> filter) {
+        this.filter = filter;
+    }
+
+    public String getCvalue() {
+        return cvalue;
+    }
+
+    public void setCvalue(String cvalue) {
+        this.cvalue = cvalue;
+    }
+
+    public String getCcount() {
+        return ccount;
+    }
+
+    public void setCcount(String ccount) {
+        this.ccount = ccount;
+    }
 
     public String getSearchkey() {
         return searchkey;
@@ -107,16 +145,5 @@ public class Alert implements Serializable{
         this.notifications = notifications;
     }
 
-    enum ALERT_CONDITION{
-        LT("<"),
-        EQ(">"),
-        GT("="),
-        CONTAINS("in");
-        private String value;
-
-        ALERT_CONDITION(String value){
-            this.value = value;
-        }
-    }
 
 }

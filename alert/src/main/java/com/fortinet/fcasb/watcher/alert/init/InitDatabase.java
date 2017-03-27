@@ -50,10 +50,14 @@ public class InitDatabase {
             " searchkey TEXT , " +
             " filter TEXT , " +
             " field TEXT , " +
+            " ccount TEXT , " +
             " conditioncount TEXT , " +
+            " cvalue TEXT , " +
             " conditionvalue TEXT , " +
             " createtime TEXT , " +
             " updatetime TEXT , " +
+            " emailtitle TEXT , " +
+            " emailtemplate TEXT , " +
             " notifications TEXT);";
 
     private final String CREATE_TABLE_ALERT_LOG_SQL = "" +
