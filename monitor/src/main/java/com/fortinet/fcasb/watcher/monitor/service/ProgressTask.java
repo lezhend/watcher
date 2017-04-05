@@ -103,7 +103,7 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
     public int autoRun(){
         try {
             int result = systemService.progressIsRun(this.processFilter);
-            if(STOP_STATISTIC.containsKey(this.processFilter)){
+            if(!STOP_STATISTIC.containsKey(this.processFilter)){
                 STOP_STATISTIC.put(this.processFilter,0);
             }
             if (result <= 0) {
