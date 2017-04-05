@@ -161,14 +161,14 @@ public class SystemService {
         }
         return null;
     }
-    public String progressIsRun(String progress){
+    public int progressIsRun(String progress){
         if(OSTypeEnum.LINUX.toString().equalsIgnoreCase(osType)
                 || OSTypeEnum.MAC_OS.toString().equalsIgnoreCase(osType)){
             String[] results = getLinuxProgressInfo(progress);
             if(results==null){
-                return "0";
+                return 0;
             }
-            return "1";
+            return 1;
 
         } else if(OSTypeEnum.WINDOWS.toString().equalsIgnoreCase(osType)) {
             //todo
@@ -178,7 +178,7 @@ public class SystemService {
             //todo
             LOGGER.error("don't support this os {}",osType);
         }
-        return "0";
+        return 0;
     }
 
     private String[] getLinuxProgressInfo(String progress){
