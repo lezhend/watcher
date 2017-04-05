@@ -38,4 +38,19 @@ public class SystemUtil {
         }
         return null;
     }
+    public static String linuxCmdOfPro(String... cmd){
+        try {
+            ProcessBuilder pb = new ProcessBuilder(cmd);
+            Process process = pb.start();
+            if(process.waitFor()!=0){
+                return null;
+            }
+            InputStreamReader ir=new InputStreamReader(process.getInputStream());
+            BufferedReader input = new BufferedReader(ir);
+            return input.readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
