@@ -109,7 +109,7 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
             }
             if (result <= 0) {
                 if(STOP_STATISTIC.get(this.processFilter)>10){
-                    LOGGER.error("The progress {} can not running",this.processFilter);
+                    LOGGER.error("The progress {} cannotrun",this.processFilter);
                     return 0;
                 }
                 STOP_STATISTIC.put(this.processFilter,STOP_STATISTIC.get(this.processFilter)+1);
