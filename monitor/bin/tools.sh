@@ -10,7 +10,7 @@ stop(){
 }
 
 start(){
-  echo "Start $BUILD_NAME..."
+  echo "Start $PRO_NAME..."
   nohup java -jar /opt/$PRO_NAME/$PRO_NAME-$VER_NAME.jar >/dev/null &
 }
 
