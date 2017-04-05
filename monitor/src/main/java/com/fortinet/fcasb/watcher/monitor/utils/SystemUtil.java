@@ -32,7 +32,12 @@ public class SystemUtil {
             }
             InputStreamReader ir=new InputStreamReader(process.getInputStream());
             BufferedReader input = new BufferedReader(ir);
-            return input.readLine();
+            StringBuffer sb = new StringBuffer();
+            String s;
+            while((s=input.readLine())!=null){
+                sb.append(s);
+            }
+            return sb.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,7 +52,12 @@ public class SystemUtil {
             }
             InputStreamReader ir=new InputStreamReader(process.getInputStream());
             BufferedReader input = new BufferedReader(ir);
-            return input.readLine();
+            StringBuffer sb = new StringBuffer();
+            String s;
+            while((s=input.readLine())!=null){
+                sb.append(s);
+            }
+            return sb.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
