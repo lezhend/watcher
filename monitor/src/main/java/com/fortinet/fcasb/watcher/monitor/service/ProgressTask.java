@@ -115,7 +115,7 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
                 STOP_STATISTIC.put(this.processFilter,STOP_STATISTIC.get(this.processFilter)+1);
                 LOGGER.error("Process {} exception exit :",this.processFilter);
                 if (autoRun) {
-                    String resultCmd = SystemUtil.linuxCmdOfPro("/bin/bash", "-c", startRun);
+                    String resultCmd = SystemUtil.linuxCmd("/bin/sh", "-c", startRun);
                     LOGGER.warn("Auto start process {}, run:{}, result:{}",this.processFilter,startRun,resultCmd);
                 }
             } else{
