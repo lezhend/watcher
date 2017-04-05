@@ -68,7 +68,7 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
         statistics.setTimestamp();
         statistics.setHostname(SystemUtil.getHostname());
         statistics.setName(name == null ? SystemUtil.getHostname():name);
-        int res = autoRun();
+
         if (this.metrics.equals(Statistics.Metrics.PROGRESS.CPUUtilization)) {
             String value = systemService.getProgressUseCPU(this.processFilter);
             if(value!=null){
@@ -93,6 +93,7 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
                 statistics.setValue("0");
             }
         } else if(this.metrics.equals(Statistics.Metrics.PROGRESS.IS_RUNNING)){
+            int res = autoRun();
             statistics.setValue(String.valueOf(res));
         } else{
             statistics = null;
@@ -111,7 +112,7 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
                 LOGGER.error("Process {} exception exit :",this.processFilter);
                 if (autoRun) {
                     String resultCmd = SystemUtil.linuxCmd("sh", "-c", startRun);
-                    LOGGER.warn("Auto start process {}, result:{}",this.processFilter,resultCmd);
+                    LOGGER.warn("Auto start process {}, run:{}, result:{}",this.processFilter,startRun,resultCmd);
                 }
             } else{
                 STOP_STATISTIC.put(this.processFilter,0);
