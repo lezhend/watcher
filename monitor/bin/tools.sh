@@ -39,12 +39,28 @@ install(){
     aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/$PRO_NAME.properties /opt/$PRO_NAME/
     aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/logback-monitor.xml /opt/$PRO_NAME/
     aws s3 cp s3://fcasb-data/devops/$PRO_NAME/bin/tools.sh /opt/$PRO_NAME/
+    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/bin/monitor.task /opt/$PRO_NAME/
     chmod a+x /opt/$PRO_NAME/*.sh
+    crontab  /opt/$PRO_NAME/monitor.task
+    service crond restart
     echo "$PRO_NAME install complete!"
 
 }
 
+monitor(){
+   RE=`ps aux|grep $PS_NAME`
+  if [ "$RE" == "" ]; then
+    start
+    echo "$PRO_NAME start ...."
+  else
+    echo "Already $PRO_NAME is running"
+  fi
+
+}
 case "$1" in
+  monitor)
+    monitor
+    ;;
   install)
     install
     ;;
