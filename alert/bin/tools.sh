@@ -1,11 +1,11 @@
 #!/bin/bash
 PRO_NAME="alert"
 VER_NAME="1.0"
-PS_NAME="[a]lert"
+PS_NAME="[j]ava .*alert"
 
 stop(){
   echo "Stop $PRO_NAME ..."
-  ps aux|grep $PS_NAME |awk '{system("kill -9 "$2)}'
+  ps aux|grep "$PS_NAME" |awk '{system("kill -9 "$2)}'
 }
 
 start(){

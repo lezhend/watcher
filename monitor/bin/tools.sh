@@ -6,7 +6,7 @@ PS_NAME="[j]ava .*monitor"
 
 stop(){
   echo "Stop $PRO_NAME ..."
-  ps aux|grep $PS_NAME |awk '{system("kill -9 "$2)}'
+  ps aux|grep "$PS_NAME" |awk '{system("kill -9 "$2)}'
 }
 
 start(){
@@ -36,7 +36,11 @@ install(){
     aws s3 cp s3://fcasb-data/devops/$PRO_NAME/package/$PRO_NAME-$VER_NAME.jar /opt/$PRO_NAME/
 
     echo "Downloading $PRO_NAME config from S3...."
-    aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/$PRO_NAME.properties /opt/$PRO_NAME/
+    if [ -e "/opt/$PRO_NAME/$PRO_NAME.properties" ]; then
+       echo "configuration file already exist"
+    else
+       aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/$PRO_NAME.properties /opt/$PRO_NAME/
+    fi
     aws s3 cp s3://fcasb-data/devops/$PRO_NAME/config/logback-monitor.xml /opt/$PRO_NAME/
     aws s3 cp s3://fcasb-data/devops/$PRO_NAME/bin/tools.sh /opt/$PRO_NAME/
     aws s3 cp s3://fcasb-data/devops/$PRO_NAME/bin/monitor.task /opt/$PRO_NAME/
@@ -48,7 +52,7 @@ install(){
 }
 
 monitor(){
-   RE=`ps aux|grep $PS_NAME`
+   RE=`ps aux|grep "$PS_NAME"`
   if [ "$RE" == "" ]; then
     start
     echo "$PRO_NAME start ...."
