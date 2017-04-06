@@ -1,7 +1,7 @@
 #!/bin/bash
 PRO_NAME="monitor"
 VER_NAME="1.0"
-PS_NAME="[j]ava .*monitor"
+PS_NAME="[j]ava .*monitor.*jar"
 
 
 stop(){
