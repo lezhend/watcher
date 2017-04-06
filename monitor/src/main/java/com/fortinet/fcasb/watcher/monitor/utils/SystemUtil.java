@@ -32,32 +32,7 @@ public class SystemUtil {
             }
             InputStreamReader ir=new InputStreamReader(process.getInputStream());
             BufferedReader input = new BufferedReader(ir);
-            StringBuffer sb = new StringBuffer();
-            String s;
-            while((s=input.readLine())!=null){
-                sb.append(s);
-            }
-            return sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    public static String linuxCmdOfPro(String... cmd){
-        try {
-            ProcessBuilder pb = new ProcessBuilder(cmd);
-            Process process = pb.start();
-            if(process.waitFor()!=0){
-                return null;
-            }
-            InputStreamReader ir=new InputStreamReader(process.getInputStream());
-            BufferedReader input = new BufferedReader(ir);
-            StringBuffer sb = new StringBuffer();
-            String s;
-            while((s=input.readLine())!=null){
-                sb.append(s);
-            }
-            return sb.toString();
+            return input.readLine();
         } catch (Exception e) {
             e.printStackTrace();
         }
