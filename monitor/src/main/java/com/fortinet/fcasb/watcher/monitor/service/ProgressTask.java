@@ -28,12 +28,12 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
     private Statistics.Metrics.PROGRESS metrics;
     private String processFilter;
     private String startRun;
+    private boolean autoRun;
+
 
 
     @Value("${system.host.name}")
     private String name;
-    @Value("${monitor.user.progress.is.auto.run}")
-    private boolean autoRun;
 
     @Autowired
     private StatisticsDao statisticsDao;
@@ -50,6 +50,9 @@ public class ProgressTask extends AbstractStatisticsTask implements Runnable {
     }
     public void setStartRun(String startRun){
         this.startRun = startRun;
+    }
+    public void setAutoRun(Boolean autoRun){
+        this.autoRun = autoRun;
     }
     @Override
     public void run() {

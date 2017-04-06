@@ -31,6 +31,8 @@ public class TaskService implements ApplicationContextAware {
     private String[] userDefaultFilters;
     @Value("${monitor.user.progress.filter.cmds}")
     private String[] userDefaultCmds;
+    @Value("${monitor.user.progress.is.auto.run}")
+    private Boolean[] userAutoRun;
 
     @Value("${monitor.user.progress.metrics}")
     private String[] userProgressType;
@@ -45,7 +47,7 @@ public class TaskService implements ApplicationContextAware {
     @PostConstruct
     private void startTask() {
         int min = monitorPeriod/60;
-        if(userDefaultFilters.length!=userDefaultCmds.length){
+        if(userDefaultFilters.length!=userDefaultCmds.length || userDefaultFilters.length!=userAutoRun.length){
             throw new RuntimeException("files and cmds config error in the monitor.properties");
         }
 
@@ -63,6 +65,7 @@ public class TaskService implements ApplicationContextAware {
                 task.setMetrics(Statistics.Metrics.PROGRESS.valueOf(metrics));
                 task.setProcessFilter(userDefaultFilters[i]);
                 task.setStartRun(userDefaultCmds[i]);
+                task.setAutoRun(userAutoRun[i]);
                 taskScheduler.schedule(task, new CronTrigger("0 0/" + min + " * * * ? "));
             }
         }
