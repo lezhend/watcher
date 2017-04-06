@@ -32,7 +32,7 @@ public class TaskService implements ApplicationContextAware {
     @Value("${monitor.user.progress.filter.cmds}")
     private String[] userDefaultCmds;
     @Value("${monitor.user.progress.is.auto.run}")
-    private Boolean[] userAutoRun;
+    private String[] userAutoRun;
 
     @Value("${monitor.user.progress.metrics}")
     private String[] userProgressType;
@@ -65,7 +65,7 @@ public class TaskService implements ApplicationContextAware {
                 task.setMetrics(Statistics.Metrics.PROGRESS.valueOf(metrics));
                 task.setProcessFilter(userDefaultFilters[i]);
                 task.setStartRun(userDefaultCmds[i]);
-                task.setAutoRun(userAutoRun[i]);
+                task.setAutoRun(userAutoRun[i].equalsIgnoreCase("true")?true:false);
                 taskScheduler.schedule(task, new CronTrigger("0 0/" + min + " * * * ? "));
             }
         }
