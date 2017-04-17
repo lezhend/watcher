@@ -184,7 +184,7 @@ public class SystemService {
     private String[] getLinuxProgressInfo(String progress){
         String firstChar = progress.substring(0, 1);
         progress = progress.replaceFirst(firstChar, "[" +firstChar+"]");
-        String cmd ="ps -eo pcpu,pmem,etime,args|grep "+progress+"|awk '{print $1,$2,$3}'";
+        String cmd ="ps -eo pcpu,pmem,etime,args|grep "+progress+"|cat";
         String result = SystemUtil.linuxCmd("sh","-c",cmd);
         LOGGER.debug("getLinuxProgressInfo {} {}",progress,result);
         if(result==null){

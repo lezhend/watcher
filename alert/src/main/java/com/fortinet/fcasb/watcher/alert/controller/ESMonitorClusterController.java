@@ -1,4 +1,4 @@
-package com.fortinet.fcasb.watcher.esmonitor.controller;
+package com.fortinet.fcasb.watcher.alert.controller;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
