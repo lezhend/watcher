@@ -16,13 +16,13 @@ public class Alert implements Serializable{
     private String field;         //get field value
 
     private String cvalue;      //alert gt lt le ge eq
-    private String conditionvalue;      //alert condition >value
+    private String conditionvalue;      //alert condition >field value
     private String ccount;      //gt lt le ge eq
     private String conditioncount;      //alert condition >count
 
     private String createtime;
     private String updatetime;
-    private String notifications; //通知
+    private String notifications; //通知 , 分隔
     private String emailtitle; //
     private String emailtemplate; //
 

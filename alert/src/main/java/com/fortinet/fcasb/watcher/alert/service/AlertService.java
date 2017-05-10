@@ -77,6 +77,29 @@ public class AlertService {
                     }
                 }
 
+                if(isTarg){
+                    boolean isGet = false;
+                    if(StringUtils.isNotBlank(alert.getField())) {
+                        for (SearchHit searchHitFields : response.getHits()) {
+                            Map<String, Object> values = searchHitFields.getSource();
+                            for (String key : values.keySet()) {
+                                if (key.equalsIgnoreCase(alert.getField())) {
+                                    resultTarget.setValue(values.get(key).toString());
+                                    isGet = true;
+                                    break;
+                                }
+                            }
+                            if(isGet){
+                                break;
+                            }
+
+                        }
+                    }
+                    if(!isGet){
+                        resultTarget.setValue("No get value");
+                    }
+                }
+
 
             } else {
                 if (StringUtils.isNotBlank(alert.getField()) && StringUtils.isNotBlank(alert.getConditionvalue())) {
