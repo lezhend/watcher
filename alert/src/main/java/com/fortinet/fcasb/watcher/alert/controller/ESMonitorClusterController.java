@@ -1,8 +1,5 @@
 package com.fortinet.fcasb.watcher.alert.controller;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
 import org.apache.http.client.ClientProtocolException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.info.NodesInfoResponse;
@@ -16,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 /**
  * Created by zliu on 17/3/3.
  */
@@ -26,20 +26,10 @@ public class ESMonitorClusterController {
 	@Autowired
     private TransportClient client;
 
-	@Value("${es.transport.client.host}")
-	public String esServerHost;
-
-	@Value("${es.transport.client.port}")
-	public int esServerPort;
-	
-	@Value("${es.cluster.name}")
-	public String esClusterName;
-	
 	@RequestMapping(value = "/health", method = RequestMethod.GET, produces = "application/json")
 	public String health() throws UnknownHostException {
     	ClusterAdminClient clusterAdminClient = client.admin().cluster();
     	ClusterHealthResponse clusterHealth = clusterAdminClient.prepareHealth().get();
-    	
 		return clusterHealth.toString();
 	}
 
