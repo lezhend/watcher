@@ -25,7 +25,7 @@ import java.util.Properties;
         "com.fortinet.fcasb.watcher.alert"
 })
 @PropertySource(value = {
-        "classpath:/alert.properties",
+//        "classpath:/alert.properties",
         "file:/opt/alert/alert.properties"
 }, ignoreResourceNotFound = true)
 @Configuration
