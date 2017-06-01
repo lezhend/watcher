@@ -13,7 +13,7 @@ function init_list(node) {
     $.get("/alert/list",function (data,status) {
         var result = JSON.parse(data);
         for(var i=0;i < result.data.length;i++){
-            $("#"+node).append("<li class='list-group-item' ><a href='/alert/info.html?name="+result.data[i].name+"'>"+result.data[i].name+"</a></li>");
+            $("#"+node).append("<a href='/alert/info.html?name="+result.data[i].name+"' class='list-group-item'>"+result.data[i].name+"</a>");
         }
     })
 }
@@ -23,9 +23,19 @@ function init_info(){
     $.get("/alert/get/"+name,function (data,status) {
         var result = JSON.parse(data);
         if(result.code==0){
-            $("#alertName").val(result.data.name);
+            $("#name").val(result.data.name);
+            $("#hidden-name").val(result.data.name);
             $("#index").val(result.data.index);
-            $("#users").val(result.data.notifications);
+            $("#filter").val(JSON.stringify(result.data.filter));
+            $("#searchkey").val(result.data.searchkey);
+            $("#field").val(result.data.field);
+            $("#cvalue").val(result.data.cvalue);
+            $("#conditionvalue").val(result.data.conditionvalue);
+            $("#ccount").val(result.data.ccount);
+            $("#conditioncount").val(result.data.conditioncount);
+            $("#notifications").val(result.data.notifications);
+            $("#emailtitle").val(result.data.emailtitle);
+            $("#emailtemplate").val(result.data.emailtemplate);
         }else{
             alert("Request reuslt error "+result.msg);
         }
@@ -34,4 +44,88 @@ function init_info(){
     })
 
 }
+
+function deleteAlert(name) {
+    if(confirm('DELETE?')){
+        name = $("#hidden-name").val();
+        var url = "/alert/"+name;
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            success: function( result ) {
+                var data = JSON.parse(result);
+                if(data.code==0){
+                    window.location.href="/alert/index.html"
+                }
+            }
+        });
+    }
+
+
+}
+
+function createAlert(){
+    var url = "/alert/"+$("#name").val();
+    var alertData={};
+    alertData.name=$("#name").val();
+    alertData.index=$("#index").val();
+    alertData.searchkey=$("#searchkey").val();
+    alertData.field=$("#field").val();
+    alertData.cvalue=$("#cvalue").val();
+    alertData.conditionvalue=$("#conditionvalue").val();
+    alertData.ccount=$("#ccount").val();
+    alertData.conditioncount=$("#conditioncount").val();
+    alertData.notifications=$("#notifications").val();
+    alertData.emailtitle=$("#emailtitle").val();
+    alertData.emailtemplate=$("#emailtemplate").val();
+    if($("#filter").val()){
+        alertData.filter=JSON.parse($("#filter").val());
+    }
+    $.ajax({
+        type: "PUT",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(alertData),
+        dataType: "json",
+        url: url,
+        success: function( result ) {
+            if(result.code==0){
+                window.location.href="/alert/index.html";
+            }
+        }
+    });
+
+}
+
+function updateAlert(){
+    var url = "/alert/"+$("#hidden-name").val();
+    var alertData={};
+    alertData.name=$("#name").val();
+    alertData.index=$("#index").val();
+    alertData.searchkey=$("#searchkey").val();
+    alertData.field=$("#field").val();
+    alertData.cvalue=$("#cvalue").val();
+    alertData.conditionvalue=$("#conditionvalue").val();
+    alertData.ccount=$("#ccount").val();
+    alertData.conditioncount=$("#conditioncount").val();
+    alertData.notifications=$("#notifications").val();
+    alertData.emailtitle=$("#emailtitle").val();
+    alertData.emailtemplate=$("#emailtemplate").val();
+    if($("#filter").val()){
+        alertData.filter=JSON.parse($("#filter").val());
+    }
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(alertData),
+        dataType: "json",
+        url: url,
+        success: function( result ) {
+            if(result.code==0){
+                window.location.reload();
+            }
+        }
+    });
+
+}
+
 

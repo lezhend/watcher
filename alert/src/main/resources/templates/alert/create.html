@@ -14,9 +14,7 @@
 
     <script src="/alert/script/func.js"></script>
     <script type="text/javascript">
-        $(document).ready(function(){
-            init_info();
-        });
+       
 
     </script>
 </head>
@@ -57,15 +55,115 @@
         </div>
     </div><!-- /.container-fluid -->
 </nav>
-<div class="input-group">
-    <span class="input-group-addon" id="alert-name">Alert Name:</span>
-    <input type="text" id="alertName" class="form-control" placeholder="Username" aria-describedby="basic-addon1"/>
-</div>
+<!--
+    private String index;         //index name
+    private String name;          //alertName
+    private Map<String,String> filter;        //search condition   field,key
+    private String searchkey;        //search condition
+    private String field;         //get field value
 
-<div class="input-group">
-    <span class="input-group-addon" id="alert-users">Users:</span>
-    <input type="text" id="users" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"/>
-</div>
+    private String cvalue;      //alert gt lt le ge eq
+    private String conditionvalue;      //alert condition >field value
+    private String ccount;      //gt lt le ge eq
+    private String conditioncount;      //alert condition >count
 
+    private String createtime;
+    private String updatetime;
+    private String notifications; //通知 , 分隔
+    private String emailtitle; //
+    private String emailtemplate; //
+-->
+<div style="width:80%;margin-left: 10%">
+
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-name">Alert Name:</span>
+        <input type="text" id="name" class="form-control" aria-describedby="basic-addon1"/>
+    </div>
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-index">Index Name:</span>
+        <input type="text" id="index" class="form-control"  aria-describedby="basic-addon1"/>
+    </div>
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-filter">Field Filter:</span>
+        <input type="text" id="filter" class="form-control"  aria-describedby="basic-addon1"/>
+    </div>
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-searchkey">Search Key:</span>
+        <input type="text" id="searchkey" class="form-control"  aria-describedby="basic-addon1"/>
+    </div>
+    <br/>
+
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-field">Field Name(get this field value):</span>
+        <input type="text" id="field" class="form-control"  aria-describedby="basic-addon1"/>
+    </div>
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-cvalue">Field Value Condition:</span>
+
+
+        <select id="cvalue" class="form-control" aria-describedby="basic-addon1">
+            <option value="lt">&lt;</option>
+            <option value="le">&lt;=</option>
+            <option value="eq">==</option>
+            <option value="ge">=&gt;</option>
+            <option value="gt">&gt;</option>
+        </select>
+    </div>
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-conditioncount">Field Value Condition Value:</span>
+        <input type="text" id="conditioncount" class="form-control"  aria-describedby="basic-addon1"/>
+    </div>
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-ccount">Search Count Condition:</span>
+        <select id="ccount" class="form-control" aria-describedby="basic-addon1">
+            <option value="lt">&lt;</option>
+            <option value="le">&lt;=</option>
+            <option value="eq">==</option>
+            <option value="ge">=&gt;</option>
+            <option value="gt">&gt;</option>
+        </select>
+    </div>
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-conditionvalue">Search Count Condition Value:</span>
+        <input type="text" id="conditionvalue" class="form-control"  aria-describedby="basic-addon1"/>
+    </div>
+
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-notifications">Notifications:</span>
+        <input type="text" id="notifications" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"/>
+    </div>
+    <br/>
+
+    <div class="control-group">
+        <span class="control-group-label" id="alert-emailtitle">Email Title:</span>
+        <input type="text" id="emailtitle" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"/>
+    </div>
+    <br/>
+    <div class="control-group">
+        <span class="control-group-label" id="alert-emailtemplate">Email Template:</span>
+        <input type="text" id="emailtemplate" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"/>
+    </div>
+    <div class="control-group">
+        <button value="Create" class="btn btn-default" onclick="createAlert()">CREATE</button>
+    </div>
+</div>
 </body>
 </html>
