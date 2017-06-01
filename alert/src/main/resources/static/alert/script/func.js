@@ -18,6 +18,24 @@ function init_list(node) {
     })
 }
 
+function init_log_list() {
+    var url = "/alert/list/logs";
+    var name = getUrlParam("name");
+    if(name){
+        url = url+"/"+name;
+    }
+    $.get(url,function (data,status) {
+        var result = JSON.parse(data);
+        for(var i=0;i < result.data.length;i++){
+            $("#alert-log-list").append("<a href='#' class='list-group-item'>"
+                +result.data[i].name+"&nbsp;&nbsp;&nbsp;&nbsp;"
+                +result.data[i].createtime+"&nbsp;&nbsp;&nbsp;&nbsp;"
+                +result.data[i].content+"&nbsp;&nbsp;&nbsp;&nbsp;"
+                +result.data[i].notifications+"</a>");
+        }
+    })
+}
+
 function init_info(){
     var name = getUrlParam('name');
     $.get("/alert/get/"+name,function (data,status) {
@@ -55,13 +73,14 @@ function deleteAlert(name) {
             success: function( result ) {
                 var data = JSON.parse(result);
                 if(data.code==0){
-                    window.location.href="/alert/index.html"
+                    window.location.href="/alert/index.html";
                 }
             }
         });
     }
-
-
+}
+function toLog(){
+    window.location.href="/alert/logs.html?name="+$("#hidden-name").val();
 }
 
 function createAlert(){
