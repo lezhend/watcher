@@ -64,7 +64,7 @@ public class AlertLogDao {
 
 
     public List<AlertLog> get(String name){
-        String sql = "SELECT * FROM {0} WHERE name = \"{1}\" order by createtime limit 100";
+        String sql = "SELECT * FROM {0} WHERE name = \"{1}\" order by createtime ASC limit 100";
         sql = MessageFormat.format(sql, TablesEnum.ALERT_LOG.getTablename(), name);
         Statement statement = null;
         ResultSet rs = null;
@@ -102,7 +102,7 @@ public class AlertLogDao {
     }
 
     public List<AlertLog> find(){
-        String sql = "SELECT * FROM {0} order by createtime limit 100";
+        String sql = "SELECT * FROM {0} order by createtime ASC limit 100";
         sql = MessageFormat.format(sql, TablesEnum.ALERT_LOG.getTablename());
         Statement statement = null;
         ResultSet rs = null;
