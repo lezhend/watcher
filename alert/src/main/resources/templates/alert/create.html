@@ -42,7 +42,7 @@
                         <li><a href="/alert/index.html">List</a></li>
                         <li><a href="/alert/create.html">Create</a></li>
                         <li><a href="/alert/logs.html">Logs</a></li>
-                        <li><a href="javascirpt:refresh()">Refresh</a></li>
+                        <li><a href="javascript:void(0)" onclick="refresh()">Refresh</a></li>
                     </ul>
                 </li>
             </ul>
@@ -117,7 +117,7 @@
 
     <div class="control-group">
         <span class="control-group-label" id="alert-conditioncount">Field Value Condition Value:</span>
-        <input type="text" id="conditioncount" class="form-control"  aria-describedby="basic-addon1"/>
+        <input type="text" id="conditionvalue" class="form-control"  aria-describedby="basic-addon1"/>
     </div>
     <br/>
 
@@ -135,25 +135,25 @@
 
     <div class="control-group">
         <span class="control-group-label" id="alert-conditionvalue">Search Count Condition Value:</span>
-        <input type="text" id="conditionvalue" class="form-control"  aria-describedby="basic-addon1"/>
+        <input type="text" id="conditioncount" class="form-control"  aria-describedby="basic-addon1"/>
     </div>
 
     <br/>
 
     <div class="control-group">
         <span class="control-group-label" id="alert-notifications">Notifications:</span>
-        <input type="text" id="notifications" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"/>
+        <input type="text" id="notifications" class="form-control" placeholder="Notification email address" aria-describedby="basic-addon2"/>
     </div>
     <br/>
 
     <div class="control-group">
         <span class="control-group-label" id="alert-emailtitle">Email Title:</span>
-        <input type="text" id="emailtitle" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"/>
+        <input type="text" id="emailtitle" class="form-control" placeholder="email title" aria-describedby="basic-addon2"/>
     </div>
     <br/>
     <div class="control-group">
         <span class="control-group-label" id="alert-emailtemplate">Email Template:</span>
-        <input type="text" id="emailtemplate" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"/>
+        <input type="text" id="emailtemplate" class="form-control" placeholder="email content" aria-describedby="basic-addon2"/>
     </div>
     <div class="control-group">
         <button value="Create" class="btn btn-default" onclick="createAlert()">CREATE</button>

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -201,7 +202,16 @@ public class AlertService {
         if(isTarg) {
             AlertLog alertLog = new AlertLog();
             alertLog.setName(alert.getName());
-            alertLog.setContent("");
+            String content = MessageFormat.format("Value {0} > {1}, Count {2} > {3}", resultTarget.getValue(), alert.getConditionvalue(), resultTarget.getCount(),
+                    alert.getConditioncount());
+
+            if(StringUtils.isNotBlank(alert.getEmailtemplate()) ){
+                content = alert.getEmailtemplate().replace("{count}", String.valueOf(resultTarget.getCount()));
+                if(StringUtils.isNotBlank(resultTarget.getValue())) {
+                    content = content.replace("{value}", resultTarget.getValue());
+                }
+            }
+            alertLog.setContent(content);
             alertLog.setNotifications(alert.getNotifications());
             alertLogDao.insert(alertLog);
         }
