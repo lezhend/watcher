@@ -147,4 +147,14 @@ function updateAlert(){
 
 }
 
+function refresh() {
+    var url = "/alert/refresh";
+    $.post(url,function (data,status) {
+        var result = JSON.parse(data);
+        if(result.code==0){
+            alert("Refresh success");
+        }
+    })
+}
+
 
