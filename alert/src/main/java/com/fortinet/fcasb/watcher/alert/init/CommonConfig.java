@@ -2,10 +2,6 @@ package com.fortinet.fcasb.watcher.alert.init;
 
 
 import ch.qos.logback.ext.spring.LogbackConfigurer;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,13 +9,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.web.client.RestTemplate;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -54,10 +53,6 @@ public class CommonConfig {
     private @Value("${mail.smtp.timeout}") int timeout;
 
 
-    private @Value("${es.transport.client.host}") String esHost;
-    private @Value("${es.transport.client.port}") int esPort;
-    private @Value("${es.cluster.name}") String esClusterName;
-
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
         return new ThreadPoolTaskScheduler();
@@ -72,19 +67,6 @@ public class CommonConfig {
         }
         return LOGGER;
     }
-
-    @Bean
-    public TransportClient esClient() throws UnknownHostException {
-        Settings settings = Settings.builder()
-                .put("cluster.name",esClusterName)
-//                .put("client.transport.sniff",true)
-                .build()
-                ;
-        TransportClient client = new PreBuiltTransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(esHost), esPort));
-        return client;
-    }
-
 
     @Bean
     public JavaMailSender javaMailSender() {
@@ -108,6 +90,16 @@ public class CommonConfig {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(from);
         return simpleMailMessage;
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        LOGGER.info("init RestTemplate");
+        RestTemplate restTemplate = new RestTemplate();
+        List<HttpMessageConverter<?>> hmcList = new ArrayList<>();
+        hmcList.add(new MappingJackson2HttpMessageConverter());
+        restTemplate.setMessageConverters(hmcList);
+        return restTemplate;
     }
 }
 

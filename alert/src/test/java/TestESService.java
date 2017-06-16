@@ -1,6 +1,5 @@
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
 import com.fortinet.fcasb.watcher.alert.service.ESService;
-import org.elasticsearch.search.SearchHits;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +25,7 @@ public class TestESService {
         alert.setConditionvalue("40");
         alert.setIndex("logstash-monitor-statistics-log-2017.03.25");
         try {
-           SearchHits searchHits = esService.search(alert);
+           Map<String,Object> searchHits = esService.search(alert);
         } catch (Exception e) {
             e.printStackTrace();
         }

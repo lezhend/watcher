@@ -1,20 +1,21 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
+import com.fortinet.fcasb.watcher.alert.init.RestWrapper;
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,18 +31,23 @@ public class ESService {
 
     @Value("${alert.period}")
     private Integer period;
+
+    @Value("${es.server.rest.search}")
+    private String esRestSearch;
+
     @Autowired
-    private TransportClient client;
+    private RestWrapper restWrapper;
 
 
-    public SearchHits search(Alert alert) throws Exception {
+    private Map<String,Object> restSearch(String index,Map<String,Object> searchFilter){
+        String url = MessageFormat.format(esRestSearch,index);
+        ResponseEntity<Map<String,Object>> re = restWrapper.post(url,searchFilter,new TypeReference<Map<String,Object>>(){});
+        return re.getBody();
+    }
+
+
+    public Map<String,Object> search(Alert alert) throws Exception {
         //根据alert查询条件
-        SearchRequestBuilder builder= client.prepareSearch(alert.getIndex())
-//                .setTypes(SEARCH_DEFAULT_TYPE)
-                .setSearchType(SearchType.DEFAULT)
-                .setFrom(SEARCH_FROM)
-                .setSize(SEARCH_SIZE);
-
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
         if(StringUtils.isNotBlank(alert.getSearchkey())) {
@@ -55,11 +61,13 @@ public class ESService {
         }
 
         boolQueryBuilder.must(QueryBuilders.rangeQuery("@timestamp").format("epoch_millis").gte(System.currentTimeMillis() - period * 1000).lte(System.currentTimeMillis()));
-        builder.setQuery(boolQueryBuilder);
 
-        SearchResponse response =builder.execute().actionGet();
-        SearchHits hits =  response.getHits();
-        return hits;
+        Map<String,Object> params = new HashMap<>();
+        params.put("query", JSON.parse(boolQueryBuilder.toString()));
+        params.put("size",SEARCH_SIZE);
+        return restSearch(alert.getIndex(),params);
+
+
     }
 
 

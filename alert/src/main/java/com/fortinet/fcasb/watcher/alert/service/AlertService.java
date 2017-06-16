@@ -7,8 +7,6 @@ import com.fortinet.fcasb.watcher.alert.domain.AlertLog;
 import com.fortinet.fcasb.watcher.alert.domain.Result;
 import com.fortinet.fcasb.watcher.alert.enums.AlertConditionEnum;
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,153 +44,154 @@ public class AlertService {
 
     public ResultTarget isTarget(Alert alert){
         boolean isTarg = false;
-        SearchHits response = null;
+        Map<String,Object> response = null;
 
         ResultTarget resultTarget = new ResultTarget();
         try {
             response = esService.search(alert);
-            resultTarget.setCount(response.getTotalHits());
-            resultTarget.setAlert(alert);
-            if(StringUtils.isNotBlank(alert.getConditioncount()) && StringUtils.isNumeric(alert.getConditioncount())){
+            if(response.containsKey("hits")){
+                Map<String,Object> hits = (Map<String, Object>) response.get("hits");
+                List<Map<String,Object>> hitList = (List<Map<String, Object>>) hits.get("hits");
+                resultTarget.setCount(Long.valueOf(hits.get("total").toString()));
+                resultTarget.setAlert(alert);
+                if(StringUtils.isNotBlank(alert.getConditioncount()) && StringUtils.isNumeric(alert.getConditioncount())){
 
-                if(alert.getCcount().equals(AlertConditionEnum.LE.getValue())){
-                    if(response.getTotalHits()<=Integer.valueOf(alert.getConditioncount())){
-                        isTarg = true;
+                    if(alert.getCcount().equals(AlertConditionEnum.LE.getValue())){
+                        if(resultTarget.getCount()<=Integer.valueOf(alert.getConditioncount())){
+                            isTarg = true;
+                        }
+                    }else if(alert.getCcount().equals(AlertConditionEnum.GE.getValue())){
+                        if(resultTarget.getCount()>=Integer.valueOf(alert.getConditioncount())){
+                            isTarg = true;
+                        }
+                    }else if(alert.getCcount().equals(AlertConditionEnum.LT.getValue())){
+                        if(resultTarget.getCount()<Integer.valueOf(alert.getConditioncount())){
+                            isTarg = true;
+                        }
                     }
-                }else if(alert.getCcount().equals(AlertConditionEnum.GE.getValue())){
-                    if(response.getTotalHits()>=Integer.valueOf(alert.getConditioncount())){
-                        isTarg = true;
+                    else if(alert.getCcount().equals(AlertConditionEnum.GT.getValue())){
+                        if(resultTarget.getCount()>Integer.valueOf(alert.getConditioncount())){
+                            isTarg = true;
+                        }
+                    } else if(alert.getCcount().equals(AlertConditionEnum.EQ.getValue())){
+                        if(resultTarget.getCount()==Integer.valueOf(alert.getConditioncount())){
+                            isTarg = true;
+                        }
                     }
-                }else if(alert.getCcount().equals(AlertConditionEnum.LT.getValue())){
-                    if(response.getTotalHits()<Integer.valueOf(alert.getConditioncount())){
-                        isTarg = true;
-                    }
-                }
-                else if(alert.getCcount().equals(AlertConditionEnum.GT.getValue())){
-                    if(response.getTotalHits()>Integer.valueOf(alert.getConditioncount())){
-                        isTarg = true;
-                    }
-                } else if(alert.getCcount().equals(AlertConditionEnum.EQ.getValue())){
-                    if(response.getTotalHits()==Integer.valueOf(alert.getConditioncount())){
-                        isTarg = true;
-                    }
-                }
 
-                if(isTarg){
-                    boolean isGet = false;
-                    if(StringUtils.isNotBlank(alert.getField())) {
-                        for (SearchHit searchHitFields : response.getHits()) {
-                            Map<String, Object> values = searchHitFields.getSource();
-                            for (String key : values.keySet()) {
-                                if (key.equalsIgnoreCase(alert.getField())) {
-                                    resultTarget.setValue(values.get(key).toString());
-                                    isGet = true;
+
+                    if(isTarg){
+                        boolean isGet = false;
+                        if(StringUtils.isNotBlank(alert.getField())) {
+                            for (Map<String,Object> searchHitFields : hitList) {
+                                Map<String, Object> values = (Map<String, Object>) searchHitFields.get("_source");
+                                for (String key : values.keySet()) {
+                                    if (key.equalsIgnoreCase(alert.getField())) {
+                                        resultTarget.setValue(values.get(key).toString());
+                                        isGet = true;
+                                        break;
+                                    }
+                                }
+                                if(isGet){
                                     break;
                                 }
+
                             }
-                            if(isGet){
+                        }
+                        if(!isGet){
+                            resultTarget.setValue("No get value");
+                        }
+                    }
+                 } else {
+                    if (StringUtils.isNotBlank(alert.getField()) && StringUtils.isNotBlank(alert.getConditionvalue())) {
+                        String value = "";
+                        for (Map<String,Object> searchHitFields : hitList) {
+                            Map<String, Object> values = (Map<String, Object>) searchHitFields.get("_source");
+                            for (String key : values.keySet()) {
+                                if (StringUtils.isNotBlank(alert.getField())) {
+                                    if (key.equalsIgnoreCase(alert.getField())) {
+                                        if (values.get(key) != null && StringUtils.isNumeric(values.get(key).toString()) && StringUtils.isNumeric(alert.getConditionvalue())) {
+
+                                            if (alert.getCvalue().equals(AlertConditionEnum.LE.getValue())) {
+                                                if (Long.valueOf(values.get(key).toString()) <= Long.valueOf(alert.getConditionvalue())) {
+                                                    isTarg = true;
+                                                    value = values.get(key).toString();
+                                                    break;
+                                                }
+                                            } else if (alert.getCvalue().equals(AlertConditionEnum.GE.getValue())) {
+                                                if (Long.valueOf(values.get(key).toString()) >= Long.valueOf(alert.getConditionvalue())) {
+                                                    isTarg = true;
+                                                    value = values.get(key).toString();
+                                                    break;
+                                                }
+                                            } else if (alert.getCvalue().equals(AlertConditionEnum.LT.getValue())) {
+                                                if (Long.valueOf(values.get(key).toString()) < Long.valueOf(alert.getConditionvalue())) {
+                                                    isTarg = true;
+                                                    value = values.get(key).toString();
+                                                    break;
+                                                }
+                                            } else if (alert.getCvalue().equals(AlertConditionEnum.GT.getValue())) {
+                                                if (Long.valueOf(values.get(key).toString()) > Long.valueOf(alert.getConditionvalue())) {
+                                                    isTarg = true;
+                                                    value = values.get(key).toString();
+                                                    break;
+                                                }
+                                            } else if (alert.getCvalue().equals(AlertConditionEnum.EQ.getValue())) {
+                                                if (Long.valueOf(values.get(key).toString()) == Long.valueOf(alert.getConditionvalue())) {
+                                                    isTarg = true;
+                                                    value = values.get(key).toString();
+                                                    break;
+                                                }
+                                            }
+
+                                        } else {
+                                            if (values.get(key) != null) {
+                                                if (alert.getCvalue().equals(AlertConditionEnum.LE.getValue())) {
+                                                    if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) <= 0) {
+                                                        isTarg = true;
+                                                        value = values.get(key).toString();
+                                                        break;
+                                                    }
+                                                } else if (alert.getCvalue().equals(AlertConditionEnum.GE.getValue())) {
+                                                    if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) >= 0) {
+                                                        isTarg = true;
+                                                        value = values.get(key).toString();
+                                                        break;
+                                                    }
+                                                } else if (alert.getCvalue().equals(AlertConditionEnum.LT.getValue())) {
+                                                    if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) < 0) {
+                                                        isTarg = true;
+                                                        value = values.get(key).toString();
+                                                        break;
+                                                    }
+                                                } else if (alert.getCvalue().equals(AlertConditionEnum.GT.getValue())) {
+                                                    if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) > 0) {
+                                                        isTarg = true;
+                                                        value = values.get(key).toString();
+                                                        break;
+                                                    }
+                                                } else if (alert.getCvalue().equals(AlertConditionEnum.EQ.getValue())) {
+                                                    if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) == 0) {
+                                                        isTarg = true;
+                                                        value = values.get(key).toString();
+                                                        break;
+                                                    }
+                                                }
+
+
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if (isTarg) {
+                                resultTarget.setValue(value);
                                 break;
                             }
-
                         }
+
                     }
-                    if(!isGet){
-                        resultTarget.setValue("No get value");
-                    }
-                }
-
-
-            } else {
-                if (StringUtils.isNotBlank(alert.getField()) && StringUtils.isNotBlank(alert.getConditionvalue())) {
-                    String value = "";
-                    for (SearchHit searchHitFields : response.getHits()) {
-                        Map<String, Object> values = searchHitFields.getSource();
-                        for (String key : values.keySet()) {
-                            if (StringUtils.isNotBlank(alert.getField())) {
-                                if (key.equalsIgnoreCase(alert.getField())) {
-                                    if (values.get(key) != null && StringUtils.isNumeric(values.get(key).toString()) && StringUtils.isNumeric(alert.getConditionvalue())) {
-
-                                        if(alert.getCvalue().equals(AlertConditionEnum.LE.getValue())){
-                                            if (Long.valueOf(values.get(key).toString()) <= Long.valueOf(alert.getConditionvalue())) {
-                                                isTarg = true;
-                                                value = values.get(key).toString();
-                                                break;
-                                            }
-                                        }else if(alert.getCvalue().equals(AlertConditionEnum.GE.getValue())){
-                                            if (Long.valueOf(values.get(key).toString()) >= Long.valueOf(alert.getConditionvalue())) {
-                                                isTarg = true;
-                                                value = values.get(key).toString();
-                                                break;
-                                            }
-                                        }else if(alert.getCvalue().equals(AlertConditionEnum.LT.getValue())){
-                                            if (Long.valueOf(values.get(key).toString()) < Long.valueOf(alert.getConditionvalue())) {
-                                                isTarg = true;
-                                                value = values.get(key).toString();
-                                                break;
-                                            }
-                                        }
-                                        else if(alert.getCvalue().equals(AlertConditionEnum.GT.getValue())){
-                                            if (Long.valueOf(values.get(key).toString()) > Long.valueOf(alert.getConditionvalue())) {
-                                                isTarg = true;
-                                                value = values.get(key).toString();
-                                                break;
-                                            }
-                                        } else if(alert.getCvalue().equals(AlertConditionEnum.EQ.getValue())){
-                                            if (Long.valueOf(values.get(key).toString()) == Long.valueOf(alert.getConditionvalue())) {
-                                                isTarg = true;
-                                                value = values.get(key).toString();
-                                                break;
-                                            }
-                                        }
-
-                                    } else {
-                                        if (values.get(key) != null) {
-                                            if(alert.getCvalue().equals(AlertConditionEnum.LE.getValue())){
-                                                if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) <= 0) {
-                                                    isTarg = true;
-                                                    value = values.get(key).toString();
-                                                    break;
-                                                }
-                                            }else if(alert.getCvalue().equals(AlertConditionEnum.GE.getValue())){
-                                                if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) >= 0) {
-                                                    isTarg = true;
-                                                    value = values.get(key).toString();
-                                                    break;
-                                                }
-                                            }else if(alert.getCvalue().equals(AlertConditionEnum.LT.getValue())){
-                                                if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) < 0) {
-                                                    isTarg = true;
-                                                    value = values.get(key).toString();
-                                                    break;
-                                                }
-                                            }
-                                            else if(alert.getCvalue().equals(AlertConditionEnum.GT.getValue())){
-                                                if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) > 0) {
-                                                    isTarg = true;
-                                                    value = values.get(key).toString();
-                                                    break;
-                                                }
-                                            } else if(alert.getCvalue().equals(AlertConditionEnum.EQ.getValue())){
-                                                if (values.get(key).toString().compareToIgnoreCase(alert.getConditionvalue()) == 0) {
-                                                    isTarg = true;
-                                                    value = values.get(key).toString();
-                                                    break;
-                                                }
-                                            }
-
-
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        if(isTarg){
-                            resultTarget.setValue(value);
-                            break;
-                        }
-                    }
-
                 }
             }
         } catch (Exception e) {

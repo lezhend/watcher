@@ -1,12 +1,11 @@
 package com.fortinet.fcasb.watcher.alert.controller;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import com.fortinet.fcasb.watcher.alert.model.cluster.ClusterStats;
+import com.fortinet.fcasb.watcher.alert.model.cluster.ClusterStats.Indices;
+import com.fortinet.fcasb.watcher.alert.model.cluster.ClusterStats.Nodes.OS;
+import com.fortinet.fcasb.watcher.alert.model.node.Node;
+import com.fortinet.fcasb.watcher.alert.model.node.NodeStats;
+import com.google.gson.Gson;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,29 +13,19 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.elasticsearch.Version;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
-import org.elasticsearch.action.admin.cluster.node.info.NodesInfoResponse;
-import org.elasticsearch.client.ClusterAdminClient;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.cluster.node.DiscoveryNode;
-import org.elasticsearch.common.settings.Settings;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.fortinet.fcasb.watcher.alert.model.cluster.ClusterStats;
-import com.fortinet.fcasb.watcher.alert.model.cluster.ClusterStats.Indices;
-import com.fortinet.fcasb.watcher.alert.model.cluster.ClusterStats.Nodes.OS;
-import com.fortinet.fcasb.watcher.alert.model.node.Node;
-import com.fortinet.fcasb.watcher.alert.model.node.NodeStats;
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by zliu on 17/3/3.
@@ -45,18 +34,7 @@ import com.google.gson.Gson;
 @RequestMapping("/esmonitor/cluster")
 public class ESMonitorClusterController {
 	
-	@Autowired
-    private TransportClient client;
 
-	@Value("${es.transport.client.host}")
-	public String esServerHost;
-
-	@Value("${es.transport.client.port}")
-	public int esServerPort;
-	
-	@Value("${es.cluster.name}")
-	public String esClusterName;
-	
 	@Value("${es.server.rest.cluster.health}")
 	public String restClusterHealth;
 	
@@ -76,9 +54,9 @@ public class ESMonitorClusterController {
 	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String health(Model model) throws UnknownHostException {
-    	ClusterAdminClient clusterAdminClient = client.admin().cluster();
-    	ClusterHealthResponse clusterHealth = clusterAdminClient.prepareHealth().get();
-    	model.addAttribute("clusterHealth", clusterHealth);
+//    	ClusterAdminClient clusterAdminClient = client.admin().cluster();
+//    	ClusterHealthResponse clusterHealth = clusterAdminClient.prepareHealth().get();
+//    	model.addAttribute("clusterHealth", clusterHealth);
     	
 		return "home";
 	}
@@ -115,22 +93,22 @@ public class ESMonitorClusterController {
 	
 	@RequestMapping(value = "/nodelist", method = RequestMethod.GET)
 	public String nodes(Model model) throws ClientProtocolException, IOException {
-		ClusterAdminClient clusterAdminClient = client.admin().cluster();
-    	NodesInfoResponse nodesInfo = clusterAdminClient.prepareNodesInfo().get();
-    	List<NodeInfo> nodeInfos = nodesInfo.getNodes();
+//		ClusterAdminClient clusterAdminClient = client.admin().cluster();
+//    	NodesInfoResponse nodesInfo = clusterAdminClient.prepareNodesInfo().get();
+//    	List<NodeInfo> nodeInfos = nodesInfo.getNodes();
     	List<Node> nodes = new ArrayList<>();
-    	for (NodeInfo nodeInfo : nodeInfos) {
-    		Node node = new Node();
-    		DiscoveryNode discoveryNode = nodeInfo.getNode();
-    		node.setId(discoveryNode.getId());
-    		node.setName(discoveryNode.getName());
-    		node.setTransportAddress(discoveryNode.getAddress().toString());
-    		node.setHost(discoveryNode.getHostAddress());
-    		node.setIp(node.getHost());
-    		node.setVersion(discoveryNode.getVersion().toString());
-    		node.setIndexBuffer(nodeInfo.getTotalIndexingBuffer().toString());
-    		nodes.add(node);
-    	}
+//    	for (NodeInfo nodeInfo : nodeInfos) {
+//    		Node node = new Node();
+//    		DiscoveryNode discoveryNode = nodeInfo.getNode();
+//    		node.setId(discoveryNode.getId());
+//    		node.setName(discoveryNode.getName());
+//    		node.setTransportAddress(discoveryNode.getAddress().toString());
+//    		node.setHost(discoveryNode.getHostAddress());
+//    		node.setIp(node.getHost());
+//    		node.setVersion(discoveryNode.getVersion().toString());
+//    		node.setIndexBuffer(nodeInfo.getTotalIndexingBuffer().toString());
+//    		nodes.add(node);
+//    	}
 
 		model.addAttribute("nodes", nodes);
 		
@@ -158,17 +136,17 @@ public class ESMonitorClusterController {
     	model.addAttribute("jvm", gson.toJson(nodeStats.getJvm()));
     	model.addAttribute("os", gson.toJson(nodeStats.getOs()));
     	
-    	ClusterAdminClient clusterAdminClient = client.admin().cluster();
-    	NodesInfoResponse nodesInfo = clusterAdminClient.prepareNodesInfo(nodeName).get();
-    	NodeInfo nodeInfo = nodesInfo.getNodes().get(0);
-    	String indexBuffer = nodeInfo.getTotalIndexingBuffer().toString();
-    	Settings settings = nodeInfo.getSettings();
-    	DiscoveryNode node = nodeInfo.getNode();
-    	Version version = node.getVersion();
-    	model.addAttribute("indexBuffer", indexBuffer);
-    	model.addAttribute("settings", gson.toJson(settings));
-    	model.addAttribute("version", (int)version.major + "." + (int)version.minor + "." + (int)version.revision);
-    	
+//    	ClusterAdminClient clusterAdminClient = client.admin().cluster();
+//    	NodesInfoResponse nodesInfo = clusterAdminClient.prepareNodesInfo(nodeName).get();
+//    	NodeInfo nodeInfo = nodesInfo.getNodes().get(0);
+//    	String indexBuffer = nodeInfo.getTotalIndexingBuffer().toString();
+//    	Settings settings = nodeInfo.getSettings();
+//    	DiscoveryNode node = nodeInfo.getNode();
+//    	Version version = node.getVersion();
+//    	model.addAttribute("indexBuffer", indexBuffer);
+//    	model.addAttribute("settings", gson.toJson(settings));
+//    	model.addAttribute("version", (int)version.major + "." + (int)version.minor + "." + (int)version.revision);
+//    	
     	return "nodedetail";
 	}
 	
