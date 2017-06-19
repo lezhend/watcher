@@ -33,7 +33,7 @@ public class MonitorESTask implements Runnable {
     private void init(){
          monitorUrls.put("cluster_health","http://"+esHost+":"+esPort+"/_cluster/health");
          monitorUrls.put("cluster_stats","http://"+esHost+":"+esPort+"/_cluster/stats");
-//         monitorUrls.put("cluster_nodes","http://"+esHost+":"+esPort+"/_nodes");
+         monitorUrls.put("cluster_nodes","http://"+esHost+":"+esPort+"/_nodes");
     }
 
     @Autowired
@@ -42,7 +42,7 @@ public class MonitorESTask implements Runnable {
     public void execute(){
         for(Map.Entry<String,String> entry:monitorUrls.entrySet()){
             ResponseEntity<Map<String,Object>> re = restWrapper.get(entry.getValue(),new TypeReference<Map<String,Object>>(){});
-            LOGGER.info("url={}, result={}",entry.getValue(),JSON.toJSONString(re.getBody()));
+            LOGGER.info("url={}, result={}",entry.getValue(),JSON.toJSONString(re.getStatusCode()));
             if(re.getBody()!=null) {
                 Map<String, Object> body = re.getBody();
                 body.put("filter", "es_cluster");
