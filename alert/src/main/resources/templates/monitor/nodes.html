@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -66,9 +66,9 @@
 
 </div>
 
-<input type="hidden" id="restClusterHealth" value="${restClusterHealth}"/>
-<input type="hidden" id="restClusterStats" value="${restClusterStats}"/>
-<input type="hidden" id="restNodes" value="${restNodes}"/>
-<input type="hidden" id="restNodeStats" value="${restNodeStats}"/>
+<input type="hidden" id="restClusterHealth" th:value="${restClusterHealth}"/>
+<input type="hidden" id="restClusterStats" th:value="${restClusterStats}"/>
+<input type="hidden" id="restNodes" th:value="${restNodes}"/>
+<input type="hidden" id="restNodeStats" th:value="${restNodeStats}"/>
 </body>
 </html>

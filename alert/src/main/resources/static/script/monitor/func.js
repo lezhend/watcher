@@ -10,9 +10,17 @@ function getUrlParam(name) {
 
 
 function init() {
-    $.get("http://35.161.254.146:9200/_cluster/health",function (result,status) {
+    $.get($("#restClusterHealth").val(),function (result,status) {
         $("#cluster_name").append(result.cluster_name);
-        $("#status").append(result.status);
+        if(result.status=="green"){
+            $("#status").append("<span style='color:#0F0'>"+result.status+"</span>");
+        } else if(result.status=="red"){
+            $("#status").append("<span style='color:#F00'>"+result.status+"</span>");
+        } else if(result.status=="yellow"){
+            $("#status").append("<span style='color:#FF0'>"+result.status+"</span>");
+        }else{
+            $("#status").append("<span style='color:#000'>"+result.status+"</span>");
+        }
         $("#timed_out").append(result.timed_out);
         $("#number_of_nodes").append(result.number_of_nodes);
         $("#number_of_data_nodes").append(result.number_of_data_nodes);
@@ -31,6 +39,12 @@ function init() {
 
 function nodes() {
     $.get($("#restNodes").val(),function (result,status) {
+        if(result!=null && result.nodes!=null){
+            for(var key in result.nodes){
+                $("#nodes-list").append("<a href='#' class='list-group-item'>"+result.nodes[key].name+" &nbsp;&nbsp;&nbsp;&nbsp;"+result.nodes[key].ip
+                    +" &nbsp;&nbsp;&nbsp;&nbsp;"+result.nodes[key].version+"</a>");
+            }
+        }
 
     })
 }

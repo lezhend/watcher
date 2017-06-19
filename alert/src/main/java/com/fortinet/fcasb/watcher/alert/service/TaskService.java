@@ -27,6 +27,9 @@ public class TaskService  {
     private ThreadPoolTaskScheduler taskScheduler;
 
     @Autowired
+    private ThreadPoolTaskScheduler monitorScheduler;
+
+    @Autowired
     private  AlertTask alertTask;
     @Autowired
     private  MonitorESTask monitorESTask;
@@ -36,7 +39,7 @@ public class TaskService  {
         taskScheduler.schedule(alertTask, new CronTrigger("0 0/" + min + " * * * ? "));
 
         min = monitorESPeriod/60;
-        taskScheduler.schedule(monitorESTask, new CronTrigger("0 0/" + min + " * * * ? "));
+        monitorScheduler.schedule(monitorESTask, new CronTrigger("0 0/" + min + " * * * ? "));
 
     }
 

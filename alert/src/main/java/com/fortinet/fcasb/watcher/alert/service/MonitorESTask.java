@@ -31,9 +31,9 @@ public class MonitorESTask implements Runnable {
 
     @PostConstruct
     private void init(){
-         monitorUrls.put("health","http://"+esHost+":"+esPort+"/_cluster/health");
-         monitorUrls.put("stats","http://"+esHost+":"+esPort+"/_cluster/stats");
-         monitorUrls.put("nodes","http://"+esHost+":"+esPort+"/_nodes");
+         monitorUrls.put("cluster_health","http://"+esHost+":"+esPort+"/_cluster/health");
+         monitorUrls.put("cluster_stats","http://"+esHost+":"+esPort+"/_cluster/stats");
+//         monitorUrls.put("cluster_nodes","http://"+esHost+":"+esPort+"/_nodes");
     }
 
     @Autowired
@@ -45,7 +45,11 @@ public class MonitorESTask implements Runnable {
             LOGGER.info("url={}, result={}",entry.getValue(),JSON.toJSONString(re.getBody()));
             if(re.getBody()!=null) {
                 Map<String, Object> body = re.getBody();
-                body.put("_type", entry.getKey());
+                body.put("filter", "es_cluster");
+                body.put("metrics", entry.getKey());
+                if(!body.containsKey("timestamp")){
+                    body.put("timestamp",System.currentTimeMillis());
+                }
                 LogUtil.LOGGER_MONITOR_STATISTIC.info(JSON.toJSONString(body));
             }
         }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -62,27 +62,27 @@
 <div style="width:80%;margin-left: 10%">
 
 <div class="list-group" id="cluster-health">
-    <div id="cluster_name">Cluster Name:</div>
-    <div id="status">Cluster Status:</div>
-    <div id="timed_out">Time Out:</div>
-    <div id="number_of_nodes">Nodes Num:</div>
-    <div id="number_of_data_nodes">Nodes Data Num:</div>
-    <div id="active_primary_shards">Active Primary shards:</div>
-    <div id="active_shards">Active shards:</div>
-    <div id="relocating_shards">Relocating shards:</div>
-    <div id="initializing_shards">Initializing shards:</div>
-    <div id="unassigned_shards">Unassigned shards:</div>
-    <div id="delayed_unassigned_shards">Delayed Unassigned shards:</div>
-    <div id="number_of_pending_tasks">number_of_pending_tasks:</div>
-    <div id="number_of_in_flight_fetch">number_of_in_flight_fetch:</div>
-    <div id="task_max_waiting_in_queue_millis">task_max_waiting_in_queue_millis:</div>
-    <div id="active_shards_percent_as_number">active_shards_percent_as_number:</div>
+    <div id="cluster_name" >Cluster Name:&nbsp;&nbsp;</div>
+    <div id="status">Cluster Status:&nbsp;&nbsp;</div>
+    <div id="timed_out">Time Out:&nbsp;&nbsp;</div>
+    <div id="number_of_nodes">Nodes Num:&nbsp;&nbsp;</div>
+    <div id="number_of_data_nodes">Nodes Data Num:&nbsp;&nbsp;</div>
+    <div id="active_primary_shards">Active Primary shards:&nbsp;&nbsp;</div>
+    <div id="active_shards">Active shards:&nbsp;&nbsp;</div>
+    <div id="relocating_shards">Relocating shards:&nbsp;&nbsp;</div>
+    <div id="initializing_shards">Initializing shards:&nbsp;&nbsp;</div>
+    <div id="unassigned_shards">Unassigned shards:&nbsp;&nbsp;</div>
+    <div id="delayed_unassigned_shards">Delayed Unassigned shards:&nbsp;&nbsp;</div>
+    <div id="number_of_pending_tasks">number_of_pending_tasks:&nbsp;&nbsp;</div>
+    <div id="number_of_in_flight_fetch">number_of_in_flight_fetch:&nbsp;&nbsp;</div>
+    <div id="task_max_waiting_in_queue_millis">task_max_waiting_in_queue_millis:&nbsp;&nbsp;</div>
+    <div id="active_shards_percent_as_number">active_shards_percent_as_number:&nbsp;&nbsp;</div>
 </div>
 </div>
 
-<input type="hidden" id="restClusterHealth" value="${restClusterHealth}"/>
-<input type="hidden" id="restClusterStats" value="${restClusterStats}"/>
-<input type="hidden" id="restNodes" value="${restNodes}"/>
-<input type="hidden" id="restNodeStats" value="${restNodeStats}"/>
+<input type="hidden" id="restClusterHealth" th:value="${restClusterHealth}"/>
+<input type="hidden" id="restClusterStats" th:value="${restClusterStats}"/>
+<input type="hidden" id="restNodes" th:value="${restNodes}"/>
+<input type="hidden" id="restNodeStats" th:value="${restNodeStats}"/>
 </body>
 </html>
