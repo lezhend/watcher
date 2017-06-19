@@ -9,6 +9,8 @@ import java.util.Map;
  */
 public class Alert implements Serializable{
     private static final long serialVersionUID = -4879308807404260222L;
+    private String host;         //host name
+    private String port;         //port name
     private String index;         //index name
     private String name;          //alertName
     private Map<String,String> filter;        //search condition   field,key
@@ -25,6 +27,22 @@ public class Alert implements Serializable{
     private String notifications; //通知 , 分隔
     private String emailtitle; //
     private String emailtemplate; //
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
 
     public String getEmailtemplate() {
         return emailtemplate;

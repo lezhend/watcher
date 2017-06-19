@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,34 +25,44 @@ import java.util.Map;
 public class MonitorESTask implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorESTask.class);
 
-    @Value("${es.server.host}")
-    private String esHost;
-    @Value("${es.server.port}")
-    private String esPort;
-    private Map<String,String> monitorUrls = new HashMap<>();
+    @Value("${es.server.hosts}")
+    private String[] esHosts;
+    @Value("${es.server.ports}")
+    private String[] esPorts;
+    private List<Map<String,String>> monitorUrls = new ArrayList();
 
     @PostConstruct
     private void init(){
-         monitorUrls.put("cluster_health","http://"+esHost+":"+esPort+"/_cluster/health");
-         monitorUrls.put("cluster_stats","http://"+esHost+":"+esPort+"/_cluster/stats");
-         monitorUrls.put("cluster_nodes","http://"+esHost+":"+esPort+"/_nodes");
+        for(int i=0;i<esHosts.length;i++){
+            Map<String,String> monitor = new HashMap<>();
+            monitor.put("cluster_health","http://"+esHosts[i]+":"+esPorts[i]+"/_cluster/health");
+            monitor.put("cluster_stats","http://"+esHosts[i]+":"+esPorts[i]+"/_cluster/stats");
+            monitorUrls.add(monitor);
+        }
+
+//         monitorUrls.put("cluster_nodes","http://"+esHost+":"+esPort+"/_nodes");
     }
 
     @Autowired
     private RestWrapper restWrapper;
 
     public void execute(){
-        for(Map.Entry<String,String> entry:monitorUrls.entrySet()){
-            ResponseEntity<Map<String,Object>> re = restWrapper.get(entry.getValue(),new TypeReference<Map<String,Object>>(){});
-            LOGGER.info("url={}, result={}",entry.getValue(),JSON.toJSONString(re.getStatusCode()));
-            if(re.getBody()!=null) {
-                Map<String, Object> body = re.getBody();
-                body.put("filter", "es_cluster");
-                body.put("metrics", entry.getKey());
-                if(!body.containsKey("timestamp")){
-                    body.put("timestamp",System.currentTimeMillis());
+        for(int i =0;i<monitorUrls.size();i++) {
+            for (Map.Entry<String, String> entry : monitorUrls.get(i).entrySet()) {
+                ResponseEntity<Map<String, Object>> re = restWrapper.get(entry.getValue(), new TypeReference<Map<String, Object>>() {
+                });
+                LOGGER.info("url={}, result={}", entry.getValue(), JSON.toJSONString(re.getStatusCode()));
+                if (re.getBody() != null) {
+                    Map<String, Object> body = re.getBody();
+                    body.put("filter", "es_cluster");
+                    body.put("metrics", entry.getKey());
+                    body.put("host",esHosts[i]);
+                    body.put("port",esPorts[i]);
+                    if (!body.containsKey("timestamp")) {
+                        body.put("timestamp", System.currentTimeMillis());
+                    }
+                    LogUtil.LOGGER_MONITOR_STATISTIC.info(JSON.toJSONString(body));
                 }
-                LogUtil.LOGGER_MONITOR_STATISTIC.info(JSON.toJSONString(body));
             }
         }
     }

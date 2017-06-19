@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,15 +31,24 @@ public class ESService {
     @Value("${alert.period}")
     private Integer period;
 
-    @Value("${es.server.rest.search}")
-    private String esRestSearch;
+    @Value("${es.server.hosts}")
+    private String[] hosts;
+
+    @Value("${es.server.ports}")
+    private String[] ports;
 
     @Autowired
     private RestWrapper restWrapper;
 
 
-    private Map<String,Object> restSearch(String index,Map<String,Object> searchFilter){
-        String url = MessageFormat.format(esRestSearch,index);
+    private Map<String,Object> restSearch(Alert alert,Map<String,Object> searchFilter){
+        String host = hosts[0];
+        String port = ports[0];
+        if(StringUtils.isNotBlank(alert.getHost())&& StringUtils.isNumeric(alert.getPort())){
+             host = alert.getHost();
+             port = alert.getPort();
+        }
+        String url = "http://"+host+":"+port+"/"+alert.getIndex()+"/_search";
         ResponseEntity<Map<String,Object>> re = restWrapper.post(url,searchFilter,new TypeReference<Map<String,Object>>(){});
         return re.getBody();
     }
@@ -65,7 +73,7 @@ public class ESService {
         Map<String,Object> params = new HashMap<>();
         params.put("query", JSON.parse(boolQueryBuilder.toString()));
         params.put("size",SEARCH_SIZE);
-        return restSearch(alert.getIndex(),params);
+        return restSearch(alert,params);
 
 
     }

@@ -45,6 +45,8 @@ public class InitDatabase {
     private final String CREATE_TABLE_ALERT_SQL = "" +
             "CREATE TABLE IF NOT EXISTS  "+ TablesEnum.ALERT.getTablename()+
             " (" +
+            " host TEXT, " +
+            " port TEXT, " +
             " indexName TEXT  NOT NULL, " +
             " name TEXT NOT NULL, " +
             " searchkey TEXT , " +

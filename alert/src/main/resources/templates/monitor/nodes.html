@@ -13,12 +13,7 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <script src="/script/monitor/func.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            nodes();
-        });
-        
-    </script>
+    
 </head>
 <body>
 
@@ -66,9 +61,5 @@
 
 </div>
 
-<input type="hidden" id="restClusterHealth" th:value="${restClusterHealth}"/>
-<input type="hidden" id="restClusterStats" th:value="${restClusterStats}"/>
-<input type="hidden" id="restNodes" th:value="${restNodes}"/>
-<input type="hidden" id="restNodeStats" th:value="${restNodeStats}"/>
 </body>
 </html>

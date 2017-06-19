@@ -41,6 +41,8 @@ function init_info(){
     $.get("/alert/get/"+name,function (data,status) {
         var result = JSON.parse(data);
         if(result.code==0){
+            $("#host").val(result.data.host);
+            $("#port").val(result.data.port);
             $("#name").val(result.data.name);
             $("#hidden-name").val(result.data.name);
             $("#index").val(result.data.index);
