@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>CMM-home</title>
+    <title>CMM-Monitor</title>
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
 
 
@@ -12,10 +12,10 @@
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <script src="/script/alert/func.js"></script>
+    <script src="/script/monitor/func.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            init_list("alert-list");
+            init();
         });
         
     </script>
@@ -38,13 +38,20 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="dropdown active">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Alert <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/alert/index.html">List</a></li>
                         <li><a href="/alert/create.html">Create</a></li>
                         <li><a href="/alert/logs.html">Logs</a></li>
                         <li><a href="javascript:void(0)" onclick="refresh()">Refresh</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MonitorCluster <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/monitor/index.html">Health</a></li>
+                        <li><a href="/monitor/nodes.html">Nodes</a></li>
                     </ul>
                 </li>
             </ul>
@@ -54,14 +61,28 @@
 
 <div style="width:80%;margin-left: 10%">
 
-<div class="list-group" id="alert-list">
+<div class="list-group" id="cluster-health">
+    <div id="cluster_name">Cluster Name:</div>
+    <div id="status">Cluster Status:</div>
+    <div id="timed_out">Time Out:</div>
+    <div id="number_of_nodes">Nodes Num:</div>
+    <div id="number_of_data_nodes">Nodes Data Num:</div>
+    <div id="active_primary_shards">Active Primary shards:</div>
+    <div id="active_shards">Active shards:</div>
+    <div id="relocating_shards">Relocating shards:</div>
+    <div id="initializing_shards">Initializing shards:</div>
+    <div id="unassigned_shards">Unassigned shards:</div>
+    <div id="delayed_unassigned_shards">Delayed Unassigned shards:</div>
+    <div id="number_of_pending_tasks">number_of_pending_tasks:</div>
+    <div id="number_of_in_flight_fetch">number_of_in_flight_fetch:</div>
+    <div id="task_max_waiting_in_queue_millis">task_max_waiting_in_queue_millis:</div>
+    <div id="active_shards_percent_as_number">active_shards_percent_as_number:</div>
 </div>
-    <nav aria-label="Page navigation">
-        <ul class="pager">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">Next</a></li>
-        </ul>
-    </nav>
 </div>
+
+<input type="hidden" id="restClusterHealth" value="${restClusterHealth}"/>
+<input type="hidden" id="restClusterStats" value="${restClusterStats}"/>
+<input type="hidden" id="restNodes" value="${restNodes}"/>
+<input type="hidden" id="restNodeStats" value="${restNodeStats}"/>
 </body>
 </html>

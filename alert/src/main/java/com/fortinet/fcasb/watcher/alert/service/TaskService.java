@@ -20,16 +20,24 @@ public class TaskService  {
 
     @Value("${alert.period}")
     private Integer period;
+    @Value("${monitor.es.period}")
+    private Integer monitorESPeriod;
 
     @Autowired
     private ThreadPoolTaskScheduler taskScheduler;
 
     @Autowired
     private  AlertTask alertTask;
+    @Autowired
+    private  MonitorESTask monitorESTask;
     @PostConstruct
     private void startTask() {
         int min = period/60;
         taskScheduler.schedule(alertTask, new CronTrigger("0 0/" + min + " * * * ? "));
+
+        min = monitorESPeriod/60;
+        taskScheduler.schedule(monitorESTask, new CronTrigger("0 0/" + min + " * * * ? "));
+
     }
 
 }

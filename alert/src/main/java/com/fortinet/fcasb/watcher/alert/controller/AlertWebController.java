@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/alert")
-public class WebController {
+public class AlertWebController {
 
     @GetMapping("/index.html")
     public String index(Map<String, Object> model) {
