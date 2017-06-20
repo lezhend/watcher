@@ -19,6 +19,9 @@ public class ESMonitorController {
 	
 
 
+	@Value("${es.server.hosts.monitor}")
+	private String[] esMonitors;
+
 	
 	@RequestMapping("/")
 	public String index() {
@@ -27,6 +30,7 @@ public class ESMonitorController {
 	
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String health(Model model) throws UnknownHostException {
+		model.addAttribute("esMonitors",esMonitors);
 		return "monitor/index";
 	}
 	

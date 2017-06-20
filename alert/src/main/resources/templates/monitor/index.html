@@ -58,7 +58,7 @@
         </div>
     </div><!-- /.container-fluid -->
 </nav>
-<iframe src="http://35.161.254.146:8082/goto/47075861b1484c3b2bce0926e560f421?embed=true" height="600" width="100%"></iframe>
+<iframe th:each="esmonitor:${esMonitors}" th:src="${esmonitor}" height="600" width="100%"></iframe>
 <!--<div style="width:80%;margin-left: 10%">-->
 
 <!--<div class="list-group" id="cluster-health">-->
