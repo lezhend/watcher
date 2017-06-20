@@ -40,9 +40,13 @@ function init_info(){
     var name = getUrlParam('name');
     $.get("/alert/get/"+name,function (data,status) {
         var result = JSON.parse(data);
-        if(result.code==0){
-            $("#host").val(result.data.host);
-            $("#port").val(result.data.port);
+        if(result.code==0) {
+            if (result.data.host) {
+                 $("#host").val(result.data.host);
+             }
+             if(result.data.port){
+                 $("#port").val(result.data.port);
+             }
             $("#name").val(result.data.name);
             $("#hidden-name").val(result.data.name);
             $("#index").val(result.data.index);
@@ -88,6 +92,8 @@ function toLog(){
 function createAlert(){
     var url = "/alert/"+$("#name").val();
     var alertData={};
+    alertData.host=$("#host").val();
+    alertData.port=$("#port").val();
     alertData.name=$("#name").val();
     alertData.index=$("#index").val();
     alertData.searchkey=$("#searchkey").val();
@@ -120,6 +126,8 @@ function createAlert(){
 function updateAlert(){
     var url = "/alert/"+$("#hidden-name").val();
     var alertData={};
+    alertData.host=$("#host").val();
+    alertData.port=$("#port").val();
     alertData.name=$("#name").val();
     alertData.index=$("#index").val();
     alertData.searchkey=$("#searchkey").val();

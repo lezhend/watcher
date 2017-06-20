@@ -56,8 +56,8 @@ public class MonitorESTask implements Runnable {
                     Map<String, Object> body = re.getBody();
                     body.put("filter", "es_cluster");
                     body.put("metrics", entry.getKey());
-                    body.put("host",esHosts[i]);
-                    body.put("port",esPorts[i]);
+                    body.put("es_host",esHosts[i]);
+                    body.put("es_port",esPorts[i]);
                     if (!body.containsKey("timestamp")) {
                         body.put("timestamp", System.currentTimeMillis());
                     }
