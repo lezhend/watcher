@@ -38,15 +38,24 @@ function init() {
 }
 
 function nodes() {
-    $.get($("#restNodes").val(),function (result,status) {
-        if(result!=null && result.nodes!=null){
-            for(var key in result.nodes){
-                $("#nodes-list").append("<a href='#' class='list-group-item'>"+result.nodes[key].name+" &nbsp;&nbsp;&nbsp;&nbsp;"+result.nodes[key].ip
-                    +" &nbsp;&nbsp;&nbsp;&nbsp;"+result.nodes[key].version+"</a>");
+    var hosts = $("#hosts").val().split(",");
+    var ports = $("#ports").val().split(",");
+    for(var i=0;i<hosts.length;i++){
+        var url = "http://"+hosts[i]+":"+ports[i]+"/_nodes/";
+        $.get(url,function (result,status) {
+            $("#nodes").append("<h2>"+result.cluster_name+"</h2>");
+            if(result!=null && result.nodes!=null){
+                $("#nodes").append("<div class='list-group' id='nodes-list'>");
+                for(var key in result.nodes){
+                    $("#nodes").append("<a href='#' class='list-group-item'>"+result.nodes[key].name+" &nbsp;&nbsp;&nbsp;&nbsp;"+result.nodes[key].ip
+                        +" &nbsp;&nbsp;&nbsp;&nbsp;"+result.nodes[key].version+"</a>");
+                }
             }
-        }
+            $("#nodes").append("</div>");
+        })
 
-    })
+    }
+
 }
 
 

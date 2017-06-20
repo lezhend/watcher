@@ -13,7 +13,12 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <script src="/script/monitor/func.js"></script>
-    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            nodes();
+        });
+
+    </script>
 </head>
 <body>
 
@@ -54,12 +59,10 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div style="width:80%;margin-left: 10%">
-
-<div class="list-group" id="nodes-list">
-</div>
+<div style="width:80%;margin-left: 10%" id="nodes">
 
 </div>
-
+  <input type="hidden" id="hosts" th:value="${hosts}"/>
+  <input type="hidden" id="ports" th:value="${ports}"/>
 </body>
 </html>

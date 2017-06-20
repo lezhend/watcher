@@ -22,6 +22,12 @@ public class ESMonitorController {
 	@Value("${es.server.hosts.monitor}")
 	private String[] esMonitors;
 
+	@Value("${es.server.hosts}")
+	private String hosts;
+
+	@Value("${es.server.ports}")
+	private String ports;
+
 	
 	@RequestMapping("/")
 	public String index() {
@@ -36,7 +42,9 @@ public class ESMonitorController {
 	
 	@RequestMapping(value = "/nodes.html", method = RequestMethod.GET)
 	public String stats(Model model) throws ClientProtocolException, IOException {
-    	return "monitor/nodes";
+		model.addAttribute("hosts",hosts);
+		model.addAttribute("ports",ports);
+		return "monitor/nodes";
 	}
 
 }
