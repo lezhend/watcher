@@ -42,7 +42,7 @@ function nodes() {
     var ports = $("#ports").val().split(",");
     for(var i=0;i<hosts.length;i++){
         var url = "http://"+hosts[i]+":"+ports[i]+"/_nodes/";
-        $.get(url,function (result,status) {
+        $.get("/request/es?url="+url,function (result,status) {
             $("#nodes").append("<h2>"+result.cluster_name+"</h2>");
             if(result!=null && result.nodes!=null){
                 $("#nodes").append("<div class='list-group' id='nodes-list'>");
