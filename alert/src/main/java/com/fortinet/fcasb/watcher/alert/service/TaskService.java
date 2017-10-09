@@ -28,11 +28,15 @@ public class TaskService  {
 
     @Autowired
     private ThreadPoolTaskScheduler monitorScheduler;
+    @Autowired
+    private ThreadPoolTaskScheduler logstashScheduler;
 
     @Autowired
     private  AlertTask alertTask;
     @Autowired
     private  MonitorESTask monitorESTask;
+    @Autowired
+    private  MonitorLogstashTask logstashTask;
     @PostConstruct
     private void startTask() {
         int min = period/60;
@@ -41,6 +45,7 @@ public class TaskService  {
         min = monitorESPeriod/60;
         monitorScheduler.schedule(monitorESTask, new CronTrigger("0 0/" + min + " * * * ? "));
 
+        logstashScheduler.schedule(logstashTask,new CronTrigger("0 0/" + min + " * * * ? "));
     }
 
 }
