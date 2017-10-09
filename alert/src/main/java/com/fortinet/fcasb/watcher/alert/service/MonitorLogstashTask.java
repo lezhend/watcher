@@ -50,19 +50,23 @@ public class MonitorLogstashTask implements Runnable {
     public void execute(){
         for(int i =0;i<monitorUrls.size();i++) {
             for (Map.Entry<String, String> entry : monitorUrls.get(i).entrySet()) {
-                ResponseEntity<Map<String, Object>> re = restWrapper.get(entry.getValue(), new TypeReference<Map<String, Object>>() {
-                });
-                LOGGER.info("url={}, result={}", entry.getValue(), JSON.toJSONString(re.getStatusCode()));
-                if (re.getBody() != null) {
-                    Map<String, Object> body = re.getBody();
-                    body.put("filter", "logstash_node");
-                    body.put("metrics", entry.getKey());
-                    body.put("m_host",logstashHosts[i]);
-                    body.put("server_name",logstashNames[i]);
-                    if (!body.containsKey("timestamp")) {
-                        body.put("timestamp", System.currentTimeMillis());
+                try {
+                    ResponseEntity<Map<String, Object>> re = restWrapper.get(entry.getValue(), new TypeReference<Map<String, Object>>() {
+                    });
+                    LOGGER.info("url={}, result={}", entry.getValue(), JSON.toJSONString(re.getStatusCode()));
+                    if (re.getBody() != null) {
+                        Map<String, Object> body = re.getBody();
+                        body.put("filter", "logstash_node");
+                        body.put("metrics", entry.getKey());
+                        body.put("m_host", logstashHosts[i]);
+                        body.put("server_name", logstashNames[i]);
+                        if (!body.containsKey("timestamp")) {
+                            body.put("timestamp", System.currentTimeMillis());
+                        }
+                        LogUtil.LOGGER_MONITOR_STATISTIC.info(JSON.toJSONString(body));
                     }
-                    LogUtil.LOGGER_MONITOR_STATISTIC.info(JSON.toJSONString(body));
+                }catch (Exception ex){
+                    LOGGER.error("get {} value failed ",entry.getValue(),ex);
                 }
             }
         }

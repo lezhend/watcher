@@ -49,19 +49,24 @@ public class MonitorESTask implements Runnable {
     public void execute(){
         for(int i =0;i<monitorUrls.size();i++) {
             for (Map.Entry<String, String> entry : monitorUrls.get(i).entrySet()) {
-                ResponseEntity<Map<String, Object>> re = restWrapper.get(entry.getValue(), new TypeReference<Map<String, Object>>() {
-                });
-                LOGGER.info("url={}, result={}", entry.getValue(), JSON.toJSONString(re.getStatusCode()));
-                if (re.getBody() != null) {
-                    Map<String, Object> body = re.getBody();
-                    body.put("filter", "es_cluster");
-                    body.put("metrics", entry.getKey());
-                    body.put("es_host",esHosts[i]);
-                    body.put("es_port",esPorts[i]);
-                    if (!body.containsKey("timestamp")) {
-                        body.put("timestamp", System.currentTimeMillis());
+                try {
+                    ResponseEntity<Map<String, Object>> re = restWrapper.get(entry.getValue(), new TypeReference<Map<String, Object>>() {
+                    });
+                    LOGGER.info("url={}, result={}", entry.getValue(), JSON.toJSONString(re.getStatusCode()));
+                    if (re.getBody() != null) {
+                        Map<String, Object> body = re.getBody();
+                        body.put("filter", "es_cluster");
+                        body.put("metrics", entry.getKey());
+                        body.put("es_host", esHosts[i]);
+                        body.put("es_port", esPorts[i]);
+                        if (!body.containsKey("timestamp")) {
+                            body.put("timestamp", System.currentTimeMillis());
+                        }
+                        LogUtil.LOGGER_MONITOR_STATISTIC.info(JSON.toJSONString(body));
                     }
-                    LogUtil.LOGGER_MONITOR_STATISTIC.info(JSON.toJSONString(body));
+                }catch (Exception ex){
+                    LOGGER.error("get {} value failed ",entry.getValue(),ex);
+
                 }
             }
         }
