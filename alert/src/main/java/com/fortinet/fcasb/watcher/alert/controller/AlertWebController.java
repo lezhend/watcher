@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,8 +32,11 @@ public class AlertWebController {
 
     @GetMapping("/info.html")
     public String info(Map<String, Object> model) {
-        model.put("hosts", hosts);
-        model.put("ports", ports);
+        List<String> hostList= new ArrayList();
+        for(int i =0;i<hosts.length;i++){
+            hostList.add(hosts[i]+":"+ports[i]);
+        }
+        model.put("hosts", hostList);
         return "alert/info";
     }
     @GetMapping("/logs.html")
@@ -40,8 +45,11 @@ public class AlertWebController {
     }
     @GetMapping("/create.html")
     public String create(Map<String, Object> model) {
-        model.put("hosts", hosts);
-        model.put("ports", ports);
+        List<String> hostList= new ArrayList();
+        for(int i =0;i<hosts.length;i++){
+            hostList.add(hosts[i]+":"+ports[i]);
+        }
+        model.put("hosts", hostList);
         return "alert/create";
     }
 }

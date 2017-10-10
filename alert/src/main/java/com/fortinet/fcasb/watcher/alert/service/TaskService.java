@@ -20,8 +20,6 @@ public class TaskService  {
 
     @Value("${alert.period}")
     private Integer period;
-    @Value("${monitor.es.period}")
-    private Integer monitorESPeriod;
 
     @Autowired
     private ThreadPoolTaskScheduler taskScheduler;
@@ -42,7 +40,6 @@ public class TaskService  {
         int min = period/60;
         taskScheduler.schedule(alertTask, new CronTrigger("0 0/" + min + " * * * ? "));
 
-        min = monitorESPeriod/60;
         monitorScheduler.schedule(monitorESTask, new CronTrigger("0 0/" + min + " * * * ? "));
 
         logstashScheduler.schedule(logstashTask,new CronTrigger("0 0/" + min + " * * * ? "));

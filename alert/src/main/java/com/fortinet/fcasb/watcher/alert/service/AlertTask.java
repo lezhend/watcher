@@ -68,9 +68,7 @@ public class AlertTask  implements Runnable {
                 title = title.replace("{value}", value);
             }        }
         String to = alert.getNotifications()+","+notemmail;
-        LOGGER.info("title= {}",title);
-        LOGGER.info("content= {}",content);
-        LOGGER.info("to= {}",to);
+        LOGGER.info("title= {}, content={}, to={}",title,content,to);
         emailService.sendMail(title, content, to);
     }
 }

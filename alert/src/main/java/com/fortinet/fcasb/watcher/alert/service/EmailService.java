@@ -1,10 +1,8 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
-import com.fortinet.fcasb.watcher.alert.domain.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,7 +10,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
-import java.text.MessageFormat;
 
 /**
  * Created by zliu on 17/3/15.
@@ -40,12 +37,7 @@ public class EmailService {
             messageHelper.setTo(mails);
 
             LOGGER.debug("ready to send a mail to [{}]", to);
-            taskExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    javaMailSender.send(mimeMessage);
-                }
-            });
+            taskExecutor.execute( () -> javaMailSender.send(mimeMessage));
         } catch (Exception e) {
             LOGGER.error("send email error", e);
 

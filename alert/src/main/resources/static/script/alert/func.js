@@ -41,12 +41,14 @@ function init_info(){
     $.get("/alert/get/"+name,function (data,status) {
         var result = JSON.parse(data);
         if(result.code==0) {
+            var port = 80;
+            if(result.data.port){
+                port = result.data.port;
+            }
             if (result.data.host) {
-                 $("#host").val(result.data.host);
+                 $("#host").val(result.data.host+":"+port);
              }
-             if(result.data.port){
-                 $("#port").val(result.data.port);
-             }
+
             $("#name").val(result.data.name);
             $("#hidden-name").val(result.data.name);
             $("#index").val(result.data.index);
@@ -92,8 +94,9 @@ function toLog(){
 function createAlert(){
     var url = "/alert/"+$("#name").val();
     var alertData={};
-    alertData.host=$("#host").val();
-    alertData.port=$("#port").val();
+    var hostName=$("#host").val().split(":");
+    alertData.host=hostName[0];
+    alertData.port=hostName[1];
     alertData.name=$("#name").val();
     alertData.index=$("#index").val();
     alertData.searchkey=$("#searchkey").val();
@@ -126,8 +129,9 @@ function createAlert(){
 function updateAlert(){
     var url = "/alert/"+$("#hidden-name").val();
     var alertData={};
-    alertData.host=$("#host").val();
-    alertData.port=$("#port").val();
+    var hostName=$("#host").val().split(":");
+    alertData.host=hostName[0];
+    alertData.port=hostName[1];
     alertData.name=$("#name").val();
     alertData.index=$("#index").val();
     alertData.searchkey=$("#searchkey").val();
