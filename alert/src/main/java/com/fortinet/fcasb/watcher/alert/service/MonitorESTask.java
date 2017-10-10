@@ -64,6 +64,7 @@ public class MonitorESTask implements Runnable {
     public void execute(){
         List<Monitor> monitors = monitorDao.findByType(MonitorTypeEnum.ES);
         monitors.addAll(MONITOR_LIST);
+        LOGGER.info("monitor list size {}",monitors.size());
         for(Monitor monitor:monitors) {
             for (Map.Entry<String, String> entry : metrics.entrySet()) {
                 try {

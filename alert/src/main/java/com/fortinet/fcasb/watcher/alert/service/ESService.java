@@ -71,6 +71,7 @@ public class ESService {
 
         boolQueryBuilder.must(QueryBuilders.rangeQuery("@timestamp").format("epoch_millis").gte(StringUtil.getCurrentWholeMinTime().getTime() - period * 1000).lte(StringUtil.getCurrentWholeMinTime().getTime()));
 
+        LOGGER.info("current time :{}",StringUtil.getCurrentWholeMinTime());
         Map<String,Object> params = new HashMap<>();
         params.put("query", JSON.parse(boolQueryBuilder.toString()));
         params.put("size",SEARCH_SIZE);
