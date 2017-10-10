@@ -2,6 +2,9 @@ package com.fortinet.fcasb.watcher.alert.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.fortinet.fcasb.watcher.alert.dao.MonitorDao;
+import com.fortinet.fcasb.watcher.alert.domain.Monitor;
+import com.fortinet.fcasb.watcher.alert.enums.MonitorTypeEnum;
 import com.fortinet.fcasb.watcher.alert.init.RestWrapper;
 import com.fortinet.fcasb.watcher.alert.utils.LogUtil;
 import org.slf4j.Logger;
@@ -29,15 +32,27 @@ public class MonitorESTask implements Runnable {
     private String[] esHosts;
     @Value("${es.server.ports}")
     private String[] esPorts;
-    private List<Map<String,String>> monitorUrls = new ArrayList();
+
+    @Autowired
+    private MonitorDao monitorDao;
+
+    private List<Monitor> MONITOR_LIST = new ArrayList();
+
+    private Map<String,String> metrics= new HashMap<>();
 
     @PostConstruct
     private void init(){
+        metrics.put("cluster_health","/_cluster/health") ;
+        metrics.put("cluster_stats","/_cluster/stats") ;
         for(int i=0;i<esHosts.length;i++){
-            Map<String,String> monitor = new HashMap<>();
-            monitor.put("cluster_health","http://"+esHosts[i]+":"+esPorts[i]+"/_cluster/health");
-            monitor.put("cluster_stats","http://"+esHosts[i]+":"+esPorts[i]+"/_cluster/stats");
-            monitorUrls.add(monitor);
+            Monitor monitor = new Monitor();
+            monitor.setLabel("default-"+i);
+            monitor.setName(esHosts[i]);
+            monitor.setPort(esPorts[i]);
+            monitor.setHost(esHosts[i]);
+            monitor.setMethod("http");
+            monitor.setType(MonitorTypeEnum.ES.toString());
+            MONITOR_LIST.add(monitor);
         }
 
 //         monitorUrls.put("cluster_nodes","http://"+esHost+":"+esPort+"/_nodes");
@@ -47,19 +62,25 @@ public class MonitorESTask implements Runnable {
     private RestWrapper restWrapper;
 
     public void execute(){
-        for(int i =0;i<monitorUrls.size();i++) {
-            for (Map.Entry<String, String> entry : monitorUrls.get(i).entrySet()) {
+        List<Monitor> monitors = monitorDao.findByType(MonitorTypeEnum.ES);
+        monitors.addAll(MONITOR_LIST);
+        for(Monitor monitor:monitors) {
+            for (Map.Entry<String, String> entry : metrics.entrySet()) {
                 try {
-                    ResponseEntity<Map<String, Object>> re = restWrapper.get(entry.getValue(), new TypeReference<Map<String, Object>>() {
+                    String url = monitor.getMethod()+"://"+monitor.getHost()+":"+monitor.getPort()+entry.getValue();
+                    ResponseEntity<Map<String, Object>> re = restWrapper.get(url, new TypeReference<Map<String, Object>>() {
                     });
                     LOGGER.info("url={}, result={}", entry.getValue(), JSON.toJSONString(re.getStatusCode()));
                     if (re.getBody() != null) {
                         Map<String, Object> body = re.getBody();
                         body.put("filter", "es_cluster");
                         body.put("metrics", entry.getKey());
-                        body.put("es_host", esHosts[i]);
-                        body.put("es_port", esPorts[i]);
-                        body.put("m_host", esHosts[i]);
+                        body.put("es_host", monitor.getHost());
+                        body.put("es_port", monitor.getPort());
+                        body.put("m_host", monitor.getHost());
+                        body.put("m_name", monitor.getName());
+                        body.put("m_label", monitor.getLabel());
+                        body.put("m_type", monitor.getType());
                         if (!body.containsKey("timestamp")) {
                             body.put("timestamp", System.currentTimeMillis());
                         }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
 import com.fortinet.fcasb.watcher.alert.init.RestWrapper;
+import com.fortinet.fcasb.watcher.alert.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -68,7 +69,7 @@ public class ESService {
             }
         }
 
-        boolQueryBuilder.must(QueryBuilders.rangeQuery("@timestamp").format("epoch_millis").gte(System.currentTimeMillis() - period * 1000).lte(System.currentTimeMillis()));
+        boolQueryBuilder.must(QueryBuilders.rangeQuery("@timestamp").format("epoch_millis").gte(StringUtil.getCurrentWholeMinTime().getTime() - period * 1000).lte(StringUtil.getCurrentWholeMinTime().getTime()));
 
         Map<String,Object> params = new HashMap<>();
         params.put("query", JSON.parse(boolQueryBuilder.toString()));

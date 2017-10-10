@@ -290,7 +290,14 @@ public class AlertService {
         if(StringUtils.isBlank(alert.getCvalue())){
             alert.setCvalue(AlertConditionEnum.GE.getValue());
         }
-        alertDao.insert(alert);
+        try {
+            alertDao.insert(alert);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(500);
+            result.setMsg(e.getMessage());
+            return  result;
+        }
         result.setCode(0);
         result.setMsg("ok");
         return result;

@@ -41,7 +41,11 @@ import java.util.List;
 public class AlertDao {
     @Autowired
     private InitDatabase initDatabase;
-    public void insert(Alert alert){
+    public void insert(Alert alert) throws Exception {
+        Alert result = get(alert.getName());
+        if(result!=null){
+            throw  new Exception("This record already exists");
+        }
         alert.setCreatetime(StringUtil.getTableDate(new Date()));
         alert.setUpdatetime(alert.getCreatetime());
         String sql = "INSERT INTO {0} (host,port,indexName,name,searchkey,filter,field,ccount,conditioncount,cvalue,conditionvalue,createtime,updatetime,emailtitle,emailtemplate,notifications)" +
@@ -67,22 +71,7 @@ public class AlertDao {
                 alert.getEmailtitle()==null?"":alert.getEmailtitle(),
                 alert.getEmailtemplate()==null?"":alert.getEmailtemplate(),
                 alert.getNotifications()==null?"":alert.getNotifications());
-        Statement statement = null;
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            statement.execute(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        DaoUtil.execute(initDatabase.getConnect(),sql);
     }
 
     public void update(Alert alert){
@@ -112,22 +101,7 @@ public class AlertDao {
                 alert.getHost()==null? "":alert.getHost(),
                 alert.getPort()==null? "":alert.getPort(),
                 alert.getName());
-        Statement statement = null;
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            statement.execute(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        DaoUtil.execute(initDatabase.getConnect(),sql);
     }
 
     public Alert get(String name){
@@ -228,31 +202,8 @@ public class AlertDao {
     public boolean delete(String name){
         String sql = "DELETE FROM {0} WHERE name = \"{1}\"";
         sql = MessageFormat.format(sql, TablesEnum.ALERT.getTablename(), name);
-        Statement statement = null;
-        ResultSet rs = null;
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            return statement.execute(sql);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
+        DaoUtil.execute(initDatabase.getConnect(),sql);
+        return true;
     }
 
 

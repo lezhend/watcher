@@ -71,6 +71,18 @@ public class InitDatabase {
             " notifications TEXT);";
 
 
+    private final String CREATE_TABLE_MONITOR_SQL = "" +
+            "CREATE TABLE IF NOT EXISTS  "+ TablesEnum.MONITOR.getTablename()+
+            " (" +
+            " host TEXT NOT NULL, " +
+            " port TEXT NOT NULL, " +
+            " name TEXT NOT NULL, " +
+            " method TEXT NOT NULL, " +
+            " label TEXT NOT NULL, " +
+            " type TEXT NOT NULL, " +
+            " createtime TEXT , " +
+            " updatetime TEXT);";
+
     private static Connection connect = null;
 
     @PostConstruct
@@ -81,8 +93,7 @@ public class InitDatabase {
             throw new RuntimeException("init database resource error!!!");
         }
 
-        createAlertTables();
-        createAlertLogTables();
+        createTables();
     }
 
     private void initConnect() {
@@ -105,36 +116,13 @@ public class InitDatabase {
         return connect;
     }
 
-    public void createAlertTables(){
+    public void createTables(){
         if(connect!=null){
             Statement stmt = null;
             try {
                 stmt = connect.createStatement();
                 stmt.executeUpdate(CREATE_TABLE_ALERT_SQL);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                LOGGER.error("create {} failed {}", TablesEnum.ALERT.getTablename(),e.toString());
-
-            } finally {
-                if(stmt!=null){
-                    try {
-                        stmt.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        LOGGER.error(e.toString());
-                        LOGGER.error("create {} failed {}",TablesEnum.ALERT.getTablename(),e.toString());
-                    }
-                }
-            }
-
-        }
-
-    }
-    public void createAlertLogTables(){
-        if(connect!=null){
-            Statement stmt = null;
-            try {
-                stmt = connect.createStatement();
+                stmt.executeUpdate(CREATE_TABLE_MONITOR_SQL);
                 stmt.executeUpdate(CREATE_TABLE_ALERT_LOG_SQL);
             } catch (SQLException e) {
                 e.printStackTrace();

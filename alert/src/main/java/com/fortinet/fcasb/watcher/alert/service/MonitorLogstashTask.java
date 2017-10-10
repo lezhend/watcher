@@ -2,6 +2,9 @@ package com.fortinet.fcasb.watcher.alert.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.fortinet.fcasb.watcher.alert.dao.MonitorDao;
+import com.fortinet.fcasb.watcher.alert.domain.Monitor;
+import com.fortinet.fcasb.watcher.alert.enums.MonitorTypeEnum;
 import com.fortinet.fcasb.watcher.alert.init.RestWrapper;
 import com.fortinet.fcasb.watcher.alert.utils.LogUtil;
 import org.slf4j.Logger;
@@ -29,37 +32,60 @@ public class MonitorLogstashTask implements Runnable {
     private String[] logstashHosts;
     @Value("${logstash.server.names}")
     private String[] logstashNames;
-    
-    private List<Map<String,String>> monitorUrls = new ArrayList();
 
-    @PostConstruct
-    private void init(){
-        for(int i=0;i<logstashHosts.length;i++){
-            Map<String,String> monitor = new HashMap<>();
-            monitor.put("stats_process","http://"+logstashHosts[i]+"/_node/stats/process");
-            monitor.put("stats_jvm","http://"+logstashHosts[i]+"/_node/stats/jvm");
-            monitorUrls.add(monitor);
-        }
+    private List<Monitor> MONITOR_LIST = new ArrayList();
 
-//         monitorUrls.put("cluster_nodes","http://"+esHost+":"+esPort+"/_nodes");
-    }
+    private Map<String,String> metrics= new HashMap<>();
+
 
     @Autowired
     private RestWrapper restWrapper;
 
+    @PostConstruct
+    private void init(){
+        metrics.put("stats_process","/_node/stats/process") ;
+        metrics.put("stats_jvm","/_node/stats/jvm") ;
+        for(int i=0;i<logstashHosts.length;i++){
+            String host=logstashHosts[i];
+            String port="80";
+            if(logstashHosts[i].contains(":")){
+                String[] urls = logstashHosts[i].split(":");
+                host = urls[0];
+                port = urls[1];
+            }
+            Monitor monitor = new Monitor();
+            monitor.setLabel("default-"+i);
+            monitor.setName(logstashNames[i]);
+            monitor.setPort(port);
+            monitor.setHost(host);
+            monitor.setMethod("http");
+            monitor.setType(MonitorTypeEnum.LOGSTASH.toString());
+            MONITOR_LIST.add(monitor);
+        }
+    }
+
+    @Autowired
+    private MonitorDao monitorDao;
+
     public void execute(){
-        for(int i =0;i<monitorUrls.size();i++) {
-            for (Map.Entry<String, String> entry : monitorUrls.get(i).entrySet()) {
+        List<Monitor> monitors = monitorDao.findByType(MonitorTypeEnum.LOGSTASH);
+        monitors.addAll(MONITOR_LIST);
+        for(Monitor monitor:monitors) {
+            for (Map.Entry<String, String> entry : metrics.entrySet()) {
                 try {
-                    ResponseEntity<Map<String, Object>> re = restWrapper.get(entry.getValue(), new TypeReference<Map<String, Object>>() {
+                    String url = monitor.getMethod()+"://"+monitor.getHost()+":"+monitor.getPort()+entry.getValue();
+
+                    ResponseEntity<Map<String, Object>> re = restWrapper.get(url, new TypeReference<Map<String, Object>>() {
                     });
                     LOGGER.info("url={}, result={}", entry.getValue(), JSON.toJSONString(re.getStatusCode()));
                     if (re.getBody() != null) {
                         Map<String, Object> body = re.getBody();
                         body.put("filter", "logstash_node");
                         body.put("metrics", entry.getKey());
-                        body.put("m_host", logstashHosts[i]);
-                        body.put("server_name", logstashNames[i]);
+                        body.put("m_host", monitor.getHost());
+                        body.put("m_name", monitor.getName());
+                        body.put("m_label", monitor.getLabel());
+                        body.put("m_type", monitor.getType());
                         if (!body.containsKey("timestamp")) {
                             body.put("timestamp", System.currentTimeMillis());
                         }
