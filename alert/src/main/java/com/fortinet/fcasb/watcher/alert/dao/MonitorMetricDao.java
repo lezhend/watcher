@@ -48,7 +48,7 @@ public class MonitorMetricDao {
     }
 
     public void update(MonitorMetric metric){
-        String sql = "UPDATE \"{0}\" SET type=\"{1}\",uri=\"{2}\",update=\"{3}\" " +
+        String sql = "UPDATE \"{0}\" SET type=\"{1}\",uri=\"{2}\",updatetime=\"{3}\" " +
                 "WHERE name=\"{4}\"";
         metric.setUpdateTime(StringUtil.getLogTimestamp());
 

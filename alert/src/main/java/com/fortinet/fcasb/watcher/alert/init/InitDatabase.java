@@ -141,7 +141,7 @@ public class InitDatabase {
 
         }
 
-        metric.setUri("/_node/stats/process");
+        metric.setUri("/_node/stats/stats_jvm");
         metric.setName("stats_jvm");
         try {
             metricDao.insert(metric);
