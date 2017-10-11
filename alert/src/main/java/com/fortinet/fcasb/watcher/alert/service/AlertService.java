@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,13 +43,13 @@ public class AlertService {
     }
 
 
-    public ResultTarget isTarget(Alert alert){
+    public ResultTarget isTarget(Alert alert,Date startTime,Date endTime){
         boolean isTarg = false;
         Map<String,Object> response = null;
 
         ResultTarget resultTarget = new ResultTarget();
         try {
-            response = esService.search(alert);
+            response = esService.search(alert,startTime,endTime);
             if(response.containsKey("hits")){
                 Map<String,Object> hits = (Map<String, Object>) response.get("hits");
                 List<Map<String,Object>> hitList = (List<Map<String, Object>>) hits.get("hits");

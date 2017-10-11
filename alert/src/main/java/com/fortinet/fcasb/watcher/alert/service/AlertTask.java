@@ -1,6 +1,7 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
+import com.fortinet.fcasb.watcher.alert.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +23,9 @@ public class AlertTask  implements Runnable {
     @Value("${send.mail.list}")
     private String notemmail;
 
+    @Value("${alert.period}")
+    private Integer period;
+
     @Autowired
     private AlertService alertService;
     @Autowired
@@ -29,10 +34,13 @@ public class AlertTask  implements Runnable {
     public void execute(){
         List<Alert> alertList =alertService.getAlertList();
         LOGGER.info("alert running {}",alertList.size());
+        Date endTime = StringUtil.getCurrentWholeMinTime();
+        Date startTime =  new Date(endTime.getTime() - period * 1000);
+
         for (Alert alert:alertList){
             LOGGER.info("alert {}",alert.getName());
             try {
-                AlertService.ResultTarget resultTarget = alertService.isTarget(alert);
+                AlertService.ResultTarget resultTarget = alertService.isTarget(alert,startTime,endTime);
                 if (resultTarget.isTarget()) {
                     LOGGER.warn("alert target {}", resultTarget.isTarget());
                     sendAlert(resultTarget.getAlert(), resultTarget.getValue(), resultTarget.getCount());

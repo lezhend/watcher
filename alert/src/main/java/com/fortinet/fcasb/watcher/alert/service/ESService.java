@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,8 +30,7 @@ public class ESService {
     private static final int SEARCH_SIZE=1000;
     private static final int SEARCH_FROM=0;
 
-    @Value("${alert.period}")
-    private Integer period;
+
 
     @Value("${es.server.hosts}")
     private String[] hosts;
@@ -55,7 +55,7 @@ public class ESService {
     }
 
 
-    public Map<String,Object> search(Alert alert) throws Exception {
+    public Map<String,Object> search(Alert alert,Date startTime,Date endTime) throws Exception {
         //根据alert查询条件
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
@@ -69,7 +69,7 @@ public class ESService {
             }
         }
 
-        boolQueryBuilder.must(QueryBuilders.rangeQuery("@timestamp").format("epoch_millis").gte(StringUtil.getCurrentWholeMinTime().getTime() - period * 1000).lte(StringUtil.getCurrentWholeMinTime().getTime()));
+        boolQueryBuilder.must(QueryBuilders.rangeQuery("@timestamp").format("epoch_millis").gte(startTime.getTime()).lte(endTime.getTime()));
 
         LOGGER.info("current time :{}",StringUtil.getCurrentWholeMinTime());
         Map<String,Object> params = new HashMap<>();
