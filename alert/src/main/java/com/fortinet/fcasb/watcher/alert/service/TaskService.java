@@ -1,5 +1,7 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
+import com.fortinet.fcasb.watcher.alert.task.MonitorESTask;
+import com.fortinet.fcasb.watcher.alert.task.MonitorLogstashTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -32,9 +34,9 @@ public class TaskService  {
     @Autowired
     private  AlertTask alertTask;
     @Autowired
-    private  MonitorESTask monitorESTask;
+    private MonitorESTask monitorESTask;
     @Autowired
-    private  MonitorLogstashTask logstashTask;
+    private MonitorLogstashTask logstashTask;
     @PostConstruct
     private void startTask() {
         int min = period/60;

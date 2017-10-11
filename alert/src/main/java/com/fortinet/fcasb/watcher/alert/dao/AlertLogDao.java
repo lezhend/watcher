@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ public class AlertLogDao {
     @Autowired
     private InitDatabase initDatabase;
     public void insert(AlertLog alertLog){
-        alertLog.setCreatetime(StringUtil.getTableDate(new Date()));
+        alertLog.setCreatetime(StringUtil.getLogTimestamp());
         String sql = "INSERT INTO {0} (name,content,createtime,notifications)" +
                 " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\"" +
                 ")";

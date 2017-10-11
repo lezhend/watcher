@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class AlertDao {
         if(result!=null){
             throw  new Exception("This record already exists");
         }
-        alert.setCreatetime(StringUtil.getTableDate(new Date()));
+        alert.setCreatetime(StringUtil.getLogTimestamp());
         alert.setUpdatetime(alert.getCreatetime());
         String sql = "INSERT INTO {0} (host,port,indexName,name,searchkey,filter,field,ccount,conditioncount,cvalue,conditionvalue,createtime,updatetime,emailtitle,emailtemplate,notifications)" +
                 " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\")";
@@ -75,7 +74,7 @@ public class AlertDao {
     }
 
     public void update(Alert alert){
-        alert.setUpdatetime(StringUtil.getTableDate(new Date()));
+        alert.setUpdatetime(StringUtil.getLogTimestamp());
         String sql = "UPDATE \"{0}\" SET indexName=\"{1}\",searchkey=\"{2}\",filter=\"{3}\",field=\"{4}\"," +
                 "conditioncount=\"{5}\",conditionvalue=\"{6}\",updatetime=\"{7}\",notifications=\"{8}\"," +
                 "ccount=\"{9}\",cvalue=\"{10}\", " +

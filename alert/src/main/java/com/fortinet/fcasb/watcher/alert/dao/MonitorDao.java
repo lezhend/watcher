@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,10 +34,10 @@ public class MonitorDao {
     @Autowired
     private InitDatabase initDatabase;
     public void insert(Monitor monitor) throws Exception {
-        monitor.setCreateTime(StringUtil.getTableDate(new Date()));
+        monitor.setCreateTime(StringUtil.getLogTimestamp());
         monitor.setUpdateTime(monitor.getCreateTime());
-        Monitor result  = get(monitor.getName());
-        if(result!=null){
+        int result  = findCount(monitor.getName());
+        if(result>0){
             throw  new Exception("This record already exists");
         }
         String sql = "INSERT INTO {0} (host,port,method,name,type,label,createtime,updatetime)" +
@@ -49,7 +48,7 @@ public class MonitorDao {
                 monitor.getPort(),
                 monitor.getMethod(),
                 monitor.getName(),
-                monitor.getType()==null?"":monitor.getType(),
+                monitor.getType()==null?"":monitor.getType().name(),
                 monitor.getLabel()==null?"":monitor.getLabel(),
                 monitor.getCreateTime()==null?"":monitor.getCreateTime(),
                 monitor.getUpdateTime()==null?"":monitor.getUpdateTime());
@@ -60,13 +59,13 @@ public class MonitorDao {
         String sql = "UPDATE \"{0}\" SET host=\"{1}\",port=\"{2}\",method=\"{3}\",type=\"{4}\"," +
                 "label=\"{5}\",updatetime=\"{6}\" " +
                 "WHERE name=\"{7}\"";
-        monitor.setUpdateTime(StringUtil.getTableDate(new Date()));
+        monitor.setUpdateTime(StringUtil.getLogTimestamp());
 
         sql = MessageFormat.format(sql,TablesEnum.MONITOR.getTablename(),
                 monitor.getHost(),
                 monitor.getPort(),
                 monitor.getMethod(),
-                monitor.getType()==null?"":monitor.getType(),
+                monitor.getType()==null?"":monitor.getType().name(),
                 monitor.getLabel()==null?"":monitor.getLabel(),
                 monitor.getUpdateTime()==null?"":monitor.getUpdateTime(),
                 monitor.getName());
@@ -167,7 +166,7 @@ public class MonitorDao {
         monitor.setPort(rs.getString("port")==null?"":rs.getString("port"));
         monitor.setName(rs.getString("name")==null?"":rs.getString("name"));
         monitor.setMethod(rs.getString("method")==null?"":rs.getString("method"));
-        monitor.setType(rs.getString("type")==null?"":rs.getString("type"));
+        monitor.setType(rs.getString("type")==null?null:MonitorTypeEnum.valueOf(rs.getString("type")));
         monitor.setLabel(rs.getString("label")==null?"":rs.getString("label"));
         monitor.setUpdateTime(rs.getString("createtime") == null ? "" : rs.getString("createtime"));
         monitor.setCreateTime(rs.getString("updatetime") == null ? "" : rs.getString("updatetime"));

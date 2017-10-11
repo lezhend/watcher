@@ -1,5 +1,7 @@
 package com.fortinet.fcasb.watcher.alert.domain;
 
+import com.fortinet.fcasb.watcher.alert.enums.MonitorTypeEnum;
+
 import java.io.Serializable;
 
 /**
@@ -14,7 +16,7 @@ public class Monitor implements Serializable{
     private String name;          //define monitor server name , it is unique
     private String label;         //define label name
 
-    private String type;         //es,logstash,kafka,kibana, server
+    private MonitorTypeEnum type;         //es,logstash,kafka,kibana, server
 
     private String createTime;
     private String updateTime;
@@ -51,11 +53,11 @@ public class Monitor implements Serializable{
         this.label = label;
     }
 
-    public String getType() {
+    public MonitorTypeEnum getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(MonitorTypeEnum type) {
         this.type = type;
     }
 
