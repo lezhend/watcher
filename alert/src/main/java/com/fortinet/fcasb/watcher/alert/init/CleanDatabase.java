@@ -38,7 +38,9 @@ public class CleanDatabase {
     public void autoCleanAlertLog(){
         try {
             Date date = StringUtil.getCurrentWholeDayTime();
-            alertService.delete(new Date(date.getTime() - 1000 * 60 * 60 * 24 * 10));
+            Date deleteDate = new Date(date.getTime() - 1000 * 60 * 60 * 24 * 10);
+            LOGGER.info("auto delete alert log {}",StringUtil.getLogTimestamp(deleteDate));
+            alertService.delete(deleteDate);
         }catch (Exception ex){
             LOGGER.error("auto delete error ",ex);
         }
