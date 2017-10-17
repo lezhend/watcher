@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,6 +62,13 @@ public class AlertLogDao {
     public boolean delete(String name){
         String sql = "DELETE FROM {0} WHERE name = \"{1}\"";
         sql = MessageFormat.format(sql, TablesEnum.ALERT_LOG.getTablename(), name);
+        DaoUtil.execute(initDatabase.getConnect(),sql);
+        return true;
+    }
+
+    public boolean deleteByTimestamp(Date date){
+        String sql = "DELETE FROM {0} WHERE createtime < \"{1}\"";
+        sql = MessageFormat.format(sql, TablesEnum.ALERT_LOG.getTablename(), StringUtil.getLogTimestamp(date));
         DaoUtil.execute(initDatabase.getConnect(),sql);
         return true;
     }

@@ -337,6 +337,11 @@ public class AlertService {
         return result;
     }
 
+    
+    public void delete(Date date){
+        alertLogDao.deleteByTimestamp(date);
+    }
+
     public class ResultTarget{
         private boolean isTarget;
         private String value;
