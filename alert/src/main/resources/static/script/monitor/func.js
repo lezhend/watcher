@@ -37,10 +37,14 @@ function init() {
     })
 }
 
+
 function nodes() {
     var hosts = $("#hosts").val().split(",");
     var ports = $("#ports").val().split(",");
     var urls = $("#urls").val().split(",");
+    $.ajaxSetup({
+        async : false
+    });
     for(var i=0;i<hosts.length;i++){
         var url = "http://"+hosts[i]+":"+ports[i]+"/_nodes/";
         var urlKibana = "http://"+urls[i]+"/_plugin/kibana";
@@ -60,6 +64,9 @@ function nodes() {
         })
 
     }
+    $.ajaxSetup({
+        async : true
+    });
 
 }
 
