@@ -40,9 +40,10 @@ function init() {
 function nodes() {
     var hosts = $("#hosts").val().split(",");
     var ports = $("#ports").val().split(",");
+    var urls = $("#urls").val().split(",");
     for(var i=0;i<hosts.length;i++){
         var url = "http://"+hosts[i]+":"+ports[i]+"/_nodes/";
-        var urlKibana = "http://"+hosts[i]+":"+ports[i]+"/_plugin/kibana";
+        var urlKibana = "http://"+urls[i]+"/_plugin/kibana";
         $.get("/request/es?url="+url,function (result,status) {
             $("#nodes").append("<h2><a href='urlKibana' target='_blank'>"+result.cluster_name+" </a></h2>");
             if(result!=null && result.nodes!=null){
