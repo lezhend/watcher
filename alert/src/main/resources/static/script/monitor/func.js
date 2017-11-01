@@ -45,12 +45,15 @@ function nodes() {
         var url = "http://"+hosts[i]+":"+ports[i]+"/_nodes/";
         var urlKibana = "http://"+urls[i]+"/_plugin/kibana";
         $.get("/request/es?url="+url,function (result,status) {
-            $("#nodes").append("<h2><a href='urlKibana' target='_blank'>"+result.cluster_name+" </a></h2>");
+            $("#nodes").append("<h2><a href='"+urlKibana+"' target='_blank'>"+result.cluster_name+" </a></h2>");
             if(result!=null && result.nodes!=null){
                 $("#nodes").append("<div class='list-group' id='nodes-list'>");
                 for(var key in result.nodes){
-                    $("#nodes").append("<a href='#' class='list-group-item'>"+result.nodes[key].name+" &nbsp;&nbsp;&nbsp;&nbsp;"+result.nodes[key].ip
-                        +" &nbsp;&nbsp;&nbsp;&nbsp;"+result.nodes[key].version+"</a>");
+                    $("#nodes").append("<a href='#' class='list-group-item'>"
+                        +"name:"+result.nodes[key].name
+                        +" &nbsp;&nbsp;&nbsp;&nbsp;indices:"+result.nodes[key].total_indexing_buffer
+                        +" &nbsp;&nbsp;&nbsp;&nbsp;version:"+result.nodes[key].version
+                        +"</a>");
                 }
             }
             $("#nodes").append("</div>");
