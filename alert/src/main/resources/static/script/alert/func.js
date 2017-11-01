@@ -10,16 +10,16 @@ function getUrlParam(name) {
 
 
 function init_list(node) {
-    $.get("/alert/list",function (data,status) {
+    $.get("/monitor/alert/list",function (data,status) {
         var result = JSON.parse(data);
         for(var i=0;i < result.data.length;i++){
-            $("#"+node).append("<a href='/alert/info.html?name="+result.data[i].name+"' class='list-group-item'>"+result.data[i].name+"</a>");
+            $("#"+node).append("<a href='/monitor/alert/info.html?name="+result.data[i].name+"' class='list-group-item'>"+result.data[i].name+"</a>");
         }
     })
 }
 
 function init_log_list() {
-    var url = "/alert/list/logs";
+    var url = "/monitor/alert/list/logs";
     var name = getUrlParam("name");
     if(name){
         url = url+"/"+name;
@@ -38,7 +38,7 @@ function init_log_list() {
 
 function init_info(){
     var name = getUrlParam('name');
-    $.get("/alert/get/"+name,function (data,status) {
+    $.get("/monitor/alert/get/"+name,function (data,status) {
         var result = JSON.parse(data);
         if(result.code==0) {
             var port = 80;
@@ -74,25 +74,25 @@ function init_info(){
 function deleteAlert(name) {
     if(confirm('DELETE?')){
         name = $("#hidden-name").val();
-        var url = "/alert/"+name;
+        var url = "/monitor/alert/"+name;
         $.ajax({
             type: "DELETE",
             url: url,
             success: function( result ) {
                 var data = JSON.parse(result);
                 if(data.code==0){
-                    window.location.href="/alert/index.html";
+                    window.location.href="/monitor/alert/index.html";
                 }
             }
         });
     }
 }
 function toLog(){
-    window.location.href="/alert/logs.html?name="+$("#hidden-name").val();
+    window.location.href="/monitor/alert/logs.html?name="+$("#hidden-name").val();
 }
 
 function createAlert(){
-    var url = "/alert/"+$("#name").val();
+    var url = "/monitor/alert/"+$("#name").val();
     var alertData={};
     var hostName=$("#host").val().split(":");
     alertData.host=hostName[0];
@@ -119,7 +119,7 @@ function createAlert(){
         url: url,
         success: function( result ) {
             if(result.code==0){
-                window.location.href="/alert/index.html";
+                window.location.href="/monitor/alert/index.html";
             }
         }
     });
@@ -127,7 +127,7 @@ function createAlert(){
 }
 
 function updateAlert(){
-    var url = "/alert/"+$("#hidden-name").val();
+    var url = "/monitor/alert/"+$("#hidden-name").val();
     var alertData={};
     var hostName=$("#host").val().split(":");
     alertData.host=hostName[0];
@@ -162,7 +162,7 @@ function updateAlert(){
 }
 
 function refresh() {
-    var url = "/alert/refresh";
+    var url = "/monitor/alert/refresh";
     $.post(url,function (data,status) {
         var result = JSON.parse(data);
         if(result.code==0){
