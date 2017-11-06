@@ -54,7 +54,7 @@
 				<pattern>%msg%n</pattern>
 			</layout>
 		</encoder>
-		<topic>monitor-statistics</topic>
+		<topic>monitor-system-log</topic>
 		<keyingStrategy class="com.github.danielwegener.logback.kafka.keying.RoundRobinKeyingStrategy" />
 		<deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
 		<producerConfig>bootstrap.servers=ec2-35-164-221-145.us-west-2.compute.amazonaws.com:9092,ec2-52-33-130-175.us-west-2.compute.amazonaws.com:9092,ec2-35-167-130-120.us-west-2.compute.amazonaws.com:9092</producerConfig>
