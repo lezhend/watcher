@@ -30,4 +30,4 @@ RUN export JAVA_HOME
 RUN mkdir -p /opt/alert
 RUN chmod -R 777 /opt/alert
 ADD alert/target /opt/alert
-CMD ["bash"]
+CMD ["/usr/lib/jvm/java-8-openjdk-amd64/java", "-jar",  "/opt/alert/alert-1.0.jar"]
