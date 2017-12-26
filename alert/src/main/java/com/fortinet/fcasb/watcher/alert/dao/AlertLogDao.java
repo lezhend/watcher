@@ -37,73 +37,44 @@ public class AlertLogDao {
     @Autowired
     private InitDatabase initDatabase;
     public void insert(AlertLog alertLog){
-        alertLog.setCreatetime(StringUtil.getTableDate(new Date()));
+        alertLog.setCreatetime(StringUtil.getLogTimestamp());
         String sql = "INSERT INTO {0} (name,content,createtime,notifications)" +
                 " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\"" +
                 ")";
         sql = MessageFormat.format(sql,TablesEnum.ALERT_LOG.getTablename(),
                 alertLog.getName(),alertLog.getContent(),alertLog.getCreatetime(),alertLog.getNotifications());
-        Statement statement = null;
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            statement.execute(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        DaoUtil.execute(initDatabase.getConnect(),sql);
     }
-
 
 
     public List<AlertLog> get(String name){
         String sql = "SELECT * FROM {0} WHERE name = \"{1}\" order by createtime DESC limit 100";
         sql = MessageFormat.format(sql, TablesEnum.ALERT_LOG.getTablename(), name);
-        Statement statement = null;
-        ResultSet rs = null;
-        List<AlertLog> alertLogList = new ArrayList<>();
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            rs = statement.executeQuery(sql);
-            while ( rs.next() ) {
-                AlertLog alert = new AlertLog();
-                alert.setName(rs.getString("name"));
-                alert.setCreatetime(rs.getString("createtime"));
-                alert.setContent(rs.getString("content"));
-                alert.setNotifications(rs.getString("notifications"));
-                alertLogList.add(alert);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return alertLogList;
+        return findFromDb(sql);
     }
 
     public List<AlertLog> find(){
         String sql = "SELECT * FROM {0} order by createtime DESC limit 100";
         sql = MessageFormat.format(sql, TablesEnum.ALERT_LOG.getTablename());
+        return findFromDb(sql);
+    }
+
+    public boolean delete(String name){
+        String sql = "DELETE FROM {0} WHERE name = \"{1}\"";
+        sql = MessageFormat.format(sql, TablesEnum.ALERT_LOG.getTablename(), name);
+        DaoUtil.execute(initDatabase.getConnect(),sql);
+        return true;
+    }
+
+    public boolean deleteByTimestamp(Date date){
+        String sql = "DELETE FROM {0} WHERE createtime < \"{1}\"";
+        sql = MessageFormat.format(sql, TablesEnum.ALERT_LOG.getTablename(), StringUtil.getLogTimestamp(date));
+        DaoUtil.execute(initDatabase.getConnect(),sql);
+        return true;
+    }
+
+
+    private List<AlertLog> findFromDb(String sql){
         Statement statement = null;
         ResultSet rs = null;
         List<AlertLog> alertLogList = new ArrayList<>();
@@ -138,37 +109,6 @@ public class AlertLogDao {
         }
         return alertLogList;
     }
-
-    public boolean delete(String name){
-        String sql = "DELETE FROM {0} WHERE name = \"{1}\"";
-        sql = MessageFormat.format(sql, TablesEnum.ALERT.getTablename(), name);
-        Statement statement = null;
-        ResultSet rs = null;
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            return statement.execute(sql);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
-    }
-
 
 
 }

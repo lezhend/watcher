@@ -55,7 +55,10 @@ public class CommonConfig {
 
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler(){
-        return new ThreadPoolTaskScheduler();
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setPoolSize(10);
+        taskScheduler.initialize();
+        return taskScheduler;
     }
 
     @Bean

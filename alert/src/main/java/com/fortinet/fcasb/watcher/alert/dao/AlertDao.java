@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,16 +40,22 @@ import java.util.List;
 public class AlertDao {
     @Autowired
     private InitDatabase initDatabase;
-    public void insert(Alert alert){
-        alert.setCreatetime(StringUtil.getTableDate(new Date()));
+    public void insert(Alert alert) throws Exception {
+        Alert result = get(alert.getName());
+        if(result!=null){
+            throw  new Exception("This record already exists");
+        }
+        alert.setCreatetime(StringUtil.getLogTimestamp());
         alert.setUpdatetime(alert.getCreatetime());
-        String sql = "INSERT INTO {0} (indexName,name,searchkey,filter,field,ccount,conditioncount,cvalue,conditionvalue,createtime,updatetime,emailtitle,emailtemplate,notifications)" +
-                " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\")";
+        String sql = "INSERT INTO {0} (host,port,indexName,name,searchkey,filter,field,ccount,conditioncount,cvalue,conditionvalue,createtime,updatetime,emailtitle,emailtemplate,notifications)" +
+                " VALUES (\"{1}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\",\"{9}\",\"{10}\",\"{11}\",\"{12}\",\"{13}\",\"{14}\",\"{15}\",\"{16}\")";
         String strFilter="";
         if(alert.getFilter()!=null){
             strFilter = URLEncoder.encode(JSON.toJSONString(alert.getFilter()));
         }
         sql = MessageFormat.format(sql,TablesEnum.ALERT.getTablename(),
+                alert.getHost(),
+                alert.getPort(),
                 alert.getIndex(),
                 alert.getName(),
                 alert.getSearchkey()==null?"":alert.getSearchkey(),
@@ -65,31 +70,16 @@ public class AlertDao {
                 alert.getEmailtitle()==null?"":alert.getEmailtitle(),
                 alert.getEmailtemplate()==null?"":alert.getEmailtemplate(),
                 alert.getNotifications()==null?"":alert.getNotifications());
-        Statement statement = null;
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            statement.execute(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        DaoUtil.execute(initDatabase.getConnect(),sql);
     }
 
     public void update(Alert alert){
-        alert.setUpdatetime(StringUtil.getTableDate(new Date()));
+        alert.setUpdatetime(StringUtil.getLogTimestamp());
         String sql = "UPDATE \"{0}\" SET indexName=\"{1}\",searchkey=\"{2}\",filter=\"{3}\",field=\"{4}\"," +
                 "conditioncount=\"{5}\",conditionvalue=\"{6}\",updatetime=\"{7}\",notifications=\"{8}\"," +
                 "ccount=\"{9}\",cvalue=\"{10}\", " +
-                "emailtitle=\"{11}\",emailtemplate=\"{12}\" " +
-                "WHERE name=\"{13}\"";
+                "emailtitle=\"{11}\",emailtemplate=\"{12}\",host=\"{13}\",port=\"{14}\" " +
+                "WHERE name=\"{15}\"";
         String strFilter="";
         if(alert.getFilter()!=null){
             strFilter = URLEncoder.encode(JSON.toJSONString(alert.getFilter()));
@@ -107,23 +97,10 @@ public class AlertDao {
                 alert.getCvalue()==null? "":alert.getCvalue(),
                 alert.getEmailtitle()==null? "":alert.getEmailtitle(),
                 alert.getEmailtemplate()==null? "":alert.getEmailtemplate(),
+                alert.getHost()==null? "":alert.getHost(),
+                alert.getPort()==null? "":alert.getPort(),
                 alert.getName());
-        Statement statement = null;
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            statement.execute(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        DaoUtil.execute(initDatabase.getConnect(),sql);
     }
 
     public Alert get(String name){
@@ -224,36 +201,15 @@ public class AlertDao {
     public boolean delete(String name){
         String sql = "DELETE FROM {0} WHERE name = \"{1}\"";
         sql = MessageFormat.format(sql, TablesEnum.ALERT.getTablename(), name);
-        Statement statement = null;
-        ResultSet rs = null;
-        try {
-            statement = initDatabase.getConnect().createStatement();
-            return statement.execute(sql);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
+        DaoUtil.execute(initDatabase.getConnect(),sql);
+        return true;
     }
 
 
     private Alert trans(ResultSet rs) throws SQLException {
         Alert alert = new Alert();
+        alert.setHost(rs.getString("host")==null?"":rs.getString("host"));
+        alert.setPort(rs.getString("port")==null?"":rs.getString("port"));
         alert.setIndex(rs.getString("indexName")==null?"":rs.getString("indexName"));
         alert.setName(rs.getString("name")==null?"":rs.getString("name"));
         alert.setSearchkey(rs.getString("searchkey")==null?"":rs.getString("searchkey"));

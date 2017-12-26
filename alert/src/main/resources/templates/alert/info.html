@@ -1,18 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="nav:: head"></head>
 <head>
-    <meta charset="UTF-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>CMM-information</title>
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
 
 
-
-    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-    <script src="/alert/script/func.js"></script>
+    <script src="/script/alert/func.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             init_info();
@@ -22,35 +15,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" >CMM(Cluster Monitor Management)</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="dropdown active">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Alert <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/alert/index.html">List</a></li>
-                        <li><a href="/alert/create.html">Create</a></li>
-                        <li><a href="/alert/logs.html">Logs</a></li>
-                        <li><a href="javascript:void(0)" onclick="refresh()">Refresh</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div><!-- /.container-fluid -->
-</nav>
+<div th:replace="nav:: menus"></div>
 <!--
     private String index;         //index name
     private String name;          //alertName
@@ -71,92 +36,8 @@
 -->
 <div style="width:80%;margin-left: 10%">
 
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-name">Alert Name:</span>
-    <input type="text" id="name" class="form-control" aria-describedby="basic-addon1"/>
-</div>
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-index">Index Name:</span>
-    <input type="text" id="index" class="form-control"  aria-describedby="basic-addon1"/>
-</div>
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-filter">Field Filter:</span>
-    <input type="text" id="filter" class="form-control"  aria-describedby="basic-addon1"/>
-</div>
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-searchkey">Search Key:</span>
-    <input type="text" id="searchkey" class="form-control"  aria-describedby="basic-addon1"/>
-</div>
-<br/>
-
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-field">Field Name(get this field value):</span>
-    <input type="text" id="field" class="form-control"  aria-describedby="basic-addon1"/>
-</div>
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-cvalue">Field Value Condition:</span>
-
-
-    <select id="cvalue" class="form-control" aria-describedby="basic-addon1">
-        <option value="lt">&lt;</option>
-        <option value="le">&lt;=</option>
-        <option value="eq">==</option>
-        <option value="ge">=&gt;</option>
-        <option value="gt">&gt;</option>
-    </select>
-</div>
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-conditioncount">Field Value Condition Value:</span>
-    <input type="text" id="conditionvalue" class="form-control"  aria-describedby="basic-addon1"/>
-</div>
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-ccount">Search Count Condition:</span>
-    <select id="ccount" class="form-control" aria-describedby="basic-addon1">
-        <option value="lt">&lt;</option>
-        <option value="le">&lt;=</option>
-        <option value="eq">==</option>
-        <option value="ge">=&gt;</option>
-        <option value="gt">&gt;</option>
-    </select>
-</div>
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-conditionvalue">Filter Count Value:</span>
-    <input type="text" id="conditioncount" class="form-control"  aria-describedby="basic-addon1"/>
-</div>
-
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-notifications">Notifications:</span>
-    <input type="text" id="notifications" class="form-control" placeholder="email address" aria-describedby="basic-addon2"/>
-</div>
-<br/>
-
-<div class="control-group">
-    <span class="control-group-label" id="alert-emailtitle">Email Title:</span>
-    <input type="text" id="emailtitle" class="form-control" placeholder="email title" aria-describedby="basic-addon2"/>
-</div>
-<br/>
-<div class="control-group">
-    <span class="control-group-label" id="alert-emailtemplate">Email Template:</span>
-    <input type="text" id="emailtemplate" class="form-control" placeholder="email template" aria-describedby="basic-addon2"/>
-</div>
+    <div th:replace="nav:: info"></div>
+    <br/>
     <div class="control-group">
         <input type="hidden" id="hidden-name" value=""/>
         <button value="Create" class="btn btn-default" onclick="updateAlert()">UPDATE</button>

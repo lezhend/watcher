@@ -1,8 +1,12 @@
 package com.fortinet.fcasb.watcher.alert.init;
 
+import com.fortinet.fcasb.watcher.alert.dao.MonitorMetricDao;
+import com.fortinet.fcasb.watcher.alert.domain.MonitorMetric;
+import com.fortinet.fcasb.watcher.alert.enums.MonitorTypeEnum;
 import com.fortinet.fcasb.watcher.alert.enums.TablesEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,8 @@ public class InitDatabase {
     @Value("${config.data.path}")
     private String dbPath;
 
+    @Autowired
+    private MonitorMetricDao metricDao;
     /**
      *  private String index;         //index name
      private String name;          //alertName
@@ -45,6 +51,8 @@ public class InitDatabase {
     private final String CREATE_TABLE_ALERT_SQL = "" +
             "CREATE TABLE IF NOT EXISTS  "+ TablesEnum.ALERT.getTablename()+
             " (" +
+            " host TEXT, " +
+            " port TEXT, " +
             " indexName TEXT  NOT NULL, " +
             " name TEXT NOT NULL, " +
             " searchkey TEXT , " +
@@ -69,6 +77,27 @@ public class InitDatabase {
             " notifications TEXT);";
 
 
+    private final String CREATE_TABLE_MONITOR_SQL = "" +
+            "CREATE TABLE IF NOT EXISTS  "+ TablesEnum.MONITOR.getTablename()+
+            " (" +
+            " host TEXT NOT NULL, " +
+            " port TEXT NOT NULL, " +
+            " name TEXT NOT NULL, " +
+            " method TEXT NOT NULL, " +
+            " label TEXT NOT NULL, " +
+            " type TEXT NOT NULL, " +
+            " createtime TEXT , " +
+            " updatetime TEXT);";
+
+    private final String CREATE_TABLE_MONITOR_METRIC_SQL = "" +
+            "CREATE TABLE IF NOT EXISTS  "+ TablesEnum.MONITOR_METRIC.getTablename()+
+            " (" +
+            " name TEXT NOT NULL, " +
+            " type TEXT NOT NULL, " +
+            " uri TEXT NOT NULL, " +
+            " createtime TEXT , " +
+            " updatetime TEXT);";
+
     private static Connection connect = null;
 
     @PostConstruct
@@ -78,9 +107,49 @@ public class InitDatabase {
             LOGGER.error("init database resource error!!!");
             throw new RuntimeException("init database resource error!!!");
         }
+        createTables();
+        defaultData();
+    }
 
-        createAlertTables();
-        createAlertLogTables();
+    private void defaultData(){
+        MonitorMetric metric =new MonitorMetric();
+        metric.setUri("/_cluster/health");
+        metric.setName("cluster_health");
+        metric.setType(MonitorTypeEnum.ES);
+        try {
+            metricDao.insert(metric);
+        } catch (Exception e) {
+
+        }
+        metric.setUri("/_cluster/stats");
+        metric.setName("cluster_stats");
+        try {
+            metricDao.insert(metric);
+        } catch (Exception e) {
+
+        }
+        
+//        metrics.put("stats_process","/_node/stats/process") ;
+//        metrics.put("stats_jvm","/_node/stats/jvm") ;
+
+        metric.setType(MonitorTypeEnum.LOGSTASH);
+        metric.setUri("/_node/stats/process");
+        metric.setName("stats_process");
+        try {
+            metricDao.insert(metric);
+        } catch (Exception e) {
+
+        }
+
+        metric.setUri("/_node/stats/stats_jvm");
+        metric.setName("stats_jvm");
+        try {
+            metricDao.insert(metric);
+        } catch (Exception e) {
+
+        }
+
+
     }
 
     private void initConnect() {
@@ -103,36 +172,14 @@ public class InitDatabase {
         return connect;
     }
 
-    public void createAlertTables(){
+    public void createTables(){
         if(connect!=null){
             Statement stmt = null;
             try {
                 stmt = connect.createStatement();
                 stmt.executeUpdate(CREATE_TABLE_ALERT_SQL);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                LOGGER.error("create {} failed {}", TablesEnum.ALERT.getTablename(),e.toString());
-
-            } finally {
-                if(stmt!=null){
-                    try {
-                        stmt.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        LOGGER.error(e.toString());
-                        LOGGER.error("create {} failed {}",TablesEnum.ALERT.getTablename(),e.toString());
-                    }
-                }
-            }
-
-        }
-
-    }
-    public void createAlertLogTables(){
-        if(connect!=null){
-            Statement stmt = null;
-            try {
-                stmt = connect.createStatement();
+                stmt.executeUpdate(CREATE_TABLE_MONITOR_SQL);
+                stmt.executeUpdate(CREATE_TABLE_MONITOR_METRIC_SQL);
                 stmt.executeUpdate(CREATE_TABLE_ALERT_LOG_SQL);
             } catch (SQLException e) {
                 e.printStackTrace();

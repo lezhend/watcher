@@ -1,6 +1,7 @@
 package com.fortinet.fcasb.watcher.alert.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -21,5 +22,26 @@ public class StringUtil {
 
     public static String getLogTimestamp(){
         return STATISTIC_LOG_FORMAT_DATETIME.format(new Date());
+    }
+
+    public static String getLogTimestamp(Date date){
+        return STATISTIC_LOG_FORMAT_DATETIME.format(date);
+    }
+
+    public static Date getCurrentWholeMinTime(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        return calendar.getTime();
+    }
+    public static Date getCurrentWholeDayTime(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        return calendar.getTime();
     }
 }

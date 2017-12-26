@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="nav:: head"></head>
+<head>
+    <title>CMM-ES-NODES</title>
+
+    <script src="/script/monitor/func.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            nodes();
+        });
+
+    </script>
+</head>
+<body>
+<div th:replace="nav:: menus"></div>
+
+
+<div style="width:80%;margin-left: 10%" id="nodes">
+
+</div>
+  <input type="hidden" id="urls" th:value="${urls}"/>
+  <input type="hidden" id="hosts" th:value="${hosts}"/>
+  <input type="hidden" id="ports" th:value="${ports}"/>
+</body>
+</html>
