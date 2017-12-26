@@ -10,7 +10,7 @@
           "awslogs-stream-prefix": "info"
         }
       },
-      "memory": 512,
+      "memory": 256,
       "portMappings": [
         {
           "hostPort": 8889,
