@@ -21,7 +21,7 @@
       "essential": true,
       "portMappings": [],
       "command": [
-        "java ",
+        "/usr/lib/jvm/java-8-openjdk-amd64/bin/java",
         "-jar",
         "/opt/alert/alert-1.0.jar"
       ],
