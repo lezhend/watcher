@@ -2,7 +2,15 @@
   "networkMode": "bridge",
   "containerDefinitions": [
     {
-      "memory": 246,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/aws/container/watcher",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "info"
+        }
+      },
+      "memory": 256,
       "portMappings": [
         {
           "hostPort": 8999,
