@@ -4,8 +4,8 @@
 #
 # Extends ubuntu-base with java 8 openjdk jdk installation
 #
-FROM picoded/ubuntu-base
-MAINTAINER Eugene Cheah <eugene@picoded.com>
+FROM ubuntu:16.04
+#MAINTAINER Eugene Cheah <eugene@picoded.com>
 
 # This is in accordance to : https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04
 RUN apt-get update && \
@@ -28,6 +28,7 @@ RUN apt-get update && \
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
 RUN mkdir -p /opt/alert
+RUN rm /opt/alert/*
 RUN chmod -R 777 /opt/alert
 ADD alert/target /opt/alert
 CMD ["/usr/lib/jvm/java-8-openjdk-amd64/java", "-jar",  "/opt/alert/alert-1.0.jar"]
