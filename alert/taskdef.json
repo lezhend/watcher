@@ -1,0 +1,30 @@
+{
+  "networkMode": "bridge",
+  "containerDefinitions": [
+    {
+      "memory": 246,
+      "portMappings": [
+        {
+          "hostPort": 8999,
+          "containerPort": 8999,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "entryPoint": [
+        "java ",
+        "-jar",
+        "/opt/alert/alert-1.0.jar"
+      ],
+      "mountPoints": [
+      ],
+      "name": "alert",
+      "image": "%REPOSITORY_URI%:v_%BUILD_NUMBER%",
+      "cpu": 0
+    }
+  ],
+  "volumes": [
+
+  ],
+  "family": "alert-springboot"
+}
