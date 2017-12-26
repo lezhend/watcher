@@ -19,7 +19,9 @@
         }
       ],
       "essential": true,
-      "entryPoint": [
+      "entryPoint": null,
+      "portMappings": [],
+      "command": [
         "java ",
         "-jar",
         "/opt/alert/alert-1.0.jar"
