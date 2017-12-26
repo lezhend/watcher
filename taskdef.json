@@ -19,7 +19,6 @@
         }
       ],
       "essential": true,
-      "entryPoint": null,
       "portMappings": [],
       "command": [
         "java ",
