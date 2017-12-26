@@ -27,8 +27,8 @@ RUN apt-get update && \
 # Setup JAVA_HOME, this is useful for docker commandline
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
-RUN mkdir -p /opt/alert
-RUN rm /opt/alert/*
+RUN mkdir -p /opt/alert/
+RUN rm -rf /opt/alert/*
 RUN chmod -R 777 /opt/alert
 ADD alert/target /opt/alert
 CMD ["/usr/lib/jvm/java-8-openjdk-amd64/java", "-jar",  "/opt/alert/alert-1.0.jar"]
