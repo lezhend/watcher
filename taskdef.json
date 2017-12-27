@@ -1,5 +1,5 @@
 {
-  "networkMode": "default",
+  "networkMode": "host",
   "containerDefinitions": [
     {
       "logConfiguration": {
