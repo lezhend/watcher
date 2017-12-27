@@ -1,5 +1,5 @@
 {
-  "networkMode": "host",
+  "networkMode": "bridge",
   "containerDefinitions": [
     {
       "logConfiguration": {
