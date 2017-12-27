@@ -6,3 +6,4 @@ ADD alert/target/classes/alert.properties /opt/alert/
 ADD alert/target/classes/logback.xml /opt/alert/
 ADD alert/target/classes/application.yml /opt/alert/
 ADD alert/target /opt/alert
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/opt/alert/alert-1.0.jar"]
