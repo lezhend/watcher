@@ -1,5 +1,5 @@
 {
-  "networkMode": "bridge",
+  "networkMode": "default",
   "containerDefinitions": [
     {
       "logConfiguration": {
@@ -23,6 +23,10 @@
         {
           "containerPath": "/opt/alert/data",
           "sourceVolume": "alert-data"
+        },
+        {
+          "containerPath": "/opt/alert/config",
+          "sourceVolume": "alert-config"
         }
       ],
       "name": "alert",
@@ -36,6 +40,12 @@
     "sourcePath": "/efs/watcher/alert/data"
     },
     "name": "alert-data"
+    },
+    {
+      "host": {
+        "sourcePath": "/efs/watcher/alert/config"
+      },
+      "name": "alert-config"
     }
   ],
   "family": "alert-springboot"

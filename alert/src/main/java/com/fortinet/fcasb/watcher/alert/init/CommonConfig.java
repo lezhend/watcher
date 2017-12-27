@@ -29,7 +29,7 @@ import java.util.Properties;
 })
 @PropertySource(value = {
 //        "classpath:/alert.properties",
-        "file:/opt/alert/alert.properties"
+        "file:/opt/alert/config/alert.properties"
 }, ignoreResourceNotFound = true)
 @Configuration
 public class CommonConfig {
