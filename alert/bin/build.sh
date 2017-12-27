@@ -10,9 +10,12 @@ NAME="springboot"
 TASKDEFNAME="alert-springboot"
 
 cd ${MODULE_NAME}
+$(aws ecr get-login --no-include-email --region us-west-2)
 docker build -t v_$BUILD_NUMBER .
 docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
+docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:latest
 docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
+docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:latest
 
 #Store the repositoryUri as a variable
 REPOSITORY_URI=`aws ecr describe-repositories --repository-names ${REPOSITORY_NAME} --region ${REGION} | jq .repositories[].repositoryUri | tr -d '"'`
