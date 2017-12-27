@@ -8,6 +8,12 @@ SERVICE_NAME="alert-springboot"
 FAMILY="alert-springboot"
 NAME="springboot"
 TASKDEFNAME="alert-springboot"
+
+cd ${MODULE_NAME}
+docker build -t v_$BUILD_NUMBER .
+docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
+docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
+
 #Store the repositoryUri as a variable
 REPOSITORY_URI=`aws ecr describe-repositories --repository-names ${REPOSITORY_NAME} --region ${REGION} | jq .repositories[].repositoryUri | tr -d '"'`
 #Replace the build number and respository URI placeholders with the constants above
