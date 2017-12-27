@@ -7,13 +7,13 @@
         "options": {
           "awslogs-group": "/aws/container/watcher",
           "awslogs-region": "us-west-2",
-          "awslogs-stream-prefix": "info"
+          "awslogs-stream-prefix": "alert"
         }
       },
-      "memory": 128,
+      "memory": 512,
       "portMappings": [
         {
-          "hostPort": 8889,
+          "hostPort": 8083,
           "containerPort": 8889,
           "protocol": "tcp"
         }

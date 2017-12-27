@@ -1,9 +1,9 @@
 #!/bin/bash
 #Constants
 REGION="us-west-2"
-REPOSITORY_NAME="watcher"
-CLUSTER="logstash-test"
-SERVICE_NAME="watcher"
+REPOSITORY_NAME="watcher/alert"
+CLUSTER="cluster"
+SERVICE_NAME="alert-springboot"
 FAMILY="alert-springboot"
 NAME="springboot"
 TASKDEFNAME="alert-springboot"
@@ -24,6 +24,7 @@ if [ "$SERVICES" == "" ]; then
   if [ ${DESIRED_COUNT} = "0" ]; then
     DESIRED_COUNT="1"
   fi
+  #ready record rollback to previous version number
   aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${REVISION} --desired-count ${DESIRED_COUNT}
 else
   echo "entered new service"
