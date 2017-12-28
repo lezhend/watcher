@@ -26,8 +26,8 @@ aws ecs register-task-definition --family ${FAMILY} --cli-input-json file://${WO
 SERVICES=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION} | jq .failures[]`
 #Get latest revision
 DEPLOY_TASK_DEF=`aws ecs describe-task-definition --task-definition ${TASKDEFNAME} --region ${REGION}`
-DEPLOY_REVISION=`echo ${LATEST_TASK_DEF} | jq .taskDefinition.revision`
-DEPLOY_TASK_DEF_ARN=`echo ${LATEST_TASK_DEF} | jq .taskDefinition.taskDefinitionArn`
+DEPLOY_REVISION=`echo ${DEPLOY_TASK_DEF} | jq .taskDefinition.revision`
+DEPLOY_TASK_DEF_ARN=`echo ${DEPLOY_TASK_DEF} | jq .taskDefinition.taskDefinitionArn`
 
 
 #Create or update service
@@ -67,7 +67,7 @@ if [ "$NEW_RUN_TASK_DEF_ARN" != "$DEPLOY_TASK_DEF_ARN" ];then
 fi
 
 echo "Testing"
-if [ "1" == "0" ]; then
+if [ "1" == "1" ]; then
    rollback
   exit -1;
 else
