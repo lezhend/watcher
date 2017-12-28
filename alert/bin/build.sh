@@ -82,7 +82,7 @@ if [ ${NEW_RUN_TASK_DEF_ARN} != ${DEPLOY_TASK_DEF_ARN} ];then
 fi
 
 echo "Testing"
-if [ "1" == "1" ]; then
+if [ "1" == "0" ]; then
    rollback
   exit -1;
 else
