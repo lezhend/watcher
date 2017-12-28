@@ -14,8 +14,6 @@ cd ${MODULE_NAME}
 $(aws ecr get-login --no-include-email --region us-west-2)
 docker build -t v_$BUILD_NUMBER .
 docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
-docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:latest
-docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:latest
 docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
 
 
@@ -52,13 +50,14 @@ else
   aws ecs create-service --service-name ${SERVICE_NAME} --desired-count 1 --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
   IS_FIRST=1
 fi
+
 function rollback(){
     echo "start rollback"
     if [ ${IS_FIRST} == 0 ];then
         echo "set image to faild"
-        docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:failed
-        docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:failed
-        echo "update service to task definition to ${LATEST_RUN_TASK_DEF_ARN}"
+        docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:failed_v_$BUILD_NUMBER
+        docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:failed_v_$BUILD_NUMBER
+        echo "update service to task definition to ${FAMILY}:${LATEST_RUN_TASK_DEF_VERSION}"
         aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${LATEST_RUN_TASK_DEF_VERSION} --desired-count ${LATEST_RUN_DESIRED_COUNT}
         echo "set task definition is inregist ${DEPLOY_TASK_DEF_ARN}"
         aws ecs deregister-task-definition --region ${REGION} --task-definition ${FAMILY}:${DEPLOY_REVISION}
@@ -83,9 +82,11 @@ if [ ${NEW_RUN_TASK_DEF_ARN} != ${DEPLOY_TASK_DEF_ARN} ];then
 fi
 
 echo "Testing"
-if [ "1" == "1" ]; then
+if [ "1" == "0" ]; then
    rollback
   exit -1;
 else
+  docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:latest
+  docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:latest
   exit 0
 fi
