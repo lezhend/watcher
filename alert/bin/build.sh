@@ -8,6 +8,7 @@ SERVICE_NAME="alert-springboot"
 FAMILY="alert-springboot"
 NAME="springboot"
 TASKDEFNAME="alert-springboot"
+IS_FIRST=0
 
 cd ${MODULE_NAME}
 $(aws ecr get-login --no-include-email --region us-west-2)
@@ -45,19 +46,24 @@ if [ "$SERVICES" == "" ]; then
 else
   echo "entered new service"
   aws ecs create-service --service-name ${SERVICE_NAME} --desired-count 1 --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
+  IS_FIRST=1
 fi
 function rollback(){
     echo "start rollback"
+    if [ ${IS_FIRST} == 0 ];then
     echo "set image to faild"
     echo "set task definition is inregist ${DEPLOY_TASK_DEF_ARN}"
     echo "update service to task definition to ${LATEST_RUN_TASK_DEF_ARN}"
+    else
+        echo "Don't need rollback"
+    fi
 }
 
 sleep 10s
 NEW_RUN_SERVICE=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION}`
 NEW_RUN_TASK_DEF_ARN=`echo ${NEW_RUN_SERVICE}|jq .services[].taskDefinition`
 NEW_RUN_TASK_STATUS=`echo ${NEW_RUN_SERVICE}|jq .services[].status`
-if [ ${NEW_RUN_TASK_STATUS} != "ACTIVE" ]; then
+if [ ${NEW_RUN_TASK_STATUS} != "\"ACTIVE\"" ]; then
    echo "start task faild ${NEW_RUN_TASK_STATUS}"
    rollback
   exit -1;
