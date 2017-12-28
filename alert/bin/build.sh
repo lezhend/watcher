@@ -19,7 +19,7 @@ docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:latest
 docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
 
 
-LATEST_RUN_TASK_DEF_VERSION=`aws ecs describe-task-definition --task-definition ${TASKDEFNAME} --region ${REGION} | jq .taskDefinition.taskDefinitionArn`
+LATEST_RUN_TASK_DEF_VERSION=`aws ecs describe-task-definition --task-definition ${TASKDEFNAME} --region ${REGION} | jq .taskDefinition.revision`
 
 #Store the repositoryUri as a variable
 REPOSITORY_URI=`aws ecr describe-repositories --repository-names ${REPOSITORY_NAME} --region ${REGION} | jq .repositories[].repositoryUri | tr -d '"'`
