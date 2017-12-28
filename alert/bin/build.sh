@@ -30,7 +30,10 @@ REVISION=`aws ecs describe-task-definition --task-definition ${TASKDEFNAME} --re
 #Create or update service
 if [ "$SERVICES" == "" ]; then
   echo "entered existing service"
-  DESIRED_COUNT=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION} | jq .services[].desiredCount`
+  CURRENT_DESC = `aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION}`
+  DESIRED_COUNT= `echo ${CURRENT_DESC} | jq .services[].desiredCount`
+  CURRENT_TASK_DEF = `echo ${CURRENT_DESC} | jq .services[].taskDefinition`
+  echo ${CURRENT_TASK_DEF}
   if [ ${DESIRED_COUNT} = "0" ]; then
     DESIRED_COUNT="1"
   fi
@@ -40,8 +43,6 @@ else
   echo "entered new service"
   aws ecs create-service --service-name ${SERVICE_NAME} --desired-count 1 --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
 fi
-  RESULT_MSG=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION} | jq .services[]`
-  echo ${RESULT_MSG}
   sleep 10s
   RESULT_MSG=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION} | jq .services[]`
   echo ${RESULT_MSG}
