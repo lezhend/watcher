@@ -30,9 +30,9 @@ REVISION=`aws ecs describe-task-definition --task-definition ${TASKDEFNAME} --re
 #Create or update service
 if [ "$SERVICES" == "" ]; then
   echo "entered existing service"
-  CURRENT_DESC = `aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION}`
+  CURRENT_DESC= `aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION}`
   DESIRED_COUNT= `echo ${CURRENT_DESC} | jq .services[].desiredCount`
-  CURRENT_TASK_DEF = `echo ${CURRENT_DESC} | jq .services[].taskDefinition`
+  CURRENT_TASK_DEF= `echo ${CURRENT_DESC} | jq .services[].taskDefinition`
   echo ${CURRENT_TASK_DEF}
   if [ ${DESIRED_COUNT} = "0" ]; then
     DESIRED_COUNT="1"
