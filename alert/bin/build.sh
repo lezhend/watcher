@@ -57,12 +57,12 @@ sleep 10s
 NEW_RUN_SERVICE=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION}`
 NEW_RUN_TASK_DEF_ARN=`echo ${NEW_RUN_SERVICE}|jq .services[].taskDefinition`
 NEW_RUN_TASK_STATUS=`echo ${NEW_RUN_SERVICE}|jq .services[].status`
-if [ "$NEW_RUN_TASK_STATUS" != "ACTIVE" ]; then
+if [ $NEW_RUN_TASK_STATUS != "ACTIVE" ]; then
    echo "start task faild ${NEW_RUN_TASK_STATUS}"
    rollback
   exit -1;
 fi
-if [ "$NEW_RUN_TASK_DEF_ARN" != "$DEPLOY_TASK_DEF_ARN" ];then
+if [ $NEW_RUN_TASK_DEF_ARN != $DEPLOY_TASK_DEF_ARN ];then
    echo "start task definition is error : ${NEW_RUN_TASK_DEF_ARN},${DEPLOY_TASK_DEF_ARN}"
    rollback
    exit -1;
