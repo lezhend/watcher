@@ -18,6 +18,9 @@ docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/
 docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:latest
 docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
 
+
+LATEST_RUN_TASK_DEF_VERSION=`aws ecs describe-task-definition --task-definition ${TASKDEFNAME} --region ${REGION} | jq .taskDefinition.taskDefinitionArn`
+
 #Store the repositoryUri as a variable
 REPOSITORY_URI=`aws ecr describe-repositories --repository-names ${REPOSITORY_NAME} --region ${REGION} | jq .repositories[].repositoryUri | tr -d '"'`
 #Replace the build number and respository URI placeholders with the constants above
@@ -37,6 +40,7 @@ if [ "$SERVICES" == "" ]; then
   LATEST_RUN_SERVICE=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION}`
   LATEST_RUN_DESIRED_COUNT=`echo ${LATEST_RUN_SERVICE}| jq .services[].desiredCount`
   LATEST_RUN_TASK_DEF_ARN=`echo ${LATEST_RUN_SERVICE} | jq .services[].taskDefinition`
+
   echo ${LATEST_RUN_TASK_DEF_ARN}
   if [ ${LATEST_RUN_DESIRED_COUNT} = "0" ]; then
     LATEST_RUN_DESIRED_COUNT="1"
@@ -51,9 +55,13 @@ fi
 function rollback(){
     echo "start rollback"
     if [ ${IS_FIRST} == 0 ];then
-    echo "set image to faild"
-    echo "set task definition is inregist ${DEPLOY_TASK_DEF_ARN}"
-    echo "update service to task definition to ${LATEST_RUN_TASK_DEF_ARN}"
+        echo "set image to faild"
+        docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:failed
+        docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:failed
+        echo "update service to task definition to ${LATEST_RUN_TASK_DEF_ARN}"
+        aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${LATEST_RUN_TASK_DEF_VERSION} --desired-count ${LATEST_RUN_DESIRED_COUNT}
+        echo "set task definition is inregist ${DEPLOY_TASK_DEF_ARN}"
+        aws ecs deregister-task-definition --region ${REGION} --task-definition ${FAMILY}:${DEPLOY_REVISION}
     else
         echo "Don't need rollback"
     fi
