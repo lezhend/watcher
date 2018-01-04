@@ -2,6 +2,7 @@ package com.fortinet.fcasb.watcher.alert.service;
 
 import com.fortinet.fcasb.watcher.alert.task.MonitorESTask;
 import com.fortinet.fcasb.watcher.alert.task.MonitorLogstashTask;
+import com.fortinet.fcasb.watcher.alert.task.MonitorServiceTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -30,6 +31,8 @@ public class TaskService  {
     private ThreadPoolTaskScheduler monitorScheduler;
     @Autowired
     private ThreadPoolTaskScheduler logstashScheduler;
+    @Autowired
+    private ThreadPoolTaskScheduler serviceScheduler;
 
     @Autowired
     private  AlertTask alertTask;
@@ -37,6 +40,8 @@ public class TaskService  {
     private MonitorESTask monitorESTask;
     @Autowired
     private MonitorLogstashTask logstashTask;
+    @Autowired
+    private MonitorServiceTask serviceTask;
     @PostConstruct
     private void startTask() {
         int min = period/60;
@@ -45,6 +50,7 @@ public class TaskService  {
         monitorScheduler.schedule(monitorESTask, new CronTrigger("0 0/" + min + " * * * ? "));
 
         logstashScheduler.schedule(logstashTask,new CronTrigger("0 0/" + min + " * * * ? "));
+        serviceScheduler.schedule(serviceTask,new CronTrigger("0 0/" + min + " * * * ? "));
     }
 
 }
