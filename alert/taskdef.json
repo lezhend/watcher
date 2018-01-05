@@ -48,5 +48,6 @@
       "name": "alert-config"
     }
   ],
+  "memory": "512",
   "family": "alert-springboot"
 }

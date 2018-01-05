@@ -45,6 +45,9 @@ function nodes() {
     $.ajaxSetup({
         async : false
     });
+    $.ajaxSetup({
+        async : true
+    });
     for(var i=0;i<hosts.length;i++){
         var url = "http://"+hosts[i]+":"+ports[i]+"/_nodes/";
         var urlKibana = "http://"+urls[i]+"/_plugin/kibana";
@@ -62,12 +65,7 @@ function nodes() {
             }
             $("#nodes").append("</div>");
         })
-
     }
-    $.ajaxSetup({
-        async : true
-    });
-
 }
 
 
