@@ -31,7 +31,7 @@ public class EmailService {
         try {
             messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             messageHelper.setFrom(simpleMailMessage.getFrom());
-            messageHelper.setSubject(title);
+            messageHelper.setSubject("[CMM-ALERT] "+title);
             messageHelper.setText(content,true);
             String[] mails = to.split(",");
             messageHelper.setTo(mails);
