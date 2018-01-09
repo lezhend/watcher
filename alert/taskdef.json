@@ -10,7 +10,7 @@
           "awslogs-stream-prefix": "alert"
         }
       },
-      "memory": 512,
+      "memory": 1024,
       "portMappings": [
         {
           "hostPort": 8083,
@@ -48,6 +48,6 @@
       "name": "alert-config"
     }
   ],
-  "memory": "512",
+  "memory": 1024,
   "family": "alert-springboot"
 }
