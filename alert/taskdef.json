@@ -36,10 +36,10 @@
   ],
   "volumes": [
     {
-    "host": {
-    "sourcePath": "/efs/watcher/alert/data"
-    },
-    "name": "alert-data"
+      "host": {
+        "sourcePath": "/efs/watcher/alert/data"
+      },
+      "name": "alert-data"
     },
     {
       "host": {
@@ -48,7 +48,6 @@
       "name": "alert-config"
     }
   ],
-  "memory": "1024",
   "family": "alert-springboot"
 }
 
