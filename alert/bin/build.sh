@@ -1,12 +1,12 @@
 #!/bin/bash
 #Constants
-MODULE_NAME="monitor"
+MODULE_NAME="alert"
+cd ${MODULE_NAME}
 REPOSITORY_NAME="/elk/monitor"
-SERVICE_NAME="monitor-service"
-IS_FIRST=0
+SERVICE_NAME="monitor-alert"
 REPOSITORY_HOST=34.213.137.99:8888
 REPOSITORY_URI=$REPOSITORY_HOST$REPOSITORY_NAME
-cd ${MODULE_NAME}
+
 docker build -t v_$BUILD_NUMBER .
 docker tag v_$BUILD_NUMBER $REPOSITORY_URI:v_$BUILD_NUMBER
 docker push 34.213.137.99:8888/elk/monitor:v_$BUILD_NUMBER
