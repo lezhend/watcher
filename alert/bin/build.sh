@@ -2,14 +2,14 @@
 #Constants
 MODULE_NAME="alert"
 cd ${MODULE_NAME}
-REPOSITORY_NAME="/elk/monitor"
 SERVICE_NAME="monitor-alert"
+REPOSITORY_NAME="/elk/monitor-alert"
 REPOSITORY_HOST=34.213.137.99:8888
 REPOSITORY_URI=$REPOSITORY_HOST$REPOSITORY_NAME
 
-docker build -t v_$BUILD_NUMBER .
-docker tag v_$BUILD_NUMBER $REPOSITORY_URI:v_$BUILD_NUMBER
-docker push 34.213.137.99:8888/elk/monitor:v_$BUILD_NUMBER
+docker build -t $SERVICE_NAME .
+docker tag $SERVICE_NAME $REPOSITORY_URI:v_$BUILD_NUMBER
+docker push $REPOSITORY_URI:v_$BUILD_NUMBER
 
 
 #Replace the build number and respository URI placeholders with the constants above
