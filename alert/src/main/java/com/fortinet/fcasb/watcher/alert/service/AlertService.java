@@ -1,18 +1,17 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
-import com.fortinet.fcasb.watcher.alert.dao.AlertDao;
-import com.fortinet.fcasb.watcher.alert.dao.AlertLogDao;
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
 import com.fortinet.fcasb.watcher.alert.domain.AlertLog;
-import com.fortinet.fcasb.watcher.alert.domain.Result;
+import com.fortinet.fcasb.watcher.alert.model.Result;
 import com.fortinet.fcasb.watcher.alert.enums.AlertConditionEnum;
+import com.fortinet.fcasb.watcher.alert.repo.AlertLogRepositoryImpl;
+import com.fortinet.fcasb.watcher.alert.repo.AlertRepositoryImpl;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,15 +28,16 @@ public class AlertService {
     private List<Alert> ALERT_LIST = new ArrayList<>();
 
 
+
     @Autowired
-    private AlertDao alertDao;
+    private AlertRepositoryImpl alertDao;
     @Autowired
-    private AlertLogDao alertLogDao;
+    private AlertLogRepositoryImpl alertLogDao;
 
     @Autowired
     private ESService esService;
 
-    @PostConstruct
+//    @PostConstruct
     public void init(){
         refreshAlertList();
     }
@@ -50,7 +50,7 @@ public class AlertService {
         ResultTarget resultTarget = new ResultTarget();
         try {
             response = esService.search(alert,startTime,endTime);
-            if(response.containsKey("hits")){
+            if(response!=null && response.containsKey("hits")){
                 Map<String,Object> hits = (Map<String, Object>) response.get("hits");
                 List<Map<String,Object>> hitList = (List<Map<String, Object>>) hits.get("hits");
                 resultTarget.setCount(Long.valueOf(hits.get("total").toString()));
@@ -196,7 +196,7 @@ public class AlertService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("get info error ",e);
         }
         //命中后alertLog 写入
         if(isTarg) {
@@ -213,7 +213,7 @@ public class AlertService {
             }
             alertLog.setContent(content);
             alertLog.setNotifications(alert.getNotifications());
-            alertLogDao.insert(alertLog);
+            alertLogDao.save(alertLog);
         }
         resultTarget.setTarget(isTarg);
         return resultTarget;
@@ -233,7 +233,7 @@ public class AlertService {
     }
 
     public Result<List<Alert>> find(){
-        List<Alert> alertList = alertDao.find();
+        List<Alert> alertList = alertDao.findAll();
         Result<List<Alert>> result = new Result<>();
         result.setCode(0);
         result.setMsg("ok");
@@ -242,15 +242,15 @@ public class AlertService {
     }
 
     public Result<List<AlertLog>> findLogs(){
-        List<AlertLog> alertList = alertLogDao.find();
+        List<AlertLog> alertList = alertLogDao.findAll();
         Result<List<AlertLog>> result = new Result<>();
         result.setCode(0);
         result.setMsg("ok");
         result.setData(alertList);
         return result;
     }
-    public Result<List<AlertLog>> findLogsByName(String name){
-        List<AlertLog> alertList = alertLogDao.get(name);
+    public Result<List<AlertLog>> findLogsByName(Long alertId){
+        List<AlertLog> alertList = alertLogDao.findAllByAlertId(alertId);
         Result<List<AlertLog>> result = new Result<>();
         result.setCode(0);
         result.setMsg("ok");
@@ -265,7 +265,7 @@ public class AlertService {
             result.setMsg("params error");
             return result;
         }
-        Alert alert = alertDao.get(name);
+        Alert alert = alertDao.getByName(name);
         result.setCode(0);
         result.setMsg("ok");
         result.setData(alert);
@@ -280,7 +280,7 @@ public class AlertService {
             return result;
         }
         result.setData(alert.getName());
-        if(alertDao.findCount(alert.getName())>0){
+        if(alertDao.countByName(alert.getName())>0){
             result.setCode(500);
             result.setMsg("already exist");
             return result;
@@ -292,7 +292,7 @@ public class AlertService {
             alert.setCvalue(AlertConditionEnum.GE.getValue());
         }
         try {
-            alertDao.insert(alert);
+            alertDao.save(alert);
         } catch (Exception e) {
             e.printStackTrace();
             result.setCode(500);
@@ -317,7 +317,7 @@ public class AlertService {
         if(StringUtils.isBlank(alert.getCvalue())){
             alert.setCvalue(AlertConditionEnum.GE.getValue());
         }
-        alertDao.update(alert);
+        alertDao.save(alert);
         result.setCode(0);
         result.setMsg("ok");
         return result;
@@ -339,7 +339,7 @@ public class AlertService {
 
     
     public void delete(Date date){
-        alertLogDao.deleteByTimestamp(date);
+        alertLogDao.deleteAllByCreatedBefore(date.getTime());
     }
 
     public class ResultTarget{

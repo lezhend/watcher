@@ -2,24 +2,32 @@ package com.fortinet.fcasb.watcher.alert.domain;
 
 import com.fortinet.fcasb.watcher.alert.enums.MonitorTypeEnum;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * Created by zliu on 17/3/3.
  */
-public class Monitor implements Serializable{
+@Entity
+@Table(name = "monitor_content")
+public class Monitor extends BaseEntity{
     private static final long serialVersionUID = 3725644924271403838L;
-    private String host;            //host name
-    private String port;           //port name
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+    @Column(columnDefinition = "text")
+    private String host;         //host name
+    @Column
+    private String port;         //port name
+    @Column
     private String method;         //http,https,ssh, ...
-    
+    @Column(unique = true)
     private String name;          //define monitor server name , it is unique
+    @Column
     private String label;         //define label name
-
+    @Column
+    @Enumerated(EnumType.ORDINAL)
     private MonitorTypeEnum type;         //es,logstash,kafka,kibana, server
-
-    private String createTime;
-    private String updateTime;
 
     public String getHost() {
         return host;
@@ -49,6 +57,14 @@ public class Monitor implements Serializable{
         return label;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setLabel(String label) {
         this.label = label;
     }
@@ -59,22 +75,6 @@ public class Monitor implements Serializable{
 
     public void setType(MonitorTypeEnum type) {
         this.type = type;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
     }
 
     public String getPort() {

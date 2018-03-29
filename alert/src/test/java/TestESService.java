@@ -22,8 +22,6 @@ public class TestESService {
         MonitorMetric mm = new MonitorMetric();
         mm.setName("test");
         mm.setType(MonitorTypeEnum.ES);
-        mm.setCreateTime(new Date().toString());
-        mm.setUpdateTime(new Date().toString());
         System.out.println(JSON.toJSONString(mm));
         System.out.println(JSON.parseObject(JSON.toJSONString(mm),MonitorMetric.class).getType());
     }

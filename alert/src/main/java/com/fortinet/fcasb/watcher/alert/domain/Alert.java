@@ -1,5 +1,6 @@
 package com.fortinet.fcasb.watcher.alert.domain;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,26 +8,59 @@ import java.util.Map;
 /**
  * Created by zliu on 17/3/3.
  */
-public class Alert implements Serializable{
+@Entity
+@Table(name = "monitor_alert")
+public class Alert extends BaseEntity{
     private static final long serialVersionUID = -4879308807404260222L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+    @Column(columnDefinition = "text")
     private String host;         //host name
+    @Column
     private String port;         //port name
+    @Column(name="index_name")
     private String index;         //index name
+    @Column(unique = true)
     private String name;          //alertName
-    private Map<String,String> filter;        //search condition   field,key
+    @Column(columnDefinition = "text")
+    private String filter;        //search condition   field,key
+    @Column
     private String searchkey;        //search condition
+    @Column
     private String field;         //get field value
-
+    @Column
     private String cvalue;      //alert gt lt le ge eq
+    @Column
     private String conditionvalue;      //alert condition >field value
+    @Column
     private String ccount;      //gt lt le ge eq
+    @Column
     private String conditioncount;      //alert condition >count
-
-    private String createtime;
-    private String updatetime;
+    @Column
     private String notifications; //通知 , 分隔
-    private String emailtitle; //
+    @Column
+    private String emailtitle;
+
+    @Column(columnDefinition = "text")
     private String emailtemplate; //
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
 
     public String getHost() {
         return host;
@@ -60,40 +94,12 @@ public class Alert implements Serializable{
         this.emailtitle = emailtitle;
     }
 
-    public void setFilter(Map<String, String> filter) {
-        this.filter = filter;
+    public String getIndex() {
+        return index;
     }
 
-    public String getCvalue() {
-        return cvalue;
-    }
-
-    public void setCvalue(String cvalue) {
-        this.cvalue = cvalue;
-    }
-
-    public String getCcount() {
-        return ccount;
-    }
-
-    public void setCcount(String ccount) {
-        this.ccount = ccount;
-    }
-
-    public String getSearchkey() {
-        return searchkey;
-    }
-
-    public void setSearchkey(String searchkey) {
-        this.searchkey = searchkey;
-    }
-
-    public String getUpdatetime() {
-        return updatetime;
-    }
-
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime;
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     public String getName() {
@@ -104,20 +110,12 @@ public class Alert implements Serializable{
         this.name = name;
     }
 
-    public String getIndex() {
-        return index;
+    public String getSearchkey() {
+        return searchkey;
     }
 
-    public void setIndex(String index) {
-        this.index = index;
-    }
-
-    public Map<String, String> getFilter() {
-        return filter;
-    }
-
-    public void setFilter(HashMap<String, String> filter) {
-        this.filter = filter;
+    public void setSearchkey(String searchkey) {
+        this.searchkey = searchkey;
     }
 
     public String getField() {
@@ -128,7 +126,22 @@ public class Alert implements Serializable{
         this.field = field;
     }
 
+    public String getCvalue() {
+        return cvalue;
+    }
 
+    public void setCvalue(String cvalue) {
+        this.cvalue = cvalue;
+    }
+
+
+    public String getCcount() {
+        return ccount;
+    }
+
+    public void setCcount(String ccount) {
+        this.ccount = ccount;
+    }
 
     public String getConditionvalue() {
         return conditionvalue;
@@ -146,15 +159,6 @@ public class Alert implements Serializable{
         this.conditioncount = conditioncount;
     }
 
-
-    public String getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
-    }
-
     public String getNotifications() {
         return notifications;
     }
@@ -162,6 +166,4 @@ public class Alert implements Serializable{
     public void setNotifications(String notifications) {
         this.notifications = notifications;
     }
-
-
 }

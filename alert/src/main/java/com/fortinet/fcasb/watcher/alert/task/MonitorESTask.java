@@ -2,8 +2,10 @@ package com.fortinet.fcasb.watcher.alert.task;
 
 import com.fortinet.fcasb.watcher.alert.domain.Monitor;
 import com.fortinet.fcasb.watcher.alert.enums.MonitorTypeEnum;
+import com.fortinet.fcasb.watcher.alert.init.AlertProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,9 @@ import java.util.List;
 public class MonitorESTask extends AbstractMonitorHttpTask {
     public Logger LOGGER = LoggerFactory.getLogger(MonitorESTask.class);
 
-    @Value("${es.server.hosts}")
-    private String[] esHosts;
-    @Value("${es.server.ports}")
-    private String[] esPorts;
+    @Autowired
+    private AlertProperties alertProperties;
+
 
     private List<Monitor> MONITOR_LIST = new ArrayList();
 
@@ -30,6 +31,8 @@ public class MonitorESTask extends AbstractMonitorHttpTask {
     private void init(){
 //        metrics.put("cluster_health","/_cluster/health") ;
 //        metrics.put("cluster_stats","/_cluster/stats") ;
+        String[] esHosts = alertProperties.getEsHosts().split(",");
+        String[] esPorts = alertProperties.getEsPorts().split(",");
         for(int i=0;i<esHosts.length;i++){
             Monitor monitor = new Monitor();
             monitor.setLabel("default-"+i);

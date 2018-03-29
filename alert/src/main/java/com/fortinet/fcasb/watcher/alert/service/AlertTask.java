@@ -1,6 +1,7 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
+import com.fortinet.fcasb.watcher.alert.init.AlertProperties;
 import com.fortinet.fcasb.watcher.alert.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -20,12 +21,9 @@ import java.util.List;
 @Service
 public class AlertTask  implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AlertTask.class);
-    @Value("${send.mail.list}")
-    private String notemmail;
 
-    @Value("${alert.period}")
-    private Integer period;
-
+    @Autowired
+    private AlertProperties alertProperties;
     @Autowired
     private AlertService alertService;
     @Autowired
@@ -35,7 +33,7 @@ public class AlertTask  implements Runnable {
         List<Alert> alertList =alertService.getAlertList();
         LOGGER.info("alert running {}",alertList.size());
         Date endTime = StringUtil.getCurrentWholeMinTime();
-        Date startTime =  new Date(endTime.getTime() - period * 1000);
+        Date startTime =  new Date(endTime.getTime() - alertProperties.getAlertPeriod() * 1000);
 
         for (Alert alert:alertList){
             LOGGER.info("alert {}",alert.getName());
@@ -74,8 +72,13 @@ public class AlertTask  implements Runnable {
             title = alert.getEmailtitle().replace("{count}", String.valueOf(count));
             if(StringUtils.isNotBlank(value)) {
                 title = title.replace("{value}", value);
-            }        }
-        String to = alert.getNotifications()+","+notemmail;
+            }
+        }
+        String to = alertProperties.getSendmails();
+        if(alert.getNotifications()!=null) {
+            alert.setNotifications(alert.getNotifications().replaceAll(";",","));
+            to = alert.getNotifications() + "," + alertProperties.getSendmails();
+        }
         LOGGER.info("title= {}, content={}, to={}",title,content,to);
         emailService.sendMail(title, content, to);
     }

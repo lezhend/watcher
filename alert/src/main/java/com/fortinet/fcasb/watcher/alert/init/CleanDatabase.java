@@ -22,8 +22,6 @@ public class CleanDatabase {
     private static final Logger LOGGER = LoggerFactory.getLogger(CleanDatabase.class);
 
 
-
-
     @Autowired
     private AlertService alertService;
 

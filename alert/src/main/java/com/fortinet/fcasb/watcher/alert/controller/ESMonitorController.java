@@ -17,19 +17,6 @@ import java.net.UnknownHostException;
 @RequestMapping("/monitor")
 public class ESMonitorController {
 
-	@Value("${es.server.hosts.monitor}")
-	private String[] esMonitors;
-
-	@Value("${es.server.hosts}")
-	private String hosts;
-
-	@Value("${es.server.urls}")
-	private String urls;
-
-	@Value("${es.server.ports}")
-	private String ports;
-
-
 	@RequestMapping("/")
 	public String index() {
 		return "index";
@@ -37,15 +24,15 @@ public class ESMonitorController {
 
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String health(Model model) throws UnknownHostException {
-		model.addAttribute("esMonitors",esMonitors);
+//		model.addAttribute("esMonitors",esMonitors);
 		return "monitor/index";
 	}
 
 	@RequestMapping(value = "/nodes.html", method = RequestMethod.GET)
 	public String stats(Model model) throws ClientProtocolException, IOException {
-		model.addAttribute("urls",urls);
-		model.addAttribute("hosts",hosts);
-		model.addAttribute("ports",ports);
+//		model.addAttribute("urls",urls);
+//		model.addAttribute("hosts",hosts);
+//		model.addAttribute("ports",ports);
 		return "monitor/nodes";
 	}
 	

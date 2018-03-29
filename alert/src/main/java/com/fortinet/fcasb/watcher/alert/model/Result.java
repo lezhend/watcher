@@ -1,4 +1,4 @@
-package com.fortinet.fcasb.watcher.alert.domain;
+package com.fortinet.fcasb.watcher.alert.model;
 
 import java.io.Serializable;
 

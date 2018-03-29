@@ -1,5 +1,7 @@
 package com.fortinet.fcasb.watcher.alert.controller;
 
+import com.fortinet.fcasb.watcher.alert.init.AlertProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +20,8 @@ import java.util.Map;
 public class AlertWebController {
 
 
-    @Value("${es.server.hosts}")
-    private String[] hosts;
-
-    @Value("${es.server.ports}")
-    private String[] ports;
+    @Autowired
+    private AlertProperties alertProperties;
 
     @GetMapping("/index.html")
     public String index(Map<String, Object> model) {
@@ -33,6 +32,8 @@ public class AlertWebController {
     @GetMapping("/info.html")
     public String info(Map<String, Object> model) {
         List<String> hostList= new ArrayList();
+        String[] hosts = alertProperties.getEsHosts().split(",");
+        String[] ports = alertProperties.getEsPorts().split(",");
         for(int i =0;i<hosts.length;i++){
             hostList.add(hosts[i]+":"+ports[i]);
         }
@@ -46,6 +47,8 @@ public class AlertWebController {
     @GetMapping("/create.html")
     public String create(Map<String, Object> model) {
         List<String> hostList= new ArrayList();
+        String[] hosts = alertProperties.getEsHosts().split(",");
+        String[] ports = alertProperties.getEsPorts().split(",");
         for(int i =0;i<hosts.length;i++){
             hostList.add(hosts[i]+":"+ports[i]);
         }

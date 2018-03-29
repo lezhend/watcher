@@ -1,5 +1,6 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
+import com.fortinet.fcasb.watcher.alert.init.AlertProperties;
 import com.fortinet.fcasb.watcher.alert.task.MonitorESTask;
 import com.fortinet.fcasb.watcher.alert.task.MonitorLogstashTask;
 import com.fortinet.fcasb.watcher.alert.task.MonitorServiceTask;
@@ -21,8 +22,8 @@ import javax.annotation.PostConstruct;
 @Component
 public class TaskService  {
 
-    @Value("${alert.period}")
-    private Integer period;
+    @Autowired
+    private AlertProperties alertProperties;
 
     @Autowired
     private ThreadPoolTaskScheduler taskScheduler;
@@ -44,7 +45,7 @@ public class TaskService  {
     private MonitorServiceTask serviceTask;
     @PostConstruct
     private void startTask() {
-        int min = period/60;
+        int min = alertProperties.getAlertPeriod()/60;
         taskScheduler.schedule(alertTask, new CronTrigger("0 0/" + min + " * * * ? "));
 
         monitorScheduler.schedule(monitorESTask, new CronTrigger("0 0/" + min + " * * * ? "));

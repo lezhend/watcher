@@ -3,9 +3,14 @@ package com.fortinet.fcasb.watcher.alert.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fortinet.fcasb.watcher.alert.domain.Alert;
+import com.fortinet.fcasb.watcher.alert.domain.AlertLog;
+import com.fortinet.fcasb.watcher.alert.model.Result;
 import com.fortinet.fcasb.watcher.alert.service.AlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zliu on 17/3/3.
@@ -50,6 +55,13 @@ public class AlertController {
 
     @RequestMapping(value = "/list/logs/{name}", method = RequestMethod.GET)
     public String listLogs(@PathVariable("name")String name){
-        return JSONObject.toJSONString(alertService.findLogsByName(name));
+        Result<Alert> result = alertService.get(name);
+        Result<List<AlertLog>> listResult = new Result<>();
+        listResult.setCode(0);
+        listResult.setData(new ArrayList<>());
+        if(result.getCode()==0) {
+            listResult = alertService.findLogsByName(result.getData().getId());
+        }
+        return JSONObject.toJSONString(listResult);
     }
 }

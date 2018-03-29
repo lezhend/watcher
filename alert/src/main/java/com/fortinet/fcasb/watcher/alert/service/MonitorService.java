@@ -1,11 +1,11 @@
 package com.fortinet.fcasb.watcher.alert.service;
 
-import com.fortinet.fcasb.watcher.alert.dao.MonitorDao;
-import com.fortinet.fcasb.watcher.alert.dao.MonitorMetricDao;
 import com.fortinet.fcasb.watcher.alert.domain.Monitor;
 import com.fortinet.fcasb.watcher.alert.domain.MonitorMetric;
-import com.fortinet.fcasb.watcher.alert.domain.Result;
+import com.fortinet.fcasb.watcher.alert.model.Result;
 import com.fortinet.fcasb.watcher.alert.enums.MonitorTypeEnum;
+import com.fortinet.fcasb.watcher.alert.repo.MonitorMetricRepositoryImpl;
+import com.fortinet.fcasb.watcher.alert.repo.MonitorRepositoryImpl;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +23,13 @@ public class MonitorService {
 
 
     @Autowired
-    private MonitorDao monitorDao;
+    private MonitorRepositoryImpl monitorDao;
     @Autowired
-    private MonitorMetricDao metricDao;
+    private MonitorMetricRepositoryImpl metricDao;
 
 
     public Result<List<Monitor>> find(){
-        List<Monitor> monitors = monitorDao.find();
+        List<Monitor> monitors = monitorDao.findAll();
         Result<List<Monitor>> result = new Result<>();
         result.setCode(0);
         result.setMsg("ok");
@@ -55,7 +55,7 @@ public class MonitorService {
             result.setMsg("params error");
             return result;
         }
-        Monitor monitor = monitorDao.get(name);
+        Monitor monitor = monitorDao.getByName(name);
         result.setCode(0);
         result.setMsg("ok");
         result.setData(monitor);
@@ -70,14 +70,14 @@ public class MonitorService {
             return result;
         }
         result.setData(monitor.getName());
-        if(monitorDao.findCount(monitor.getName())>0){
+        if(monitorDao.countByName(monitor.getName())>0){
             result.setCode(500);
             result.setMsg("already exist");
             return result;
         }
 
         try {
-            monitorDao.insert(monitor);
+            monitorDao.save(monitor);
         } catch (Exception e) {
             e.printStackTrace();
             result.setCode(201);
@@ -97,7 +97,7 @@ public class MonitorService {
         }
         result.setData(monitor.getName());
 
-        monitorDao.update(monitor);
+        monitorDao.save(monitor);
         result.setCode(0);
         result.setMsg("ok");
         return result;
@@ -119,7 +119,7 @@ public class MonitorService {
 
 
     public Result<List<MonitorMetric>> findMetric(){
-        List<MonitorMetric> metrics = metricDao.find();
+        List<MonitorMetric> metrics = metricDao.findAll();
         Result<List<MonitorMetric>> result = new Result<>();
         result.setCode(0);
         result.setMsg("ok");
@@ -145,7 +145,7 @@ public class MonitorService {
             result.setMsg("params error");
             return result;
         }
-        MonitorMetric metric = metricDao.get(name);
+        MonitorMetric metric = metricDao.getByName(name);
         result.setCode(0);
         result.setMsg("ok");
         result.setData(metric);
@@ -160,14 +160,14 @@ public class MonitorService {
             return result;
         }
         result.setData(metric.getName());
-        if(metricDao.findCount(metric.getName())>0){
+        if(metricDao.countByName(metric.getName())>0){
             result.setCode(500);
             result.setMsg("already exist");
             return result;
         }
 
         try {
-            metricDao.insert(metric);
+            metricDao.save(metric);
         } catch (Exception e) {
             e.printStackTrace();
             result.setCode(201);
@@ -187,7 +187,7 @@ public class MonitorService {
         }
         result.setData(metric.getName());
 
-        metricDao.update(metric);
+        metricDao.save(metric);
         result.setCode(0);
         result.setMsg("ok");
         return result;

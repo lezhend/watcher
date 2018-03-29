@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,23 +32,18 @@ public class ESService {
     private static final int SEARCH_FROM=0;
 
 
-
-    @Value("${es.server.hosts}")
-    private String[] hosts;
-
-    @Value("${es.server.ports}")
-    private String[] ports;
-
     @Autowired
     private RestWrapper restWrapper;
 
 
     private Map<String,Object> restSearch(Alert alert,Map<String,Object> searchFilter){
-        String host = hosts[0];
-        String port = ports[0];
+        String host = "";
+        String port = "";
         if(StringUtils.isNotBlank(alert.getHost())&& StringUtils.isNumeric(alert.getPort())){
              host = alert.getHost();
              port = alert.getPort();
+        }else{
+            return null;
         }
         String url = "http://"+host+":"+port+"/"+alert.getIndex()+"/_search";
         ResponseEntity<Map<String,Object>> re = restWrapper.post(url,searchFilter,new TypeReference<Map<String,Object>>(){});
@@ -64,7 +60,8 @@ public class ESService {
         }
 
         if(alert.getFilter()!=null){
-            for(Map.Entry<String,String> value:alert.getFilter().entrySet()){
+            Map<String,String> filter = JSON.parseObject(alert.getFilter(), HashMap.class);
+            for(Map.Entry<String,String> value:filter.entrySet()){
                 boolQueryBuilder.must(QueryBuilders.termQuery(value.getKey(), value.getValue()));
             }
         }

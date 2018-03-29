@@ -1,17 +1,43 @@
 package com.fortinet.fcasb.watcher.alert.domain;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * Created by zliu on 17/3/3.
  */
-public class AlertLog implements Serializable{
+@Entity
+@Table(name = "monitor_alert_log")
+public class AlertLog extends BaseEntity{
 
     private static final long serialVersionUID = -3431496450226286102L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+    @Column
     private String name;         //name
+    @Column
+    private long alertId;
+    @Column(columnDefinition = "text")
     private String content;          //alert content
+    @Column
     private String notifications;        //to email
-    private String createtime;         //createtime
+
+    public long getAlertId() {
+        return alertId;
+    }
+
+    public void setAlertId(long alertId) {
+        this.alertId = alertId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -37,11 +63,4 @@ public class AlertLog implements Serializable{
         this.notifications = notifications;
     }
 
-    public String getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
-    }
 }
