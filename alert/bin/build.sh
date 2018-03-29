@@ -1,25 +1,19 @@
 #!/bin/bash
 #Constants
 MODULE_NAME="monitor"
-REGION="us-west-2"
 REPOSITORY_NAME="/elk/monitor"
-CLUSTER="cluster"
 SERVICE_NAME="monitor-service"
-FAMILY="alert-springboot"
-NAME="springboot"
-TASKDEFNAME="alert-springboot"
 IS_FIRST=0
 REPOSITORY_HOST=34.213.137.99:8888
 REPOSITORY_URI=$REPOSITORY_HOST$REPOSITORY_NAME
 cd ${MODULE_NAME}
-$(aws ecr get-login --no-include-email --region us-west-2)
 docker build -t v_$BUILD_NUMBER .
 docker tag v_$BUILD_NUMBER $REPOSITORY_URI:v_$BUILD_NUMBER
 docker push 34.213.137.99:8888/elk/monitor:v_$BUILD_NUMBER
 
 
 #Replace the build number and respository URI placeholders with the constants above
-sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g" -e "s;%REPOSITORY_URI%;${REPOSITORY_URI};g" monitor-deploy.yaml > ${NAME}-v_${BUILD_NUMBER}.yaml
+sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g" -e "s;%REPOSITORY_URI%;${REPOSITORY_URI};g" monitor-deploy.yaml > ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml
 #Register the task definition in the repository
 
 
