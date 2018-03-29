@@ -61,15 +61,15 @@ public class CommonConfig {
         return taskScheduler;
     }
 
-    @Bean
-    public Logger initLogback(@Autowired AlertProperties alertProperties){
-        try {
-            LogbackConfigurer.initLogging(alertProperties.getLogbackPath());
-        } catch (Exception e) {
-            LOGGER.error("Loading logback config file failed , please config logback file path：{}","classpath:/conf/logback.xml");
-        }
-        return LOGGER;
-    }
+//    @Bean
+//    public Logger initLogback(){
+//        try {
+//            LogbackConfigurer.initLogging("./logback.xml");
+//        } catch (Exception e) {
+//            LOGGER.error("Loading logback config file failed , please config logback file path：{}","classpath:/conf/logback.xml");
+//        }
+//        return LOGGER;
+//    }
 
     @Bean
     public JavaMailSender javaMailSender(@Autowired AlertProperties alertProperties) {

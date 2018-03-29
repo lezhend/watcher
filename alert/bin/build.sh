@@ -1,10 +1,10 @@
 #!/bin/bash
 #Constants
-MODULE_NAME="alert"
+MODULE_NAME="monitor"
 REGION="us-west-2"
-REPOSITORY_NAME="watcher/alert"
+REPOSITORY_NAME="elk/monitor"
 CLUSTER="cluster"
-SERVICE_NAME="alert-springboot"
+SERVICE_NAME="monitor-service"
 FAMILY="alert-springboot"
 NAME="springboot"
 TASKDEFNAME="alert-springboot"
@@ -13,8 +13,8 @@ IS_FIRST=0
 cd ${MODULE_NAME}
 $(aws ecr get-login --no-include-email --region us-west-2)
 docker build -t v_$BUILD_NUMBER .
-docker tag v_$BUILD_NUMBER 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
-docker push 482025328369.dkr.ecr.us-west-2.amazonaws.com/watcher/alert:v_$BUILD_NUMBER
+docker tag v_$BUILD_NUMBER 34.213.137.99:8888/elk/monitor:v_$BUILD_NUMBER
+docker push 34.213.137.99:8888/elk/monitor:v_$BUILD_NUMBER
 
 
 LATEST_RUN_TASK_DEF_VERSION=`aws ecs describe-task-definition --task-definition ${TASKDEFNAME} --region ${REGION} | jq .taskDefinition.revision`

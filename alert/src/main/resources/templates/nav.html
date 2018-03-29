@@ -31,7 +31,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" >CMM(Cluster Monitor Management)(v0.2)</a>
+                <a class="navbar-brand" >CMM(Cluster Monitor Management)(v1.0.0)</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -69,6 +69,7 @@
 
 <div th:fragment="info">
 
+    <input type="hidden" id="alertId" value=""/>
     <div class="control-group">
         <span class="control-group-label" id="alert-name">Alert Name:</span>
         <input type="text" id="name" class="form-control" aria-describedby="basic-addon1"/>
@@ -91,7 +92,6 @@
     </div>
     <br/>
     <hr/>
-
     <!--<div class="control-group">-->
         <!--<span class="control-group-label" id="alert-filter">Field Filter:</span>-->
         <!--<input type="text" id="filter" class="form-control"  aria-describedby="basic-addon1"/>-->

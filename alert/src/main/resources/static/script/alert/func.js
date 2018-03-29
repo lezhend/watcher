@@ -49,6 +49,7 @@ function init_info(){
                  $("#host").val(result.data.host+":"+port);
              }
 
+            $("#alertId").val(result.data.id);
             $("#name").val(result.data.name);
             $("#hidden-name").val(result.data.name);
             $("#index").val(result.data.index);
@@ -130,6 +131,7 @@ function updateAlert(){
     var url = "/alert/"+$("#hidden-name").val();
     var alertData={};
     var hostName=$("#host").val().split(":");
+    alertData.id=$("#alertId").val();
     alertData.host=hostName[0];
     alertData.port=hostName[1];
     alertData.name=$("#name").val();
