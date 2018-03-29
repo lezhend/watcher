@@ -3,6 +3,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: monitor-alert
+  namespace: test-elk
 spec:
   replicas: 1
   template:
@@ -23,6 +24,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: monitor-alert
+  namespace: test-elk
 spec:
   type: NodePort
   selector:
