@@ -15,8 +15,8 @@ docker push $REPOSITORY_URI:v_$BUILD_NUMBER
 sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g" -e "s;%REPOSITORY_URI%;${REPOSITORY_URI};g" monitor-deploy.yaml > ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml
 #Register the task definition in the repository
 
-ssh k8s-master "mkdir -p /opt/k8s/monitor/delpoy/"
-scp ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml k8s-master:/opt/k8s/monitor/delpoy/
+ssh 54.202.204.119 "mkdir -p /opt/k8s/monitor/delpoy/"
+scp ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml 54.202.204.119:/opt/k8s/monitor/delpoy/
 
-echo `ssh k8s-master "kubectl apply -f /opt/k8s/monitor/delpoy/${SERVICE_NAME}-v_${BUILD_NUMBER}"`
-echo `ssh k8s-master "kubectl rollout status deployment/${SERVICE_NAME} -n test-elk"`
+echo `ssh 54.202.204.119 "kubectl apply -f /opt/k8s/monitor/delpoy/${SERVICE_NAME}-v_${BUILD_NUMBER}"`
+echo `ssh 54.202.204.119 "kubectl rollout status deployment/${SERVICE_NAME} -n test-elk"`
