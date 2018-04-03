@@ -11,20 +11,13 @@ docker build -t $SERVICE_NAME .
 docker tag $SERVICE_NAME $REPOSITORY_URI:v_$BUILD_NUMBER
 docker push $REPOSITORY_URI:v_$BUILD_NUMBER
 
-
 #Replace the build number and respository URI placeholders with the constants above
 sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g" -e "s;%REPOSITORY_URI%;${REPOSITORY_URI};g" monitor-deploy.yaml > ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml
 #Register the task definition in the repository
 
+mkdir -p /opt/k8s/monitor/delpoy/
+scp ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml k8s-master:/opt/k8s/monitor/delpoy/
 
-function rollback(){
-    echo "start rollback"
-}
+ssh k8s-master "kubectl create -f /opt/k8s/monitor/delpoy/${SERVICE_NAME}-v_${BUILD_NUMBER}"
 
 echo "Testing"
-if [ "1" == "0" ]; then
-   rollback
-  exit -1;
-else
-  exit 0
-fi

@@ -12,6 +12,8 @@ spec:
         app: monitor-alert
         type: monitor
         env: test
+        version: 1.0.0
+        build: %BUILD_NUMBER%
     spec:
       containers:
         - name: monitor-alert
