@@ -18,6 +18,5 @@ sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g" -e "s;%REPOSITORY_URI%;${REPOSITORY_
 ssh k8s-master "mkdir -p /opt/k8s/monitor/delpoy/"
 scp ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml k8s-master:/opt/k8s/monitor/delpoy/
 
-ssh k8s-master "kubectl create -f /opt/k8s/monitor/delpoy/${SERVICE_NAME}-v_${BUILD_NUMBER}"
-
-echo "Testing"
+echo `ssh k8s-master "kubectl apply -f /opt/k8s/monitor/delpoy/${SERVICE_NAME}-v_${BUILD_NUMBER}"`
+echo `ssh k8s-master "kubectl rollout status deployment/${SERVICE_NAME} -n test-elk"`
