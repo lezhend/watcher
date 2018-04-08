@@ -14,7 +14,6 @@ spec:
   selector:
     matchLabels:
       app: %SERVICE_NAME%
-      type: %MODULE_NAME%
       build: v_%BUILD_NUMBER%
   template:
     metadata:
@@ -40,8 +39,8 @@ metadata:
 spec:
   type: NodePort
   selector:
-     app: %SERVICE_NAME%
-     type: %MODULE_NAME%
+    app: %SERVICE_NAME%
+    type: %MODULE_NAME%
   ports:
     - protocol: TCP
       nodePort: 30080
