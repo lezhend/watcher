@@ -13,11 +13,7 @@ docker tag $SERVICE_NAME $REPOSITORY_URI:v_$BUILD_NUMBER
 docker push $REPOSITORY_URI:v_$BUILD_NUMBER
 
 #Replace the build number and respository URI placeholders with the constants above
-sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g"
-   \-e "s;%MODULE_NAME%;${MODULE_NAME};g"
-   \-e "s;%SERVICE_NAME%;${SERVICE_NAME};g"
-   \-e "s;%REPOSITORY_URI%;${REPOSITORY_URI};g"
-   \ monitor-deploy.yaml > ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml
+sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g" -e "s;%MODULE_NAME%;${MODULE_NAME};g" -e "s;%SERVICE_NAME%;${SERVICE_NAME};g" -e "s;%REPOSITORY_URI%;${REPOSITORY_URI};g" monitor-deploy.yaml > ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml
 #Register the task definition in the repository
 
 ssh k8s-master "mkdir -p $K8S_HOME/$MODULE_NAME/"
