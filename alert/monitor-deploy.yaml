@@ -4,24 +4,29 @@ kind: Namespace
 metadata:
   name: elk-test
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: monitor-alert
   namespace: elk-test
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: %SERVICE_NAME%
+      type: %MODULE_NAME%
+      build: v_%BUILD_NUMBER%
   template:
     metadata:
       labels:
-        app: monitor-alert
-        type: monitor
+        app: %SERVICE_NAME%
+        type: %MODULE_NAME%
         env: test
         version: 1.0.0
         build: v_%BUILD_NUMBER%
     spec:
       containers:
-        - name: monitor-alert
+        - name: %SERVICE_NAME%
           image: "%REPOSITORY_URI%:v_%BUILD_NUMBER%"
           ports:
             - name: http
@@ -35,8 +40,8 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: monitor-alert
-    type: monitor
+     app: %SERVICE_NAME%
+     type: %MODULE_NAME%
   ports:
     - protocol: TCP
       nodePort: 30080
