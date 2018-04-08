@@ -7,7 +7,7 @@ metadata:
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: monitor-alert
+  name: %SERVICE_NAME%
   namespace: elk-test
 spec:
   replicas: 1
@@ -34,7 +34,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: monitor-alert
+  name: %SERVICE_NAME%
   namespace: elk-test
 spec:
   type: NodePort
