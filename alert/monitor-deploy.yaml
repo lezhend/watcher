@@ -18,7 +18,7 @@ spec:
         type: monitor
         env: test
         version: 1.0.0
-        build: %BUILD_NUMBER%
+        build: v_%BUILD_NUMBER%
     spec:
       containers:
         - name: monitor-alert
@@ -31,7 +31,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: monitor-alert
-  namespace: test-elk
+  namespace: elk-test
 spec:
   type: NodePort
   selector:
