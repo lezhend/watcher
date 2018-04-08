@@ -1,5 +1,6 @@
 #!/bin/bash
 #Constants
+K8S_HOME="/opt/fcasb/k8s"
 MODULE_NAME="alert"
 cd ${MODULE_NAME}
 SERVICE_NAME="monitor-alert"
@@ -15,8 +16,8 @@ docker push $REPOSITORY_URI:v_$BUILD_NUMBER
 sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g" -e "s;%REPOSITORY_URI%;${REPOSITORY_URI};g" monitor-deploy.yaml > ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml
 #Register the task definition in the repository
 
-ssh k8s-master "mkdir -p /opt/fcasb/k8s/monitor/"
-scp ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml k8s-master:/opt/k8s/monitor/delpoy/
+ssh k8s-master "mkdir -p $K8S_HOME/$MODULE_NAME/"
+scp ${SERVICE_NAME}-v_${BUILD_NUMBER}.yaml k8s-master:$K8S_HOME/$MODULE_NAME/
 
-echo `ssh k8s-master "kubectl apply -f /opt/k8s/monitor/delpoy/${SERVICE_NAME}-v_${BUILD_NUMBER}"`
+echo `ssh k8s-master "kubectl apply -f $K8S_HOME/$MODULE_NAME/${SERVICE_NAME}-v_${BUILD_NUMBER}"`
 echo `ssh k8s-master "kubectl rollout status deployment/${SERVICE_NAME} -n elk-test"`
