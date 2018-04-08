@@ -15,7 +15,6 @@ spec:
     matchLabels:
       app: %SERVICE_NAME%
       type: %MODULE_NAME%
-      build: v_%BUILD_NUMBER%
   template:
     metadata:
       labels:
