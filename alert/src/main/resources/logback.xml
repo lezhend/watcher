@@ -19,7 +19,7 @@
 		<topic>monitor-system-log</topic>
 		<keyingStrategy class="com.github.danielwegener.logback.kafka.keying.RoundRobinKeyingStrategy" />
 		<deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
-		<producerConfig>bootstrap.servers=ec2-52-40-204-110.us-west-2.compute.amazonaws.com:9092,ec2-52-33-130-175.us-west-2.compute.amazonaws.com:9092,ec2-35-167-130-120.us-west-2.compute.amazonaws.com:9092</producerConfig>
+		<producerConfig>bootstrap.servers=ec2-34-212-249-213.us-west-2.compute.amazonaws.com:9092,ec2-34-219-43-38.us-west-2.compute.amazonaws.com:9092,ec2-18-237-242-78.us-west-2.compute.amazonaws.com:9092</producerConfig>
 	</appender>
 	<appender name="ASYNC_STATISTIC_TO_KAFKA" class="ch.qos.logback.classic.AsyncAppender">
 		<appender-ref ref="STATISTIC_TO_KAFKA" />
